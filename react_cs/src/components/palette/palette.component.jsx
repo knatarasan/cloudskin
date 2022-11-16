@@ -1,15 +1,12 @@
-import { useCallback, useState } from 'react';
-import ReactFlow, { applyEdgeChanges, applyNodeChanges } from 'reactflow';
-import 'reactflow/dist/style.css';
+import { useCallback, useState } from "react";
+import ReactFlow, { applyEdgeChanges, applyNodeChanges } from "reactflow";
+import "reactflow/dist/style.css";
 import initialNodes from "./node.js";
 
-
-  
-const initialEdges= [
-    { id: 'e1-2', source: '1', target: '2' },
-    { id: 'e2-3', source: '2', target: '3', animated: true },
-  ];
-  
+const initialEdges = [
+  { id: "e1-2", source: "1", target: "2" },
+  { id: "e2-3", source: "2", target: "3", animated: true },
+];
 
 function Palette() {
   const [nodes, setNodes] = useState(initialNodes);
@@ -17,8 +14,9 @@ function Palette() {
 
   const onNodesChange = useCallback(
     (changes) => {
-        // console.log('from useCallback , ')
-        return setNodes((nds) => applyNodeChanges(changes, nds))},
+      // console.log('from useCallback , ')
+      return setNodes((nds) => applyNodeChanges(changes, nds));
+    },
     [setNodes]
   );
   const onEdgesChange = useCallback(
@@ -27,13 +25,14 @@ function Palette() {
   );
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      fitView
-    />
+        <ReactFlow
+          id="25"
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          fitView
+        />
   );
 }
 

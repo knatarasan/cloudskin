@@ -1,24 +1,42 @@
-const initialNodes= [
+const nodes = [
   {
-    id: "1",
-    type: "input",
-    data: { label: "Input Node" },
-    position: { x: 250, y: 25 },
+    id: 'Palette',
+    type: 'group',
+    data: { label: "Palette" },
+    position: { x: 0, y: 0 },
+    style: {
+      width: 170,
+      height: "100%",
+      backgroundColor: "#D0C0F7"
+    },
+  },
+  {
+    id: 'B',
+    type: 'input',
+    data: { label: 'LB' },
+    position: { x: 10, y: 10 },
+    parentNode: 'Palette',
+    extent: 'parent',
+  },
+  {
+    id: 'C',
+    data: { label: 'App' },
+    position: { x: 10, y: 90 },
+    parentNode: 'Palette',
+    extent: 'parent',
+  },
+  {
+    id: 'Canvas',
+    type: 'group',
+    data: { label: null },
+    position: { x: 200, y: 0 },
+    style: {
+      width: "100%",
+      height: "100%",
+      backgroundColor: "#A0C0F7"
+    },
   },
 
-  {
-    id: "2",
-    // you can also pass a React component as a label
-    data: { label: <div>Default Node</div> },
-    position: { x: 100, y: 125 },
-  },
-  {
-    id: "3",
-    type: "output",
-    data: { label: "Output Node" },
-    position: { x: 250, y: 250 },
-  },
 ];
 
-
-export default initialNodes;
+export default nodes;
