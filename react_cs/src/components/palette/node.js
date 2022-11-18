@@ -12,7 +12,7 @@ const nodes = [
   },
   {
     id: 'B',
-    type: 'input',
+    type: 'default',
     data: { label: 'LB' },
     position: { x: 10, y: 10 },
     parentNode: 'Palette',
@@ -20,6 +20,7 @@ const nodes = [
   },
   {
     id: 'C',
+    type: 'default',
     data: { label: 'App' },
     position: { x: 10, y: 90 },
     parentNode: 'Palette',
