@@ -32,9 +32,14 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const { setViewPort } = useReactFlow();
 
-  const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
+  const onConnect = useCallback((params) =>
+    setEdges(
+      (eds) => {
+        params["animated"]=true
+        return addEdge(params, eds);
+      },
+      [setEdges]
+    )
   );
 
   const onSave = useCallback(() => {
@@ -43,12 +48,6 @@ const DnDFlow = () => {
       localStorage.setItem("flow-persist", JSON.stringify(flow));
     }
   }, [reactFlowInstance]);
-
-  // const onRestore = useCallback(()=>{
-  //   if(reactFlowInstance){
-  //     const restored =  JSON.parse(localStorage.getItem("flow"))
-  //   }
-  // },[reactFlowInstance])
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
