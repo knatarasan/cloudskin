@@ -1,16 +1,17 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
   useNodesState,
   useEdgesState,
   Controls,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+  useReactFlow,
+} from "reactflow";
+import "reactflow/dist/style.css";
 
-import Sidebar from './Sidebar';
+import Sidebar from "./Sidebar";
 
-import './index.css';
+import "./index.css";
 
 const initialNodes = [
   // {
@@ -29,25 +30,44 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  // const {setViewPort} = useReactFlow();
 
   const onConnect = useCallback((params) => {
-    console.log('Connected')
-    return setEdges((eds) => addEdge(params, eds))}, []);
+    console.log("Connected");
+    return setEdges((eds) => addEdge(params, eds));
+  }, []);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
+  // const onRestore = useCallback(()=>{
+  //   if(reactFlowInstance){
+  //     const restored =  JSON.parse(localStorage.getItem("flow")) 
+  //   }
+  // },[reactFlowInstance])
+
+
+
+
+
+  const onSave = useCallback(() => {
+    console.log('may be saved')
+      if (reactFlowInstance) {
+        const flow = reactFlowInstance.toObject();
+        localStorage.setItem("flow-persist", JSON.stringify(flow));
+      }
+    }, [reactFlowInstance]);
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData('application/reactflow');
-      console.log('Dropped',type)
+      const type = event.dataTransfer.getData("application/reactflow");
+      console.log("Dropped", type);
 
       // check if the dropped element is valid
-      if (typeof type === 'undefined' || !type) {
+      if (typeof type === "undefined" || !type) {
         return;
       }
 
@@ -70,7 +90,7 @@ const DnDFlow = () => {
   return (
     <div className="dndflow">
       <ReactFlowProvider>
-      <Sidebar />
+        <Sidebar />
 
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
@@ -84,7 +104,11 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
             fitView
           >
-            <Controls />
+            {/* <Controls /> */}
+            <div className="save__controls">
+              <button onClick={onSave}>save</button>
+              {/* <button onClick={onRestore}>restore</button> */}
+            </div>
           </ReactFlow>
         </div>
       </ReactFlowProvider>
