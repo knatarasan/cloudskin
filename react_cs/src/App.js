@@ -30,35 +30,46 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  // const {setViewPort} = useReactFlow();
+  const { setViewPort } = useReactFlow();
 
-  const onConnect = useCallback((params) => {
-    console.log("Connected");
-    return setEdges((eds) => addEdge(params, eds));
-  }, []);
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      localStorage.setItem("flow-persist", JSON.stringify(flow));
+    }
+  }, [reactFlowInstance]);
+
+  // const onRestore = useCallback(()=>{
+  //   if(reactFlowInstance){
+  //     const restored =  JSON.parse(localStorage.getItem("flow"))
+  //   }
+  // },[reactFlowInstance])
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const flow = JSON.parse(localStorage.getItem("flow-persist"));
+
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewPort({ x, y, zoom });
+      }
+    };
+
+    restoreFlow();
+  }, [setNodes, setViewPort]);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  // const onRestore = useCallback(()=>{
-  //   if(reactFlowInstance){
-  //     const restored =  JSON.parse(localStorage.getItem("flow")) 
-  //   }
-  // },[reactFlowInstance])
-
-
-
-
-
-  const onSave = useCallback(() => {
-    console.log('may be saved')
-      if (reactFlowInstance) {
-        const flow = reactFlowInstance.toObject();
-        localStorage.setItem("flow-persist", JSON.stringify(flow));
-      }
-    }, [reactFlowInstance]);
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
@@ -107,7 +118,7 @@ const DnDFlow = () => {
             {/* <Controls /> */}
             <div className="save__controls">
               <button onClick={onSave}>save</button>
-              {/* <button onClick={onRestore}>restore</button> */}
+              <button onClick={onRestore}>restore</button>
             </div>
           </ReactFlow>
         </div>
