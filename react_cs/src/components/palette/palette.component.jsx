@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
-import ReactFlow, { applyEdgeChanges, applyNodeChanges } from "reactflow";
+import ReactFlow, { applyEdgeChanges, applyNodeChanges, useStoreApi } from "reactflow";
 import "reactflow/dist/style.css";
 import initialNodes from "./node.js";
+
 
 const initialEdges = [
   { id: "e1-2", source: "1", target: "2" },
