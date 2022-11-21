@@ -14,12 +14,7 @@ import Sidebar from "./Sidebar";
 import "./index.css";
 
 const initialNodes = [
-  // {
-  //   id: '1',
-  //   type: 'input',
-  //   data: { label: 'input node' },
-  //   position: { x: 250, y: 5 },
-  // },
+
 ];
 
 let id = 0;
@@ -35,7 +30,8 @@ const DnDFlow = () => {
   const onConnect = useCallback((params) =>
     setEdges(
       (eds) => {
-        params["animated"]=true
+        params["animated"] = true;
+        params["style"] = { stroke: "red" };
         return addEdge(params, eds);
       },
       [setEdges]
@@ -89,10 +85,12 @@ const DnDFlow = () => {
         id: getId(),
         // type,
         position,
+        sourcePosition: "right",
+        targetPosition: "left",
         data: { label: `${type} node` },
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      setNodes((nds) => nds.concat(newNode))
     },
     [reactFlowInstance]
   );
@@ -114,7 +112,7 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
             fitView
           >
-            {/* <Controls /> */}
+            <Controls />
             <div className="save__controls">
               <button onClick={onSave}>save</button>
               <button onClick={onRestore}>restore</button>
