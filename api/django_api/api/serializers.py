@@ -1,0 +1,21 @@
+from rest_framework import serializers
+from .models import Graph
+
+
+class GraphSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    graph = serializers.CharField()
+
+    def create(self,validated_data):
+        '''
+        create and return a new `Graph` , given the validated data
+        '''
+
+        return Graph.objects.create(**validated_data)
+
+    def update(self,instance,validated_data):
+        instance.graph = validated_data.get('graph',instance.graph)
+        instance.save()
+        return instance
+
+

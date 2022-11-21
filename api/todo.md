@@ -1,5 +1,5 @@
 ### api
--[X] Initialize django api setup
+- [X] Initialize django api setup
 - [ ] save graph
   - [ ] Take react_flow json object and save it into DB
 - [ ] login/logout
