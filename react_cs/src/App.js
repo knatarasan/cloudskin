@@ -8,6 +8,7 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
+import { createGraph } from "./services/api.service";
 
 import Sidebar from "./Sidebar";
 
@@ -42,6 +43,7 @@ const DnDFlow = () => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       localStorage.setItem("flow-persist", JSON.stringify(flow));
+      createGraph(flow)
     }
   }, [reactFlowInstance]);
 
