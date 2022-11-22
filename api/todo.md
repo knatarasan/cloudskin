@@ -1,9 +1,10 @@
 ### api
 - [X] Initialize django api setup
-- [ ] save graph
-  - [ ] Take react_flow json object and save it into DB
-- [ ] login/logout
+- [X] Take react_flow json object and save it into DB
+- [] Authentication
+  - [X] login/logout
   - [ ] make above saved object to user specific
+  - [ ] User clicks `deploy` button, deployment steps starts
 - [ ] Follow actions
   - [ ] add App, execute necessary backend tasks 
     1.  EC2

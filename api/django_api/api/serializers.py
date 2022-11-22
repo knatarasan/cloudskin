@@ -10,7 +10,6 @@ class GraphSerializer(serializers.Serializer):
         '''
         create and return a new `Graph` , given the validated data
         '''
-        print('validated ',validated_data)
         return Graph.objects.create(**validated_data)
 
     def update(self,instance,validated_data):
