@@ -14,9 +14,7 @@ import Sidebar from "./Sidebar";
 
 import "./index.css";
 
-const initialNodes = [
-
-];
+const initialNodes = [];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -26,7 +24,10 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [graph, setGraph] = useState({});
   const { setViewPort } = useReactFlow();
+
+  
 
   const onConnect = useCallback((params) =>
     setEdges(
@@ -40,11 +41,24 @@ const DnDFlow = () => {
   );
 
   const onSave = useCallback(() => {
-    if (reactFlowInstance) {
+    if (id in graph) {
+      console.log("graph exists");
+    } else if (reactFlowInstance) {
+      console.log("id not in graph, saving newly created graph");
       const flow = reactFlowInstance.toObject();
+      
+      // Graph stored locally 
       localStorage.setItem("flow-persist", JSON.stringify(flow));
-      const some = createGraph(flow)
-      console.log('some ',some)
+
+      // Graph stored in server
+      createGraph(flow).then((data) => {
+        console.log("reactflow instance ", reactFlowInstance );
+        console.log("data at onSave ", data);
+        setGraph(data);
+        console.log("graph ", graph);
+      });
+
+      // console.log('some ',some)
     }
   }, [reactFlowInstance]);
 
@@ -93,7 +107,7 @@ const DnDFlow = () => {
         data: { label: `${type} node` },
       };
 
-      setNodes((nds) => nds.concat(newNode))
+      setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance]
   );

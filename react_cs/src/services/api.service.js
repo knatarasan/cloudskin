@@ -1,6 +1,5 @@
 export async function createGraph(data) {
   data = { graph: data };
-  // console.log('data ',data)
   const username = "admin";
   const password = "admin";
   const requestOptions = {
@@ -13,14 +12,7 @@ export async function createGraph(data) {
     body: JSON.stringify(data),
   };
 
-  //   fetch("/graphs/", requestOptions).then((response) => {
-  //     return response.json();
-  //   });
+  const response = await fetch("/graphs/", requestOptions)
 
-  fetch("/graphs/", requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("data. ", data);
-      return data
-    });
+  return await response.json()
 }
