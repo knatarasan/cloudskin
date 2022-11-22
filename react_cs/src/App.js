@@ -43,7 +43,8 @@ const DnDFlow = () => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       localStorage.setItem("flow-persist", JSON.stringify(flow));
-      createGraph(flow)
+      const some = createGraph(flow)
+      console.log('some ',some)
     }
   }, [reactFlowInstance]);
 

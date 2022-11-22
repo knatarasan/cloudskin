@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Graph
+import json
 
 
 class GraphSerializer(serializers.Serializer):
@@ -10,7 +11,9 @@ class GraphSerializer(serializers.Serializer):
         '''
         create and return a new `Graph` , given the validated data
         '''
-        return Graph.objects.create(**validated_data)
+        graph = Graph.objects.create(**validated_data)
+
+        return graph
 
     def update(self,instance,validated_data):
         instance.graph = validated_data.get('graph',instance.graph)
