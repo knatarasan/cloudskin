@@ -27,8 +27,6 @@ const DnDFlow = () => {
   const [graph, setGraph] = useState({});
   const { setViewPort } = useReactFlow();
 
-  
-
   const onConnect = useCallback((params) =>
     setEdges(
       (eds) => {
@@ -46,16 +44,14 @@ const DnDFlow = () => {
     } else if (reactFlowInstance) {
       console.log("id not in graph, saving newly created graph");
       const flow = reactFlowInstance.toObject();
-      
-      // Graph stored locally 
+
+      // Graph stored locally
       localStorage.setItem("flow-persist", JSON.stringify(flow));
 
       // Graph stored in server
       createGraph(flow).then((data) => {
-        console.log("reactflow instance ", reactFlowInstance );
-        console.log("data at onSave ", data);
         setGraph(data);
-        console.log("graph ", graph);
+        console.log("setGraph(data)", graph);
       });
 
       // console.log('some ',some)

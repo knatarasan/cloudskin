@@ -13,6 +13,6 @@ export async function createGraph(data) {
   };
 
   const response = await fetch("/graphs/", requestOptions)
-
+  console.log("response", response)
   return await response.json()
 }
