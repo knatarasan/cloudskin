@@ -16,3 +16,19 @@ export async function createGraph(data) {
   console.log("response", response)
   return await response.json()
 }
+
+export async function updateGraph(data) {
+  data = { graph: data }
+  const username = "admin"
+  const password = "admin"
+  const requestOptions = {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Basic " + btoa(`${username}:${password}`)
+    },
+    body: JSON.stringify(data)
+  };
+  const response = await fetch("/graphs/", requestOptions)
+  return await response.json()
+}

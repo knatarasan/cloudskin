@@ -9,6 +9,9 @@ class Graph(models.Model):
         'auth.User', related_name='graph', on_delete=models.CASCADE)
     graph = models.JSONField()
 
+    # def save(self, *args, **kwargs):
+    #     graph =
+
 # class User(models.Model):
 #     username = models.TextField()
 #     email = models.EmailField()

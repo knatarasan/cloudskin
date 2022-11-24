@@ -1,13 +1,19 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-# from .models import Graph
+from .models import Graph
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 
-class GraphSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    graph = serializers.HyperlinkedRelatedField(view_name='graph-detail',read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['url','id', 'username', 'graph']
+
+class GraphSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     graph = serializers.JSONField()
 
@@ -23,6 +29,10 @@ class GraphSerializer(serializers.Serializer):
         instance.graph = validated_data.get('graph', instance.graph)
         instance.save()
         return instance
+
+    class Meta:
+        model=Graph
+        fields=['url', 'id', 'owner', 'graph']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
