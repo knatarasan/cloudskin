@@ -12,7 +12,11 @@ import { createGraph } from "./services/api.service";
 
 import Sidebar from "./Sidebar";
 
+import appimg from "./constants/app.png";
+import lbimg from "./constants/loadbalancer.png";
+
 import "./index.css";
+let comp = null;
 
 const initialNodes = [];
 
@@ -25,9 +29,9 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graph, setGraph] = useState({});
-  const [graphId, setGraphId] = useState(null)
-  console.log('HERE', graph, graphId)
-  console.log("setting graphid again")
+  const [graphId, setGraphId] = useState(null);
+  console.log("HERE", graph, graphId);
+  console.log("setting graphid again");
   const { setViewPort } = useReactFlow();
 
   // console.log("GRAPH ID",reactFlowInstance.id)
@@ -43,7 +47,7 @@ const DnDFlow = () => {
   );
 
   const onSave = useCallback(() => {
-    console.log("graphId", graphId,graph)
+    console.log("graphId", graphId, graph);
     if (graphId) {
       console.log("graph exists");
     } else if (reactFlowInstance) {
@@ -59,7 +63,7 @@ const DnDFlow = () => {
         setGraphId(data.id);
         setGraph(data);
       });
-      
+
       // console.log('some ',some)
     }
   }, [reactFlowInstance]);
@@ -100,6 +104,12 @@ const DnDFlow = () => {
         return;
       }
 
+      if (type === "App") {
+        comp = appimg;
+      } else if (type === "LB") {
+        comp = lbimg;
+      }
+
       const position = reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
@@ -110,7 +120,7 @@ const DnDFlow = () => {
         position,
         sourcePosition: "right",
         targetPosition: "left",
-        data: { label: `${type} node` },
+        data: { label: <img src={comp} height='50' width='50' /> },
       };
 
       setNodes((nds) => nds.concat(newNode));
