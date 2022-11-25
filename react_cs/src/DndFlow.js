@@ -44,6 +44,7 @@ const DnDFlow = () => {
 
   const onSave = useCallback(() => {
     console.log("graphId", graphId,graph)
+    // fetch call is made with data object , but react takes care adding owner_id: 2
     if (graphId) {
       console.log("graph exists");
     } else if (reactFlowInstance) {
