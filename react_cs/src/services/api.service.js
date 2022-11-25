@@ -11,6 +11,7 @@ export async function createGraph(data) {
 
     body: JSON.stringify(data),
   };
+    // fetch call is made with data object , but react takes care adding owner_id: 2
 
   const response = await fetch("/graphs/", requestOptions)
   console.log("response", response)
