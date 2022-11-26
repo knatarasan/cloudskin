@@ -11,11 +11,10 @@ import "reactflow/dist/style.css";
 import { createGraph, updateGraph } from "./services/api.service";
 import Sidebar from "./Sidebar";
 
-import appimg from "./constants/app.png";
-import lbimg from "./constants/loadbalancer.png";
+import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
+import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 
 import "./index.css";
-let comp = null;
 
 const initialNodes = [];
 
@@ -96,25 +95,37 @@ const DnDFlow = () => {
         return;
       }
 
-      if (type === "App") {
-        comp = appimg;
-      } else if (type === "LB") {
-        comp = lbimg;
-      }
-
       const position = reactFlowInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      const newNode = {
-        id: getId(),
-        position,
-        sourcePosition: "right",
-        targetPosition: "left",
-        data: { label: <img src={comp} height="50" width="50" /> },
+
+      const createNewNode = (icon) => {
+        let comp = null;
+
+        if (icon === "App") {
+          comp = <EC2Icon size={50} />;
+        } else if (icon === "LB") {
+          comp = <LoadBalancerIcon size={50} />;
+        }
+        console.log("comp", typeof comp);
+        return {
+          id: getId(),
+          position,
+          sourcePosition: "right",
+          targetPosition: "left",
+          data: { label: comp },
+        };
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      // const newNode = {
+      //   id: getId(),
+      //   position,
+      //   sourcePosition: "right",
+      //   targetPosition: "left",
+      //   data: { label: <EC2Icon /> },
+      // };
+      setNodes((nds) => nds.concat(createNewNode(type)));
     },
     [reactFlowInstance]
   );
