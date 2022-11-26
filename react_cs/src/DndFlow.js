@@ -10,6 +10,10 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { createGraph, updateGraph } from "./services/api.service";
 import Sidebar from "./Sidebar";
+
+import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
+import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
+
 import "./index.css";
 
 const initialNodes = [];
@@ -43,8 +47,8 @@ const DnDFlow = () => {
     if (graphId && reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       updateGraph(flow, graphId);
-      console.log('onSave graph updated id',graphId)
-    // create new graph in backend
+      console.log("onSave graph updated id", graphId);
+      // create new graph in backend
     } else if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       // Graph stored locally
@@ -53,8 +57,8 @@ const DnDFlow = () => {
       // Graph stored in server
       createGraph(flow).then((data) => {
         setGraphId(data.id);
-        setSaveUpdate(false)
-        console.log('onSave graph created id',data.id)
+        setSaveUpdate(false);
+        console.log("onSave graph created id", data.id);
       });
     }
   };
@@ -95,15 +99,27 @@ const DnDFlow = () => {
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
-      const newNode = {
-        id: getId(),
-        position,
-        sourcePosition: "right",
-        targetPosition: "left",
-        data: { label: `${type} node` },
+
+      const createNewNode = (icon, size) => {
+        let comp = null;
+
+        if (icon === "App") {
+          comp = <EC2Icon size={size} />;
+        } else if (icon === "LB") {
+          comp = <LoadBalancerIcon size={size} />;
+        }
+        console.log("comp", typeof comp);
+        return {
+          id: getId(),
+          position,
+          sourcePosition: "right",
+          targetPosition: "left",
+          style: { border: "100px", width: "5%" },
+          data: { label: comp },
+        };
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      setNodes((nds) => nds.concat(createNewNode(type, 25)));
     },
     [reactFlowInstance]
   );
@@ -127,7 +143,9 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button onClick={onSave}>{save_update ? 'save':'update'}</button>
+              <button onClick={onSave}>
+                {save_update ? "save" : "update"}
+              </button>
               <button onClick={onRestore}>restore</button>
             </div>
           </ReactFlow>
