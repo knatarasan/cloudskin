@@ -29,13 +29,6 @@ export default () => {
       >
         <LoadBalancerIcon />
       </div>
-      <div
-        className="dndnode output"
-        onDragStart={(event) => onDragStart(event, "arrow")}
-        draggable
-      >
-        Arrow
-      </div>
     </aside>
   );
 };

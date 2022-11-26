@@ -100,13 +100,13 @@ const DnDFlow = () => {
         y: event.clientY - reactFlowBounds.top,
       });
 
-      const createNewNode = (icon) => {
+      const createNewNode = (icon, size) => {
         let comp = null;
 
         if (icon === "App") {
-          comp = <EC2Icon size={50} />;
+          comp = <EC2Icon size={size} />;
         } else if (icon === "LB") {
-          comp = <LoadBalancerIcon size={50} />;
+          comp = <LoadBalancerIcon size={size} />;
         }
         console.log("comp", typeof comp);
         return {
@@ -114,18 +114,12 @@ const DnDFlow = () => {
           position,
           sourcePosition: "right",
           targetPosition: "left",
+          style: { border: "100px", width: "5%" },
           data: { label: comp },
         };
       };
 
-      // const newNode = {
-      //   id: getId(),
-      //   position,
-      //   sourcePosition: "right",
-      //   targetPosition: "left",
-      //   data: { label: <EC2Icon /> },
-      // };
-      setNodes((nds) => nds.concat(createNewNode(type)));
+      setNodes((nds) => nds.concat(createNewNode(type, 25)));
     },
     [reactFlowInstance]
   );
