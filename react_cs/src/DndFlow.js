@@ -8,8 +8,7 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { createGraph } from "./services/api.service";
-
+import { createGraph, updateGraph } from "./services/api.service";
 import Sidebar from "./Sidebar";
 
 import appimg from "./constants/app.png";
@@ -28,10 +27,8 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [graph, setGraph] = useState({});
   const [graphId, setGraphId] = useState(null);
-  console.log("HERE", graph, graphId);
-  console.log("setting graphid again");
+  const [save_update, setSaveUpdate] = useState(true);
   const { setViewPort } = useReactFlow();
 
   // console.log("GRAPH ID",reactFlowInstance.id)
@@ -46,31 +43,26 @@ const DnDFlow = () => {
     )
   );
 
-  const onSave = useCallback(() => {
-    console.log("graphId", graphId, graph);
-    if (graphId) {
-      console.log("graph exists");
-    } else if (reactFlowInstance) {
-      console.log("id not in graph, saving newly created graph");
+  const onSave = () => {
+    // update graph
+    if (graphId && reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // console.log("GRAPH ID",reactFlowInstance.id)
+      updateGraph(flow, graphId);
+      console.log("onSave graph updated id", graphId);
+      // create new graph in backend
+    } else if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
       // Graph stored locally
       localStorage.setItem("flow-persist", JSON.stringify(flow));
 
       // Graph stored in server
       createGraph(flow).then((data) => {
-        console.log("flow", data);
         setGraphId(data.id);
-        setGraph(data);
+        setSaveUpdate(false);
+        console.log("onSave graph created id", data.id);
       });
-
-      // console.log('some ',some)
     }
-  }, [reactFlowInstance]);
-
-  // useEffect(() => {
-  //   setGraphId(graphId++);
-  // }, graphId);
+  };
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -97,7 +89,7 @@ const DnDFlow = () => {
       event.preventDefault();
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData("application/reactflow");
-      console.log("Dropped", type);
+      // console.log("Dropped", type);
 
       // check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
@@ -116,11 +108,10 @@ const DnDFlow = () => {
       });
       const newNode = {
         id: getId(),
-        // type,
         position,
         sourcePosition: "right",
         targetPosition: "left",
-        data: { label: <img src={comp} height='50' width='50' /> },
+        data: { label: <img src={comp} height="50" width="50" /> },
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -147,7 +138,9 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button onClick={onSave}>save</button>
+              <button onClick={onSave}>
+                {save_update ? "save" : "update"}
+              </button>
               <button onClick={onRestore}>restore</button>
             </div>
           </ReactFlow>
