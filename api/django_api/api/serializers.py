@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Graph
+from .models import Graph, EC2
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -33,6 +33,27 @@ class GraphSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model=Graph
         fields=['url', 'id', 'owner', 'graph']
+
+class EC2Serializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    ec2_instance_id = serializers.CharField()
+
+    def create(self, validated_data):
+        '''
+        create and return a new `Graph` , given the validated data
+        '''
+        ec2 = EC2.objects.create(**validated_data)
+        return ec2
+
+    def update(self, instance, validated_data):
+        instance.ec2 = validated_data.get('ec2', instance.ec2)
+        instance.save()
+        return instance
+
+    class Meta:
+        model = EC2
+        fields=['url', 'id', 'owner', 'ec2_instance_id']
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

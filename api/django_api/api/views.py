@@ -1,16 +1,14 @@
-from rest_framework import generics
-from .models import Graph
-from .serializers import GraphSerializer
-from rest_framework import viewsets
+from rest_framework import generics, viewsets
+from .models import Graph, EC2
 from django.contrib.auth.models import User
-from .serializers import MyTokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, EC2Serializer
 from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from .serializers import UserSerializer
+from .services import EC2 as EC2Instance
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -19,13 +17,16 @@ def api_root(request, format=None):
         'graph': reverse('graph-list', request=request, format=format)
     })
 
+
 class UserList(generics.ListAPIView):
-    queryset=User.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 class UserDetail(generics.RetrieveAPIView):
-    queryset=User.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
 
 class MyObtainTokenPairViewSet(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -40,10 +41,20 @@ class GraphViewSet(viewsets.ModelViewSet):
         serializer.save(owner=self.request.user)
 
 
+class EC2ViewSet(viewsets.ModelViewSet):
+    permission_classes = [isAuthenticated]
+    queryset = EC2.objects.all()
+    serializer_class = EC2Serializer
+
+    def perform_create(self, serializer):
+        ec2 = EC2Instance()
+        instance = ec2.create()
+        print('serializer saved', instance)
+        serializer.save(owner=self.request.user, ec2_instance_id=instance)
+
 class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-
 
 #
 # class UserViewSet(viewsets.ModelViewSet):

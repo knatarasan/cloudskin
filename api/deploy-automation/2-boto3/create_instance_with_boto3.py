@@ -1,6 +1,14 @@
 import boto3
 
-ec2 = boto3.resource('ec2')
+AWS_ACCESS_KEY_ID="PLACEHOLDER"
+AWS_SECRET_ACCESS_KEY="PLACEHOLDER"
+
+ec2 = boto3.resource(
+    'ec2',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name="us-west-1"
+)
 
 instances = ec2.create_instances(
     ImageId="ami-0f5e8a042c8bfcd5e",
@@ -21,3 +29,37 @@ i-09f110d1dccb60681     None
 '''
 
 # Used this resource: https://blog.knoldus.com/how-to-create-ec2-instance-using-python3-with-boto3/
+
+# ARN for created user: arn:aws:iam::334431854769:user/resource-manager
+# Create IAM user and attach this policy:
+'''
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:RunInstances",
+                "ec2:TerminateInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateTags",
+                "ec2:DescribeInstances",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeAddresses",
+                "ec2:AssociateAddress",
+                "ec2:DisassociateAddress",
+                "ec2:DescribeRegions",
+                "ec2:DescribeAvailabilityZones"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+'''
