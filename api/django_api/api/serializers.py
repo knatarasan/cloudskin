@@ -4,7 +4,9 @@ from .models import Graph, EC2
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+import logging
 
+logger = logging.getLogger('django')
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     graph = serializers.HyperlinkedRelatedField(view_name='graph-detail',read_only=True)
@@ -21,6 +23,7 @@ class GraphSerializer(serializers.HyperlinkedModelSerializer):
         '''
         create and return a new `Graph` , given the validated data
         '''
+        logger.info("Graph saved")
         graph = Graph.objects.create(**validated_data)
 
         return graph
@@ -28,6 +31,7 @@ class GraphSerializer(serializers.HyperlinkedModelSerializer):
     def update(self, instance, validated_data):
         instance.graph = validated_data.get('graph', instance.graph)
         instance.save()
+        logger.info("Graph updated")
         return instance
 
     class Meta:
@@ -43,11 +47,13 @@ class EC2Serializer(serializers.HyperlinkedModelSerializer):
         create and return a new `Graph` , given the validated data
         '''
         ec2 = EC2.objects.create(**validated_data)
+        logger.info("EC2 created")
         return ec2
 
     def update(self, instance, validated_data):
         instance.ec2 = validated_data.get('ec2', instance.ec2)
         instance.save()
+        logger.info("EC2 updated")
         return instance
 
     class Meta:

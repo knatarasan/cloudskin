@@ -8,6 +8,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .services import EC2 as EC2Instance
+import logging
+
+logger = logging.getLogger('django')
 
 
 @api_view(['GET'])
@@ -47,16 +50,16 @@ class EC2ViewSet(viewsets.ModelViewSet):
     serializer_class = EC2Serializer
 
     def perform_create(self, serializer):
-        ec2 = EC2Instance()
-        instance = ec2.create()
-        print('serializer saved', instance)
+        try:
+            ec2 = EC2Instance()
+            instance = ec2.create()
+        except:
+            logger.info('Instance not created ')
+            return
+        logger.info('serializer saved', instance)
         serializer.save(owner=self.request.user, ec2_instance_id=instance)
 
 class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
-#
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.all()
-#     serializer_class = UserSerializer
