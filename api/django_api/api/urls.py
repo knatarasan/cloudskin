@@ -7,6 +7,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 router = routers.DefaultRouter()
 router.register(r'graphs', views.GraphViewSet)
 router.register(r'ec2', views.EC2ViewSet)
+router.register(r'aws_creds', views.AwsCredsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

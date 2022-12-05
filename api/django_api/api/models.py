@@ -15,10 +15,10 @@ class Graph(models.Model):
     )
     graph = models.JSONField()
 
-    # def save(self, *args, **kwargs):
-    #     graph =
+class AwsCreds(models.Model):
+    owner = models.ForeignKey(
+        'auth.User', related_name='aws_creds', on_delete=models.CASCADE
+    )
+    aws_access_key = models.TextField()
+    aws_access_secret = models.TextField()
 
-# class User(models.Model):
-#     username = models.TextField()
-#     email = models.EmailField()
-#     password = models.S

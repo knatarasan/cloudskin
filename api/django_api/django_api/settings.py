@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api'
+    'api',
+    'django_extensions'
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -176,4 +177,10 @@ LOGGING={
             'handlers': ['console', 'file']
         }
     }
+}
+
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'graph_models': True,
 }

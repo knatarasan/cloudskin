@@ -1,8 +1,8 @@
 from rest_framework import generics, viewsets
-from .models import Graph, EC2
+from .models import Graph, EC2 , AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, EC2Serializer
+from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, EC2Serializer , AwsCredsSerializer
 from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -58,6 +58,16 @@ class EC2ViewSet(viewsets.ModelViewSet):
             return
         logger.info('serializer saved', instance)
         serializer.save(owner=self.request.user, ec2_instance_id=instance)
+
+class AwsCredsViewSet(viewsets.ModelViewSet):
+    permission_classes = [isAuthenticated]
+    queryset = AwsCreds.objects.all()
+    serializer_class = AwsCredsSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+        logger.info('serializer saved')
+
 
 class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
