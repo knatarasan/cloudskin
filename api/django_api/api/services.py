@@ -14,7 +14,8 @@ class EC2:
         logger.info(f"AWS_SECRET_KEY: {self.AWS_ACCESS_KEY_ID} {self.AWS_SECRET_ACCESS_KEY}")
 
     def create(self):
-        if not env("DEVELOPMENT_MODE"):
+        if env("DEVELOPMENT_MODE")=="False":
+            logger.info("HEREREE")
             try:
                 ec2 = boto3.resource(
                     'ec2',
@@ -33,6 +34,9 @@ class EC2:
                 )
                 logger.info("Instance created, Instance id: ",
                             instances[0].instance_id)
+                for status in ec2.meta.client.describe_instance_status()['InstanceStatuses']:
+                    logger.info(f'STATUS {status}')
+
                 return instances[0].instance_id
 
             except:
