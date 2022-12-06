@@ -22,8 +22,9 @@
             - [ ]  Storage : disk equivalent 
             - [ ]  SG : configure SG ( fully automated when LB is used , only open required ports for ingress and egress)
             - [ ]   ssh key configuration
-              - [ ] from customer create a user `for_cloudskin`
-              - [ ] create model to accomadate User AWS Access Key and AWS  Secret into DB
+              - [ ] boto3: from customer create a user `for_cloudskin`
+              - [X] api: create model and expose API to accomadate User AWS Access Key and AWS  Secret into DB
+          
         - [ ]  Deployment
             - [ ]  Install OS packages
             - [ ]  Prep python venv
