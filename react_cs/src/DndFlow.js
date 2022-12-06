@@ -64,7 +64,7 @@ const DnDFlow = () => {
   };
 
   const onCreate = () => {
-    createInstance("1234")
+    createInstance()
   }
 
   const onRestore = useCallback(() => {

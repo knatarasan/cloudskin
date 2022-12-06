@@ -1,5 +1,5 @@
-export async function createInstance(data) {
-  data = { ec2_instance_id: "1234" };
+export async function createInstance() {
+  const data = { ec2_instance_id: "not determined" };
   const username = "admin";
   const password = "admin";
   console.log("before request options");
