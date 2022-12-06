@@ -8,7 +8,7 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { createGraph, updateGraph } from "./services/api.service";
+import { createGraph, updateGraph, createInstance } from "./services/api.service";
 import Sidebar from "./Sidebar";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
@@ -62,6 +62,10 @@ const DnDFlow = () => {
       });
     }
   };
+
+  const onCreate = () => {
+    createInstance("1234")
+  }
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -146,6 +150,7 @@ const DnDFlow = () => {
               <button onClick={onSave}>
                 {save_update ? "save" : "update"}
               </button>
+              <button onClick={onCreate}>create</button>
               <button onClick={onRestore}>restore</button>
             </div>
           </ReactFlow>
