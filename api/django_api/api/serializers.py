@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Graph, EC2
+from .models import Graph, EC2 , AwsCreds
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -44,7 +44,7 @@ class EC2Serializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         '''
-        create and return a new `Graph` , given the validated data
+        create and return a new `EC2` , given the validated data
         '''
         ec2 = EC2.objects.create(**validated_data)
         logger.info("EC2 created")
@@ -60,6 +60,28 @@ class EC2Serializer(serializers.HyperlinkedModelSerializer):
         model = EC2
         fields=['url', 'id', 'owner', 'ec2_instance_id']
 
+class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+    aws_access_key = serializers.CharField()
+    aws_access_secret = serializers.CharField()
+
+    def create(self, validated_data):
+        '''
+        create and return a new `AwsCreds` , given the validated data
+        '''
+        aws_creds = AwsCreds.objects.create(**validated_data)
+        logger.info("AwsCreds created")
+        return aws_creds
+
+    def update(self, instance, validated_data):
+        instance.ec2 = validated_data.get('aws_creds', instance.aws_creds)
+        instance.save()
+        logger.info("AwsCreds updated")
+        return instance
+
+    class Meta:
+        model = EC2
+        fields=['url', 'id', 'owner', 'aws_access_key','aws_access_secret']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
