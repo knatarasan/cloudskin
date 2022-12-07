@@ -1,5 +1,5 @@
 from rest_framework import generics, viewsets
-from .models import Graph, EC2 , AwsCreds
+from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, EC2Serializer , AwsCredsSerializer
@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .services import EC2 as EC2Instance
 import logging
+from django.conf import settings
 
 logger = logging.getLogger('django')
 

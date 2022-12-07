@@ -1,21 +1,22 @@
 import boto3
-import environ
 from .models import AwsCreds
 import logging
+from django.conf import settings
 logger = logging.getLogger('django')
 
-env = environ.Env()
-environ.Env.read_env()
+
 
 class EC2:
     def __init__(self):
         self.AWS_ACCESS_KEY_ID = AwsCreds.objects.get(pk=1).aws_access_key
         self.AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(pk=1).aws_access_secret
-        logger.info(f"AWS_SECRET_KEY: {self.AWS_ACCESS_KEY_ID} {self.AWS_SECRET_ACCESS_KEY}")
 
     def create(self):
-        if env("DEVELOPMENT_MODE")=="False":
-            logger.info("HEREREE")
+        if settings.DEVELOPMENT_MODE:
+            logger.info("This is DEVELOPMENT MODE, no instance is spun. To change this, update .env file")
+            return "i-simulated-id"
+        else:
+            logger.info("In prodution mode; Instance will be spun")
             try:
                 ec2 = boto3.resource(
                     'ec2',
@@ -34,6 +35,7 @@ class EC2:
                 )
                 logger.info("Instance created, Instance id: ",
                             instances[0].instance_id)
+
                 for status in ec2.meta.client.describe_instance_status()['InstanceStatuses']:
                     logger.info(f'STATUS {status}')
 
@@ -43,5 +45,3 @@ class EC2:
                 logger.info(
                     "Instance not created, check credentials supplied to aws")
                 return None
-        else:
-            return "ami-0f5e8a042c8bfcd5e"
