@@ -7,7 +7,7 @@ class EC2(models.Model):
     owner = models.ForeignKey(
         'auth.User', related_name='ec2', on_delete=models.CASCADE # When deleted, the ec2 instances created by the user should be terminated
     )
-    ec2_instance_id = models.TextField()
+    ec2_instance_id = models.TextField(null=True)
 
 class Graph(models.Model):
     owner = models.ForeignKey(

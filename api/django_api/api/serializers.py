@@ -1,6 +1,6 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from .models import Graph, EC2 , AwsCreds
+from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -8,12 +8,14 @@ import logging
 
 logger = logging.getLogger('django')
 
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-    graph = serializers.HyperlinkedRelatedField(view_name='graph-detail',read_only=True)
+    graph = serializers.HyperlinkedRelatedField(view_name='graph-detail', read_only=True)
 
     class Meta:
         model = User
-        fields = ['url','id', 'username', 'graph']
+        fields = ['url', 'id', 'username', 'graph']
+
 
 class GraphSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -35,8 +37,9 @@ class GraphSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
     class Meta:
-        model=Graph
-        fields=['url', 'id', 'owner', 'graph']
+        model = Graph
+        fields = ['url', 'id', 'owner', 'graph']
+
 
 class EC2Serializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -58,7 +61,8 @@ class EC2Serializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = EC2
-        fields=['url', 'id', 'owner', 'ec2_instance_id']
+        fields = ['url', 'id', 'owner', 'ec2_instance_id']
+
 
 class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
@@ -81,7 +85,7 @@ class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = EC2
-        fields=['url', 'id', 'owner', 'aws_access_key','aws_access_secret']
+        fields = ['url', 'id', 'owner', 'aws_access_key', 'aws_access_secret']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

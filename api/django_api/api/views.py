@@ -50,13 +50,14 @@ class EC2ViewSet(viewsets.ModelViewSet):
     serializer_class = EC2Serializer
 
     def perform_create(self, serializer):
+        logger.info("in EC2ViewSet")
         try:
             ec2 = EC2Instance()
             instance = ec2.create()
         except:
             logger.info('Instance not created ')
             return
-        logger.info('serializer saved', instance)
+        logger.info(f'serializer saved {instance}')
         serializer.save(owner=self.request.user, ec2_instance_id=instance)
 
 class AwsCredsViewSet(viewsets.ModelViewSet):
