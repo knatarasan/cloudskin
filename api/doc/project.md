@@ -15,6 +15,14 @@
         - [ ] Create and prep EC2
             - [X] Built a simple service with hardcoded value to create an EC2
               - Hardcoded values are [VM type,ami,storage,Security Group, ssh key config]
+            - [ ] Check instance health every five seconds
+              - [ ] Backend
+                - Expose API to check instance health
+              - [ ] Frontend
+                - App Icon:
+                  - Red: Not running
+                  - Yellow: Initializing
+                  - Green: Running
             - [ ]  Choose VM type (vCPU & memory )
             - [ ]  Choose image type (ami) 
                 - [ ]  OS : user chooses

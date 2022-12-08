@@ -17,7 +17,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'id', 'username', 'graph']
 
 
-class GraphSerializer(serializers.HyperlinkedModelSerializer):
+class GraphSerializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     graph = serializers.JSONField()
 
@@ -36,14 +36,15 @@ class GraphSerializer(serializers.HyperlinkedModelSerializer):
         logger.info("Graph updated")
         return instance
 
-    class Meta:
-        model = Graph
-        fields = ['url', 'id', 'owner', 'graph']
+    # class Meta:
+    #     model = Graph
+    #     fields = ['url', 'id', 'owner', 'graph']
 
-
-class EC2Serializer(serializers.HyperlinkedModelSerializer):
+# class EC2Serializer(serializers.HyperlinkedModelSerializer):
+class EC2Serializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     ec2_instance_id = serializers.CharField()
+    # ec2_instance_health = serializers.CharField()
 
     def create(self, validated_data):
         '''
@@ -54,14 +55,14 @@ class EC2Serializer(serializers.HyperlinkedModelSerializer):
         return ec2
 
     def update(self, instance, validated_data):
-        instance.ec2 = validated_data.get('ec2', instance.ec2)
+        instance.ec2 = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
         instance.save()
         logger.info("EC2 updated")
         return instance
 
-    class Meta:
-        model = EC2
-        fields = ['url', 'id', 'owner', 'ec2_instance_id']
+    # class Meta:
+    #     model = EC2
+    #     fields = ['id', 'owner', 'ec2_instance_id']
 
 
 class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
