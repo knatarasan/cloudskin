@@ -2,17 +2,17 @@ from rest_framework import generics, viewsets
 from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, EC2Serializer , AwsCredsSerializer
+from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, \
+    EC2Serializer, AwsCredsSerializer
 from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from .services import EC2 as EC2Instance
+from .services import EC2Service as EC2Instance
 import logging
 from rest_framework.views import APIView
 from rest_framework import status
 from django.http import Http404
-
 
 logger = logging.getLogger('django')
 
@@ -51,6 +51,7 @@ class GraphList(APIView):
     """
     List all snippets, or create a new snippet.
     """
+
     def get(self, request, format=None):
         graphs = Graph.objects.all()
         serializer = GraphSerializer(graphs, many=True)
@@ -63,22 +64,22 @@ class GraphList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class GraphDetail(APIView):
     """
     Retrieve, update or delete a graph instance.
     """
+
     def get_object(self, pk):
         try:
             return Graph.objects.get(pk=pk)
         except Graph.DoesNotExist:
             raise Http404
 
-
     def get(self, request, pk, format=None):
         graph = self.get_object(pk)
         serializer = GraphSerializer(graph)
         return Response(serializer.data)
-
 
     def put(self, request, pk, format=None):
         graph = self.get_object(pk)
@@ -88,16 +89,17 @@ class GraphDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     def delete(self, request, pk, format=None):
         graph = self.get_object(pk)
         graph.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class EC2List(APIView):
     """
     List all ec2 instances, or create a new ec2 instance.
     """
+
     def get(self, request, format=None):
         ec2s = EC2.objects.all()
         serializer = EC2Serializer(ec2s, many=True)
@@ -111,35 +113,22 @@ class EC2List(APIView):
             logger.info('Instance not created ')
             return
         logger.info(f'serializer saved {instance}')
+        logger.info(f"react_instance_health {instance[1]}")
         # serializer.save(owner=self.request.user, ec2_instance_id=instance)
 
         serializer = EC2Serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=self.request.user, ec2_instance_id=instance)
+            serializer.save(owner=self.request.user, ec2_instance_id=instance[0])
+            logger.info(f"instance health {instance[1]}")
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # permission_classes = [isAuthenticated]
-    # queryset = EC2.objects.all()
-    # serializer_class = EC2Serializer
-    #
-    #
-    #
-    # def perform_create(self, serializer):
-    #     logger.info("in EC2ViewSet")
-    #     try:
-    #         ec2 = EC2Instance()
-    #         instance = ec2.create()
-    #     except:
-    #         logger.info('Instance not created ')
-    #         return
-    #     logger.info(f'serializer saved {instance}')
-    #     serializer.save(owner=self.request.user, ec2_instance_id=instance)
 
 class EC2Detail(APIView):
     """
     Retrieve, update or delete a ec2 instance.
     """
+
     def get_object(self, pk):
         try:
             return EC2.objects.get(pk=pk)
@@ -164,6 +153,7 @@ class EC2Detail(APIView):
         ec2.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class AwsCredsViewSet(viewsets.ModelViewSet):
     permission_classes = [isAuthenticated]
     queryset = AwsCreds.objects.all()
@@ -177,4 +167,3 @@ class AwsCredsViewSet(viewsets.ModelViewSet):
 class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
-

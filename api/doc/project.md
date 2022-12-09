@@ -16,9 +16,9 @@
             - [X] Built a simple service with hardcoded value to create an EC2
               - Hardcoded values are [VM type,ami,storage,Security Group, ssh key config]
             - [ ] Check instance health every five seconds
-              - [ ] Backend
+              - [ X ] Backend - Just finished
                 - Expose API to check instance health
-              - [ ] Frontend
+              - [ ] Frontend - Going to be working on this
                 - App Icon:
                   - Red: Not running
                   - Yellow: Initializing
