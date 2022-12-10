@@ -12,7 +12,6 @@ import {
   createGraph,
   updateGraph,
   createInstance,
-  displayHealth,
 } from "./services/api.service";
 import Sidebar from "./Sidebar";
 
@@ -32,9 +31,31 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
-  const [ec2Id, setEc2Id] = useState(null);
+  // const [ec2Id, setEc2Id] = useState(null);
+  const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const { setViewPort } = useReactFlow();
+
+  
+  useEffect(() => {
+    console.log("inside useEffect", health)
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === "dndnode_0") {
+          console.log("inside node.id == 1", health)
+          console.log("node", node)
+
+          // it's important that you create a new object here
+          // in order to notify react flow about the change
+          node.style = {
+             border: "100px", width: "5%", background: health
+          };
+        }
+
+        return node;
+      })
+    );
+  }, [health, setNodes]);
 
   // console.log("GRAPH ID",reactFlowInstance.id)
   const onConnect = useCallback((params) =>
@@ -73,10 +94,11 @@ const DnDFlow = () => {
   const onCreate = () => {
     createInstance().then((data) => {
       console.log("ec2Data", data);
-      setEc2Id(data.id);
+      setHealth("orange");
+      // setEc2Id(data.id);
     });
-    console.log("ec2Id", ec2Id);
-    displayHealth(ec2Id);
+    // console.log("ec2Id", ec2Id);
+    // displayHealth(ec2Id);
   };
 
   const onRestore = useCallback(() => {
@@ -98,6 +120,11 @@ const DnDFlow = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  const updateNode = () => {
+    setHealth("green");
+    console.log("health", health)
+  };
 
   const onDrop = useCallback(
     (event) => {
@@ -162,10 +189,11 @@ const DnDFlow = () => {
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
               <button onClick={onSave}>
-                {save_update ? "save" : "update"}
+                {save_update ? "Save Graph" : "Update Graph"}
               </button>
-              <button onClick={onCreate}>create</button>
-              <button onClick={onRestore}>restore</button>
+              <button onClick={onCreate}>Create Instance</button>
+              <button onClick={updateNode}>Refresh Status</button>
+              <button onClick={onRestore}>Restore - !working</button>
             </div>
           </ReactFlow>
         </div>

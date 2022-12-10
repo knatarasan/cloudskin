@@ -18,12 +18,12 @@ export async function createInstance() {
   return response;
 }
 
-export const displayHealth = (data) => {
-  // fetch(`http://127.0.0.1:8000/ec2/${id}`)
-  //   .then((response) => response.json())
-  //   .then((response) => console.log("RESPONSE", response));
-  console.log('data',data['ec2_instance_health'])
-};
+// export const displayHealth = (data) => {
+//   // fetch(`http://127.0.0.1:8000/ec2/${id}`)
+//   //   .then((response) => response.json())
+//   //   .then((response) => console.log("RESPONSE", response));
+//   console.log('data',data['ec2_instance_health'])
+// };
 
 // export async function getHealth() {
 
