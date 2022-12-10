@@ -116,7 +116,7 @@ const DnDFlow = () => {
         y: event.clientY - reactFlowBounds.top,
       });
 
-      const createNewNode = (icon, size) => {
+      const createNewNode = (icon, size, color) => {
         let comp = null;
 
         if (icon === "App") {
@@ -124,18 +124,19 @@ const DnDFlow = () => {
         } else if (icon === "LB") {
           comp = <LoadBalancerIcon size={size} />;
         }
+
         console.log("comp", typeof comp);
         return {
           id: getId(),
           position,
           sourcePosition: "right",
           targetPosition: "left",
-          style: { border: "100px", width: "5%" },
+          style: { border: "100px", width: "5%", background: color },
           data: { label: comp },
         };
       };
 
-      setNodes((nds) => nds.concat(createNewNode(type, 25)));
+      setNodes((nds) => nds.concat(createNewNode(type, 25, "red")));
     },
     [reactFlowInstance]
   );
@@ -159,6 +160,7 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
+              {/* <span style='font-size:50px;'>&#128308;</span> */}
               <button onClick={onSave}>
                 {save_update ? "save" : "update"}
               </button>
