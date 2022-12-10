@@ -12,8 +12,22 @@ export async function createInstance() {
     body: JSON.stringify(data),
   };
   console.log("requestOptions", JSON.stringify(requestOptions));
-  const response = await fetch("/ec2/", requestOptions);
+  let response = await fetch("/ec2/", requestOptions);
+  response = await response.json();
+  console.log("Response", response);
+  return response;
 }
+
+export const displayHealth = (data) => {
+  // fetch(`http://127.0.0.1:8000/ec2/${id}`)
+  //   .then((response) => response.json())
+  //   .then((response) => console.log("RESPONSE", response));
+  console.log('data',data['ec2_instance_health'])
+};
+
+// export async function getHealth() {
+
+// }
 
 export async function createGraph(data) {
   data = { graph: data };
@@ -28,7 +42,7 @@ export async function createGraph(data) {
     body: JSON.stringify(data),
   };
   // fetch call is made with data object , but react takes care adding owner_id: 2
-  const response = await fetch("/graphs/", requestOptions);
+  const response = await fetch("/graph/", requestOptions);
   console.log("response", response);
   return await response.json();
 }

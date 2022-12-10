@@ -8,7 +8,12 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { createGraph, updateGraph, createInstance } from "./services/api.service";
+import {
+  createGraph,
+  updateGraph,
+  createInstance,
+  displayHealth,
+} from "./services/api.service";
 import Sidebar from "./Sidebar";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
@@ -27,6 +32,7 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
+  const [ec2Id, setEc2Id] = useState(null);
   const [save_update, setSaveUpdate] = useState(true);
   const { setViewPort } = useReactFlow();
 
@@ -56,6 +62,7 @@ const DnDFlow = () => {
 
       // Graph stored in server
       createGraph(flow).then((data) => {
+        console.log("graphData", data);
         setGraphId(data.id);
         setSaveUpdate(false);
         console.log("onSave graph created id", data.id);
@@ -64,8 +71,13 @@ const DnDFlow = () => {
   };
 
   const onCreate = () => {
-    createInstance()
-  }
+    createInstance().then((data) => {
+      console.log("ec2Data", data);
+      setEc2Id(data.id);
+    });
+    console.log("ec2Id", ec2Id);
+    displayHealth(ec2Id);
+  };
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
