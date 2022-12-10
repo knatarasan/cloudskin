@@ -31,25 +31,27 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
-  // const [ec2Id, setEc2Id] = useState(null);
+  const [ec2Id, setEc2Id] = useState(null);
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const { setViewPort } = useReactFlow();
 
-  
   useEffect(() => {
-    console.log("inside useEffect", health)
+    console.log("inside useEffect", health);
     setNodes((nds) =>
       nds.map((node) => {
         if (node.id === "dndnode_0") {
-          console.log("inside node.id == 1", health)
-          console.log("node", node)
+          console.log("inside node.id == 1", health);
+          console.log("node", node);
 
           // it's important that you create a new object here
           // in order to notify react flow about the change
           node.style = {
-             border: "100px", width: "5%", background: health
+            border: "100px",
+            width: "5%",
+            background: health,
           };
+          node.data['instance_id']=id
         }
 
         return node;
@@ -94,8 +96,7 @@ const DnDFlow = () => {
   const onCreate = () => {
     createInstance().then((data) => {
       console.log("ec2Data", data);
-      setHealth("orange");
-      // setEc2Id(data.id);
+      setEc2Id(data.id);
     });
     // console.log("ec2Id", ec2Id);
     // displayHealth(ec2Id);
@@ -122,8 +123,16 @@ const DnDFlow = () => {
   }, []);
 
   const updateNode = () => {
-    setHealth("green");
-    console.log("health", health)
+    fetch(`http://127.0.0.1:8000/ec2/${85}`)
+      .then((response) => response.json())
+      .then((response) => {
+        if(response['ec2_instance_health'].length>=1){
+          setHealth("green");
+        } else if(response['ec2_instance_health'].length==0){
+          setHealth("orange")
+        }
+      });
+    console.log("health", health);
   };
 
   const onDrop = useCallback(

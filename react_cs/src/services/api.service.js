@@ -12,22 +12,17 @@ export async function createInstance() {
     body: JSON.stringify(data),
   };
   console.log("requestOptions", JSON.stringify(requestOptions));
-  let response = await fetch("/ec2/", requestOptions);
-  response = await response.json();
+  const response = await fetch("/ec2/", requestOptions);
   console.log("Response", response);
-  return response;
+  return await response.json();
 }
 
 // export const displayHealth = (data) => {
-//   // fetch(`http://127.0.0.1:8000/ec2/${id}`)
-//   //   .then((response) => response.json())
-//   //   .then((response) => console.log("RESPONSE", response));
-//   console.log('data',data['ec2_instance_health'])
+//   fetch(`http://127.0.0.1:8000/ec2/${id}`)
+//     .then((response) => response.json())
+//     .then((response) => console.log("RESPONSE", response));
+//   console.log("data", data["ec2_instance_health"]);
 // };
-
-// export async function getHealth() {
-
-// }
 
 export async function createGraph(data) {
   data = { graph: data };
