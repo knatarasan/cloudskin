@@ -130,10 +130,16 @@ class EC2Detail(APIView):
     """
 
     def get_object(self, pk):
+        ec2 = None
         try:
-            return EC2.objects.get(pk=pk)
+            ec2 = EC2.objects.get(ec2_instance_id=pk)
+            return ec2
         except EC2.DoesNotExist:
-            raise Http404
+            ec2 = EC2.objects.get(pk=pk)
+            return ec2
+
+        logger.info("Some error with the get")
+        raise Http404
 
     def get(self, request, pk, format=None):
         ec2 = self.get_object(pk)

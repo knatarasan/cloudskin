@@ -19,6 +19,9 @@
               - [X] Backend - Just finished
                 - Add a new field in EC2 API to display instance health
               - [ ] Frontend - Going to be working on this
+                - [] Adding right click functionality to the node
+                  - [X] Bring onCreate and updateStatus function into right click menu
+                  - [ ] Need to pass instance id when clicking updateStatus
                 - App Icon:
                   - Red: Not running
                   - Yellow: Initializing

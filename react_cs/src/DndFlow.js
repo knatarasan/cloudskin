@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -34,6 +34,8 @@ const DnDFlow = () => {
   const [ec2Id, setEc2Id] = useState(null);
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isOpen, setIsOpen] = useState(false);
   const { setViewPort } = useReactFlow();
 
   useEffect(() => {
@@ -51,7 +53,7 @@ const DnDFlow = () => {
             width: "5%",
             background: health,
           };
-          node.data['instance_id']=id
+          node.data["instance_id"] = id;
         }
 
         return node;
@@ -96,7 +98,7 @@ const DnDFlow = () => {
   const onCreate = () => {
     createInstance().then((data) => {
       console.log("ec2Data", data);
-      setEc2Id(data.id);
+      // setNodes((nds) => );
     });
     // console.log("ec2Id", ec2Id);
     // displayHealth(ec2Id);
@@ -122,14 +124,14 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const updateNode = () => {
-    fetch(`http://127.0.0.1:8000/ec2/${85}`)
+  const updateNode = (instance_id) => {
+    fetch(`http://127.0.0.1:8000/ec2/${"i-04fb0ec119fc2f2a4"}`)
       .then((response) => response.json())
       .then((response) => {
-        if(response['ec2_instance_health'].length>=1){
+        if (response["ec2_instance_health"].length >= 1) {
           setHealth("green");
-        } else if(response['ec2_instance_health'].length==0){
-          setHealth("orange")
+        } else if (response["ec2_instance_health"].length === 0) {
+          setHealth("orange");
         }
       });
     console.log("health", health);
@@ -177,6 +179,39 @@ const DnDFlow = () => {
     [reactFlowInstance]
   );
 
+  const onContextMenu = (e) => {
+    e.preventDefault();
+    setPosition({ x: e.clientX, y: e.clientY });
+    setIsOpen(true);
+    console.log("event", e.target.data-id);
+  };
+
+  const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
+    isOpen ? (
+      <div
+        style={{
+          position: "absolute",
+          left: position.x,
+          top: position.y,
+          zIndex: 1000,
+          border: "solid 1px #CCC",
+          borderRadius: 3,
+          backgroundColor: "white",
+          padding: 5,
+          display: "flex",
+          flexDirections: "column",
+        }}
+        onMouseLeave={onMouseLeave}
+      >
+        {actions.map((action) => (
+          <button key={action.label} onClick={action.effect}>
+            {action.label}
+          </button>
+        ))}
+      </div>
+    ) : null
+  );
+
   return (
     <div className="dndflow">
       <ReactFlowProvider>
@@ -192,8 +227,15 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeContextMenu={onContextMenu}
             fitView
           >
+            <ContextMenu
+              isOpen={isOpen}
+              position={position}
+              onMouseLeave={() => setIsOpen(false)}
+              actions={[{ label: "Create Instance", effect: onCreate }, { label: "Update Status", effect: updateNode }]}
+            />
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
