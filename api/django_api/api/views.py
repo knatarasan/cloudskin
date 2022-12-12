@@ -113,13 +113,10 @@ class EC2List(APIView):
             logger.info('Instance not created ')
             return
         logger.info(f'serializer saved {instance}')
-        logger.info(f"react_instance_health {instance[1]}")
-        # serializer.save(owner=self.request.user, ec2_instance_id=instance)
 
         serializer = EC2Serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=self.request.user, ec2_instance_id=instance[0])
-            logger.info(f"instance health {instance[1]}")
+            serializer.save(owner=self.request.user, ec2_instance_id=instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

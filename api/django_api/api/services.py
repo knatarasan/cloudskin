@@ -13,6 +13,7 @@ class EC2Service:
         self.ec2 = None
 
     def create(self):
+        logger.info(f"DEVELOPMENT MODE=={settings.DEVELOPMENT_MODE}")
         if settings.DEVELOPMENT_MODE:
             logger.info("This is DEVELOPMENT MODE, no instance is spun. To change this, update .env file")
             return "i-simulated-id"
@@ -41,8 +42,7 @@ class EC2Service:
                 #     logger.info(f'STATUS {status}')
 
                 # return instances[0].instance_id
-                return [instances[0].instance_id,
-                        instances[0].meta.client.describe_instance_status()['InstanceStatuses']]
+                return instances[0].instance_id
 
 
             except:

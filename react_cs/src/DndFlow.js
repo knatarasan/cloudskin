@@ -6,6 +6,7 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   useReactFlow,
+  onElementClick,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
@@ -32,6 +33,7 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
   const [ec2Id, setEc2Id] = useState(null);
+  const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -53,7 +55,7 @@ const DnDFlow = () => {
             width: "5%",
             background: health,
           };
-          node.data["instance_id"] = id;
+          // node.data["instance_id"] = id;
         }
 
         return node;
@@ -87,19 +89,21 @@ const DnDFlow = () => {
 
       // Graph stored in server
       createGraph(flow).then((data) => {
-        console.log("graphData", data);
         setGraphId(data.id);
         setSaveUpdate(false);
-        console.log("onSave graph created id", data.id);
       });
     }
   };
 
-  const onCreate = () => {
+  const onCreate = (e) => {
     createInstance().then((data) => {
-      console.log("ec2Data", data);
-      // setNodes((nds) => );
+      console.log("ec2Data", data.ec2_instance_id);
+      setNodes((nds) => {
+        nodeData.data['instance_id']=data.ec2_instance_id
+      });
+      console.log("onCreateNode after nodedata change", nodeData);
     });
+  
     // console.log("ec2Id", ec2Id);
     // displayHealth(ec2Id);
   };
@@ -125,6 +129,7 @@ const DnDFlow = () => {
   }, []);
 
   const updateNode = (instance_id) => {
+    // fix this
     fetch(`http://127.0.0.1:8000/ec2/${"i-04fb0ec119fc2f2a4"}`)
       .then((response) => response.json())
       .then((response) => {
@@ -163,7 +168,6 @@ const DnDFlow = () => {
           comp = <LoadBalancerIcon size={size} />;
         }
 
-        console.log("comp", typeof comp);
         return {
           id: getId(),
           position,
@@ -179,11 +183,15 @@ const DnDFlow = () => {
     [reactFlowInstance]
   );
 
-  const onContextMenu = (e) => {
+  const onContextMenu = (e, node) => {
+    setNodeData(node);
     e.preventDefault();
     setPosition({ x: e.clientX, y: e.clientY });
     setIsOpen(true);
-    console.log("event", e.target.data-id);
+    // const data=e.target.getElementByTagName('div')
+    // const id = data.getAttribute('data-id'); // fruitCount = '12'
+    console.log("onContextMenuNode", node.id);
+    // console.log("id", id);
   };
 
   const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
@@ -234,7 +242,10 @@ const DnDFlow = () => {
               isOpen={isOpen}
               position={position}
               onMouseLeave={() => setIsOpen(false)}
-              actions={[{ label: "Create Instance", effect: onCreate }, { label: "Update Status", effect: updateNode }]}
+              actions={[
+                { label: "Create Instance", effect: onCreate },
+                { label: "Update Status", effect: updateNode },
+              ]}
             />
             <Controls />
             <div className="save__controls">
@@ -242,8 +253,8 @@ const DnDFlow = () => {
               <button onClick={onSave}>
                 {save_update ? "Save Graph" : "Update Graph"}
               </button>
-              <button onClick={onCreate}>Create Instance</button>
-              <button onClick={updateNode}>Refresh Status</button>
+              {/*              <button onClick={onCreate}>Create Instance</button>
+            <button onClick={updateNode}>Refresh Status</button> */}
               <button onClick={onRestore}>Restore - !working</button>
             </div>
           </ReactFlow>

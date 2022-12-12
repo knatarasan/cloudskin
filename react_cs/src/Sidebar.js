@@ -15,7 +15,6 @@ export default () => {
       <div
         className="dndnode input"
         onDragStart={(event) => {
-          console.log("Drag started");
           return onDragStart(event, "App");
         }}
         draggable
