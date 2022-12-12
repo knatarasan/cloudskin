@@ -6,7 +6,6 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   useReactFlow,
-  onElementClick,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
@@ -42,28 +41,13 @@ const DnDFlow = () => {
 
   useEffect(() => {
     console.log("inside useEffect", health);
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === "dndnode_0") {
-          console.log("inside node.id == 1", health);
-          console.log("node", node);
+    if (nodeData !== null) {
+      setNodes((nds) => {
+        nodeData.style["background"] = health;
+      });
+    }
+  }, [health]);
 
-          // it's important that you create a new object here
-          // in order to notify react flow about the change
-          node.style = {
-            border: "100px",
-            width: "5%",
-            background: health,
-          };
-          // node.data["instance_id"] = id;
-        }
-
-        return node;
-      })
-    );
-  }, [health, setNodes]);
-
-  // console.log("GRAPH ID",reactFlowInstance.id)
   const onConnect = useCallback((params) =>
     setEdges(
       (eds) => {
@@ -99,13 +83,11 @@ const DnDFlow = () => {
     createInstance().then((data) => {
       console.log("ec2Data", data.ec2_instance_id);
       setNodes((nds) => {
-        nodeData.data['instance_id']=data.ec2_instance_id
+        nodeData.data["instance_id"] = data.ec2_instance_id;
       });
+      setHealth("orange");
       console.log("onCreateNode after nodedata change", nodeData);
     });
-  
-    // console.log("ec2Id", ec2Id);
-    // displayHealth(ec2Id);
   };
 
   const onRestore = useCallback(() => {
@@ -128,18 +110,19 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const updateNode = (instance_id) => {
-    // fix this
-    fetch(`http://127.0.0.1:8000/ec2/${"i-04fb0ec119fc2f2a4"}`)
+  const updateNode = () => {
+    const instance_id = nodeData.data["instance_id"];
+    console.log("instance_id", instance_id);
+    fetch(`http://127.0.0.1:8000/ec2/${instance_id}`)
       .then((response) => response.json())
       .then((response) => {
         if (response["ec2_instance_health"].length >= 1) {
           setHealth("green");
-        } else if (response["ec2_instance_health"].length === 0) {
+        } else if (response["ec2_instance_health"] === []) {
           setHealth("orange");
         }
-      });
-    console.log("health", health);
+      })
+      .then(console.log("health", health));
   };
 
   const onDrop = useCallback(
@@ -147,7 +130,6 @@ const DnDFlow = () => {
       event.preventDefault();
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData("application/reactflow");
-      // console.log("Dropped", type);
 
       // check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
@@ -188,10 +170,7 @@ const DnDFlow = () => {
     e.preventDefault();
     setPosition({ x: e.clientX, y: e.clientY });
     setIsOpen(true);
-    // const data=e.target.getElementByTagName('div')
-    // const id = data.getAttribute('data-id'); // fruitCount = '12'
     console.log("onContextMenuNode", node.id);
-    // console.log("id", id);
   };
 
   const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
