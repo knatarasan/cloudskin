@@ -32,8 +32,8 @@ class EC2Service:
                     MaxCount=1,
                     InstanceType="t2.micro",
                     KeyName="InstanceKeyPair",
-                    SecurityGroupIds=['sg-0f2b88c10abf752e3'],
-                    SubnetId='subnet-0a6da46fb837b5a32'
+                    # SecurityGroupIds=['sg-0f2b88c10abf752e3'],
+                    # SubnetId='subnet-0a6da46fb837b5a32'
                 )
                 logger.info(f"Instance created, Instance id: {instances[0].instance_id}")
                 # time.sleep(30)
