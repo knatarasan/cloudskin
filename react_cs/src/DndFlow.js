@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo } from "react";
 import ReactFlow, {
   ReactFlowProvider,
   addEdge,
@@ -8,7 +8,11 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { createGraph, updateGraph, createInstance } from "./services/api.service";
+import {
+  createGraph,
+  updateGraph,
+  createInstance,
+} from "./services/api.service";
 import Sidebar from "./Sidebar";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
@@ -27,10 +31,23 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
+  const [ec2Id, setEc2Id] = useState(null);
+  const [nodeData, setNodeData] = useState(null);
+  const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isOpen, setIsOpen] = useState(false);
   const { setViewPort } = useReactFlow();
 
-  // console.log("GRAPH ID",reactFlowInstance.id)
+  useEffect(() => {
+    console.log("inside useEffect", health);
+    if (nodeData !== null) {
+      setNodes((nds) => {
+        nodeData.style["background"] = health;
+      });
+    }
+  }, [health]);
+
   const onConnect = useCallback((params) =>
     setEdges(
       (eds) => {
@@ -58,14 +75,20 @@ const DnDFlow = () => {
       createGraph(flow).then((data) => {
         setGraphId(data.id);
         setSaveUpdate(false);
-        console.log("onSave graph created id", data.id);
       });
     }
   };
 
-  const onCreate = () => {
-    createInstance()
-  }
+  const onCreate = (e) => {
+    createInstance().then((data) => {
+      console.log("ec2Data", data.ec2_instance_id);
+      setNodes((nds) => {
+        nodeData.data["instance_id"] = data.ec2_instance_id;
+      });
+      setHealth("orange");
+      console.log("onCreateNode after nodedata change", nodeData);
+    });
+  };
 
   const onRestore = useCallback(() => {
     const restoreFlow = async () => {
@@ -87,12 +110,26 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
+  const updateNode = () => {
+    const instance_id = nodeData.data["instance_id"];
+    console.log("instance_id", instance_id);
+    fetch(`http://127.0.0.1:8000/ec2/${instance_id}`)
+      .then((response) => response.json())
+      .then((response) => {
+        if (response["ec2_instance_health"].length >= 1) {
+          setHealth("green");
+        } else if (response["ec2_instance_health"] === []) {
+          setHealth("orange");
+        }
+      })
+      .then(console.log("health", health));
+  };
+
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
       const type = event.dataTransfer.getData("application/reactflow");
-      // console.log("Dropped", type);
 
       // check if the dropped element is valid
       if (typeof type === "undefined" || !type) {
@@ -104,7 +141,7 @@ const DnDFlow = () => {
         y: event.clientY - reactFlowBounds.top,
       });
 
-      const createNewNode = (icon, size) => {
+      const createNewNode = (icon, size, color) => {
         let comp = null;
 
         if (icon === "App") {
@@ -112,20 +149,54 @@ const DnDFlow = () => {
         } else if (icon === "LB") {
           comp = <LoadBalancerIcon size={size} />;
         }
-        console.log("comp", typeof comp);
+
         return {
           id: getId(),
           position,
           sourcePosition: "right",
           targetPosition: "left",
-          style: { border: "100px", width: "5%" },
+          style: { border: "100px", width: "5%", background: color },
           data: { label: comp },
         };
       };
 
-      setNodes((nds) => nds.concat(createNewNode(type, 25)));
+      setNodes((nds) => nds.concat(createNewNode(type, 25, "red")));
     },
     [reactFlowInstance]
+  );
+
+  const onContextMenu = (e, node) => {
+    setNodeData(node);
+    e.preventDefault();
+    setPosition({ x: e.clientX, y: e.clientY });
+    setIsOpen(true);
+    console.log("onContextMenuNode", node.id);
+  };
+
+  const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
+    isOpen ? (
+      <div
+        style={{
+          position: "absolute",
+          left: position.x,
+          top: position.y,
+          zIndex: 1000,
+          border: "solid 1px #CCC",
+          borderRadius: 3,
+          backgroundColor: "white",
+          padding: 5,
+          display: "flex",
+          flexDirections: "column",
+        }}
+        onMouseLeave={onMouseLeave}
+      >
+        {actions.map((action) => (
+          <button key={action.label} onClick={action.effect}>
+            {action.label}
+          </button>
+        ))}
+      </div>
+    ) : null
   );
 
   return (
@@ -143,15 +214,27 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeContextMenu={onContextMenu}
             fitView
           >
+            <ContextMenu
+              isOpen={isOpen}
+              position={position}
+              onMouseLeave={() => setIsOpen(false)}
+              actions={[
+                { label: "Create Instance", effect: onCreate },
+                { label: "Update Status", effect: updateNode },
+              ]}
+            />
             <Controls />
             <div className="save__controls">
+              {/* <span style='font-size:50px;'>&#128308;</span> */}
               <button onClick={onSave}>
-                {save_update ? "save" : "update"}
+                {save_update ? "Save Graph" : "Update Graph"}
               </button>
-              <button onClick={onCreate}>create</button>
-              <button onClick={onRestore}>restore</button>
+              {/*              <button onClick={onCreate}>Create Instance</button>
+            <button onClick={updateNode}>Refresh Status</button> */}
+              <button onClick={onRestore}>Restore - !working</button>
             </div>
           </ReactFlow>
         </div>

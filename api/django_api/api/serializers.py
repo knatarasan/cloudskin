@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 import logging
+from .services import EC2Service
 
 logger = logging.getLogger('django')
 
@@ -36,20 +37,21 @@ class GraphSerializer(serializers.Serializer):
         logger.info("Graph updated")
         return instance
 
-    # class Meta:
-    #     model = Graph
-    #     fields = ['url', 'id', 'owner', 'graph']
 
-# class EC2Serializer(serializers.HyperlinkedModelSerializer):
 class EC2Serializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     ec2_instance_id = serializers.CharField()
-    # ec2_instance_health = serializers.CharField()
+    ec2_instance_health = serializers.SerializerMethodField()
+
+    def get_ec2_instance_health(self, obj):
+        service = EC2Service()
+        return service.get_health(obj.ec2_instance_id)
 
     def create(self, validated_data):
         '''
         create and return a new `EC2` , given the validated data
         '''
+        logger.info(f"validated data {validated_data}")
         ec2 = EC2.objects.create(**validated_data)
         logger.info("EC2 created")
         return ec2
@@ -59,10 +61,6 @@ class EC2Serializer(serializers.Serializer):
         instance.save()
         logger.info("EC2 updated")
         return instance
-
-    # class Meta:
-    #     model = EC2
-    #     fields = ['id', 'owner', 'ec2_instance_id']
 
 
 class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):

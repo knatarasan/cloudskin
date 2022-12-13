@@ -14,11 +14,16 @@
     - [ ]   EC2
         - [ ] Create and prep EC2
             - [X] Built a simple service with hardcoded value to create an EC2
-              - Hardcoded values are [VM type,ami,storage,Security Group, ssh key config]
-            - [ ] Check instance health every five seconds
-              - [ ] Backend
-                - Expose API to check instance health
-              - [ ] Frontend
+              - Hardcoded values are [Security Group, Subnet]
+            - [ ] Add a feature to remove the hardcoded values
+            - [X] Check instance health every five seconds
+              - [X] Backend
+                - Add a new field in EC2 API to display instance health
+                - Create a file called services.py and execute that file in views to initialize the EC2 instance
+              - [X] Frontend
+                - [X] Adding right click functionality to the node
+                  - [X] Bring onCreate and updateStatus function into right click menu
+                  - [X] Need to pass instance id when clicking updateStatus
                 - App Icon:
                   - Red: Not running
                   - Yellow: Initializing
