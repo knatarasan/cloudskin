@@ -63,7 +63,7 @@ class EC2Serializer(serializers.Serializer):
         return instance
 
 
-class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
+class AwsCredsSerializer(serializers.Serializer):
     owner = serializers.ReadOnlyField(source='owner.username')
     aws_access_key = serializers.CharField()
     aws_access_secret = serializers.CharField()
@@ -77,14 +77,11 @@ class AwsCredsSerializer(serializers.HyperlinkedModelSerializer):
         return aws_creds
 
     def update(self, instance, validated_data):
-        instance.ec2 = validated_data.get('aws_creds', instance.aws_creds)
+        instance.aws_access_key = validated_data.get('aws_access_key', instance.aws_access_key)
+        instance.aws_access_secret = validated_data.get('aws_access_secret', instance.aws_access_secret)
         instance.save()
         logger.info("AwsCreds updated")
         return instance
-
-    class Meta:
-        model = EC2
-        fields = ['url', 'id', 'owner', 'aws_access_key', 'aws_access_secret']
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

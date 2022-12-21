@@ -22,7 +22,8 @@ def api_root(request, format=None):
     return Response({
         'users': reverse('user-list', request=request, format=format),
         'graph': reverse('graph-list', request=request, format=format),
-        'ec2': reverse('ec2-list', request=request, format=format)
+        'ec2': reverse('ec2-list', request=request, format=format),
+        'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
 
@@ -39,14 +40,6 @@ class UserDetail(generics.RetrieveAPIView):
 class MyObtainTokenPairViewSet(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-
-# class GraphViewSet(viewsets.ModelViewSet):
-#     permission_classes = [isAuthenticated]
-#     queryset = Graph.objects.all()
-#     serializer_class = GraphSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save(owner=self.request.user)
 class GraphList(APIView):
     """
     List all snippets, or create a new snippet.
@@ -118,6 +111,7 @@ class EC2List(APIView):
         if serializer.is_valid():
             serializer.save(owner=self.request.user, ec2_instance_id=instance)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        logger.info("Response 400 Bad request")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -156,16 +150,41 @@ class EC2Detail(APIView):
         ec2.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class AwsCredsList(APIView):
+    def get(self, request, format=None):
+        creds = AwsCreds.objects.all()
+        serializer = AwsCredsSerializer(creds, many=True)
+        return Response(serializer.data)
 
-class AwsCredsViewSet(viewsets.ModelViewSet):
-    permission_classes = [isAuthenticated]
-    queryset = AwsCreds.objects.all()
-    serializer_class = AwsCredsSerializer
+    def post(self, request, format=None):
+        serializer = AwsCredsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(owner=self.request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-        logger.info('serializer saved')
+class AwsCredsDetail(APIView):
+    """
+    Retrieve, update or delete AWS credentials.
+    """
 
+    def get(self, request, pk, format=None):
+        cred = AwsCreds.objects.get(pk=pk)
+        serializer = AwsCredsSerializer(cred)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        cred = AwsCreds.objects.get(pk=pk)
+        serializer = AwsCredsSerializer(cred, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        cred = AwsCreds.objects.get(pk=pk)
+        cred.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class RegisterViewSet(generics.CreateAPIView):
     queryset = User.objects.all()
