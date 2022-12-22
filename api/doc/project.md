@@ -1,6 +1,7 @@
 
 - [X] Initialize django api setup
 - [X] Take react_flow json object and save it into DB
+- [ ] Test automation for API
 - [ ] Authentication
   - Backend
     - [X] Backend - registration/login - [Used this documentation:](https://medium.com/django-rest/django-rest-framework-login-and-register-user-fd91cf6029d5)
@@ -16,6 +17,7 @@
             - [X] Built a simple service with hardcoded value to create an EC2
               - Hardcoded values are [Security Group, Subnet]
             - [ ] Add a feature to remove the hardcoded values
+            - [ ] Remove Create Instance button after instance creation is successful
             - [X] Check instance health every five seconds
               - [X] Backend
                 - Add a new field in EC2 API to display instance health
