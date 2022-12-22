@@ -31,13 +31,13 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
-  const [ec2Id, setEc2Id] = useState(null);
+  // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
-  const { setViewPort } = useReactFlow();
+  // const { setViewPort } = useReactFlow();
 
   useEffect(() => {
     console.log("inside useEffect", health);
@@ -143,7 +143,7 @@ const DnDFlow = () => {
         let comp = null;
 
         if (icon === "App") {
-          comp = <EC2Icon size={size} />;
+          comp = <EC2Icon size={size}/>;
         } else if (icon === "LB") {
           comp = <LoadBalancerIcon size={size} />;
         }
@@ -227,7 +227,7 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
-              <button onClick={onSave}>
+              <button id='save_update' onClick={onSave}>
                 {save_update ? "Save Graph" : "Update Graph"}
               </button>
               {/*              <button onClick={onCreate}>Create Instance</button>
