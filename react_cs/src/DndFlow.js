@@ -42,9 +42,8 @@ const DnDFlow = () => {
   useEffect(() => {
     console.log("inside useEffect", health);
     if (nodeData !== null) {
-      setNodes((nds) => {
-        nodeData.style["background"] = health;
-      });
+      nodeData.style["background"] = health;
+      setNodeData(nodeData);
     }
   }, [health]);
 
@@ -82,28 +81,27 @@ const DnDFlow = () => {
   const onCreate = (e) => {
     createInstance().then((data) => {
       console.log("ec2Data", data.ec2_instance_id);
-      setNodes((nds) => {
-        nodeData.data["instance_id"] = data.ec2_instance_id;
-      });
+      nodeData.data["instance_id"] = data.ec2_instance_id;
+      setNodeData(nodeData);
       setHealth("orange");
       console.log("onCreateNode after nodedata change", nodeData);
     });
   };
 
-  const onRestore = useCallback(() => {
-    const restoreFlow = async () => {
-      const flow = JSON.parse(localStorage.getItem("flow-persist"));
+  // const onRestore = useCallback(() => {
+  //   const restoreFlow = async () => {
+  //     const flow = JSON.parse(localStorage.getItem("flow-persist"));
 
-      if (flow) {
-        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
-        setViewPort({ x, y, zoom });
-      }
-    };
+  //     if (flow) {
+  //       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+  //       setNodes(flow.nodes || []);
+  //       setEdges(flow.edges || []);
+  //       setViewPort({ x, y, zoom });
+  //     }
+  //   };
 
-    restoreFlow();
-  }, [setNodes, setViewPort]);
+  //   restoreFlow();
+  // }, [setNodes, setViewPort]);
 
   const onDragOver = useCallback((event) => {
     event.preventDefault();
@@ -234,7 +232,7 @@ const DnDFlow = () => {
               </button>
               {/*              <button onClick={onCreate}>Create Instance</button>
             <button onClick={updateNode}>Refresh Status</button> */}
-              <button onClick={onRestore}>Restore - !working</button>
+              {/* <button onClick={onRestore}>Restore - !working</button> */}
             </div>
           </ReactFlow>
         </div>
