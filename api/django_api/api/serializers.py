@@ -19,6 +19,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class GraphSerializer(serializers.Serializer):
+    id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     graph = serializers.JSONField()
 
