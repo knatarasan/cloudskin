@@ -32,4 +32,6 @@ to be updated
 2. Pay $20 (kidding)
 3. Create an AWS user with policy that we provide
 4. That's it, you are good to do a deployment in 5 min
+
+[Check video](/doc/Demo-Release-0.1.MP4)
 ```
