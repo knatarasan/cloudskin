@@ -174,7 +174,7 @@ const DnDFlow = () => {
         };
       };
 
-      setNodes((nds) => nds.concat(createNewNode(data, 25, "red")));
+      setNodes((nds) => nds.concat(createNewNode(data.nodeType, 25, "red")));
     },
     [reactFlowInstance]
   );
