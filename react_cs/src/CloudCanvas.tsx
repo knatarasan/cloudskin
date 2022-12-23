@@ -1,12 +1,21 @@
-import React, { useState, useRef, useCallback, useEffect, memo } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo, DragEvent } from "react";
 import ReactFlow, {
   Node,
+  Edge,
   ReactFlowProvider,
   addEdge,
   useNodesState,
   useEdgesState,
   Controls,
+  Connection,
   useReactFlow,
+  NodeChange,
+  EdgeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
+  ReactFlowInstance,
+  OnConnect,
+
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
@@ -21,16 +30,18 @@ import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 
 import "./index.css";
 
-const initialNodes = [];
+const initialNodes: Node[] = [];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
+
+  // const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
   // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
@@ -40,23 +51,28 @@ const DnDFlow = () => {
   const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
 
-  useEffect(() => {
-    console.log("inside useEffect", health);
-    if (nodeData !== null) {
-      nodeData.style["background"] = health;
-      setNodeData(nodeData);
-    }
-  }, [health]);
+  // useEffect(() => {
+  //   console.log("inside useEffect", health);
+  //   if (nodeData !== null) {
+  //     nodeData.style["background"] = health;
+  //     setNodeData(nodeData);
+  //   }
+  // }, [health]);
 
-  const onConnect = useCallback((params) =>
-    setEdges(
-      (eds) => {
-        params["animated"] = true;
-        params["style"] = { stroke: "red" };
-        return addEdge(params, eds);
-      },
-      [setEdges]
-    )
+  // const onConnect = useCallback((params) =>
+  //   setEdges(
+  //     (eds) => {
+  //       params["animated"] = true;
+  //       params["style"] = { stroke: "red" };
+  //       return addEdge(params, eds);
+  //     },
+  //     [setEdges]
+  //   )
+  // );
+
+  const onConnect = useCallback<OnConnect>(
+    (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
   );
 
   const onSave = () => {
@@ -79,15 +95,15 @@ const DnDFlow = () => {
     }
   };
 
-  const onCreate = (e) => {
-    createInstance().then((data) => {
-      console.log("ec2Data", data.ec2_instance_id);
-      nodeData.data["instance_id"] = data.ec2_instance_id;
-      setNodeData(nodeData);
-      setHealth("orange");
-      console.log("onCreateNode after nodedata change", nodeData);
-    });
-  };
+  // const onCreate = (e) => {
+  //   createInstance().then((data) => {
+  //     console.log("ec2Data", data.ec2_instance_id);
+  //     nodeData.data["instance_id"] = data.ec2_instance_id;
+  //     setNodeData(nodeData);
+  //     setHealth("orange");
+  //     console.log("onCreateNode after nodedata change", nodeData);
+  //   });
+  // };
 
   // const onRestore = useCallback(() => {
   //   const restoreFlow = async () => {
@@ -104,47 +120,48 @@ const DnDFlow = () => {
   //   restoreFlow();
   // }, [setNodes, setViewPort]);
 
-  const onDragOver = useCallback((event) => {
+  const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const updateNode = () => {
-    const instance_id = nodeData.data["instance_id"];
-    console.log("instance_id", instance_id);
-    fetch(`http://127.0.0.1:8000/ec2/${instance_id}`)
-      .then((response) => response.json())
-      .then((response) => {
-        if (response["ec2_instance_health"].length >= 1) {
-          setHealth("green");
-        } else if (response["ec2_instance_health"] === []) {
-          setHealth("orange");
-        }
-      })
-      .then(console.log("health", health));
-  };
+  // const updateNode = () => {
+  //   const instance_id = nodeData.data["instance_id"];
+  //   console.log("instance_id", instance_id);
+  //   fetch(`http://127.0.0.1:8000/ec2/${instance_id}`)
+  //     .then((response) => response.json())
+  //     .then((response) => {
+  //       if (response["ec2_instance_health"].length >= 1) {
+  //         setHealth("green");
+  //       } else if (response["ec2_instance_health"] === []) {
+  //         setHealth("orange");
+  //       }
+  //     })
+  //     .then(console.log("health", health));
+  // };
 
-  const onDrop = useCallback(
-    (event) => {
+  const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
+    (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData("application/reactflow");
+      console.log(event);
 
-      // check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
+      // if(reactFlowWrapper.current && reactFlowInstance) {
+      // }
 
-      const position = reactFlowInstance.project({
+      const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
+      const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
+
+      const position = reactFlowInstance?.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
-      });
+      }) || { x: 0, y: 0 }
 
-      const createNewNode = (icon, size, color) => {
+
+      const createNewNode = (icon: string, size: number, color: string): Node<any> => {
         let comp = null;
 
         if (icon === "App") {
-          comp = <EC2Icon size={size}/>;
+          comp = <EC2Icon size={size} />;
         } else if (icon === "LB") {
           comp = <LoadBalancerIcon size={size} />;
         }
@@ -152,51 +169,49 @@ const DnDFlow = () => {
         return {
           id: getId(),
           position,
-          sourcePosition: "right",
-          targetPosition: "left",
           style: { border: "100px", width: "5%", background: color },
           data: { label: comp },
         };
       };
 
-      setNodes((nds) => nds.concat(createNewNode(type, 25, "red")));
+      setNodes((nds) => nds.concat(createNewNode(data, 25, "red")));
     },
     [reactFlowInstance]
   );
 
-  const onContextMenu = (e, node) => {
-    setNodeData(node);
-    e.preventDefault();
-    setPosition({ x: e.clientX, y: e.clientY });
-    setIsOpen(true);
-    console.log("onContextMenuNode", node.id);
-  };
+  // const onContextMenu = (e, node) => {
+  //   setNodeData(node);
+  //   e.preventDefault();
+  //   setPosition({ x: e.clientX, y: e.clientY });
+  //   setIsOpen(true);
+  //   console.log("onContextMenuNode", node.id);
+  // };
 
-  const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
-    isOpen ? (
-      <div
-        style={{
-          position: "absolute",
-          left: position.x,
-          top: position.y,
-          zIndex: 1000,
-          border: "solid 1px #CCC",
-          borderRadius: 3,
-          backgroundColor: "white",
-          padding: 5,
-          display: "flex",
-          flexDirections: "column",
-        }}
-        onMouseLeave={onMouseLeave}
-      >
-        {actions.map((action) => (
-          <button key={action.label} onClick={action.effect}>
-            {action.label}
-          </button>
-        ))}
-      </div>
-    ) : null
-  );
+  // const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
+  //   isOpen ? (
+  //     <div
+  //       style={{
+  //         position: "absolute",
+  //         left: position.x,
+  //         top: position.y,
+  //         zIndex: 1000,
+  //         border: "solid 1px #CCC",
+  //         borderRadius: 3,
+  //         backgroundColor: "white",
+  //         padding: 5,
+  //         display: "flex",
+  //         flexDirections: "column",
+  //       }}
+  //       onMouseLeave={onMouseLeave}
+  //     >
+  //       {actions.map((action) => (
+  //         <button key={action.label} onClick={action.effect}>
+  //           {action.label}
+  //         </button>
+  //       ))}
+  //     </div>
+  //   ) : null
+  // );
 
   return (
     <div className="dndflow">
@@ -213,10 +228,10 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            onNodeContextMenu={onContextMenu}
+            // onNodeContextMenu={onContextMenu}
             fitView
           >
-            <ContextMenu
+            {/* <ContextMenu
               isOpen={isOpen}
               position={position}
               onMouseLeave={() => setIsOpen(false)}
@@ -224,7 +239,7 @@ const DnDFlow = () => {
                 { label: "Create Instance", effect: onCreate },
                 { label: "Update Status", effect: updateNode },
               ]}
-            />
+            /> */}
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}

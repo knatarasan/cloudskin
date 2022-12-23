@@ -1,5 +1,5 @@
-import DnDFlow from "./DndFlow";
-import { BrowserRouter as Router, Route} from "react-router-dom";
+import DnDFlow from "./CloudCanvas";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import React from "react";
 
 const App = () => {
