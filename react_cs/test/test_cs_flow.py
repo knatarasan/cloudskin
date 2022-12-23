@@ -6,7 +6,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
 import time
 
-class CSTitle(unittest.TestCase):
+class CSFlow(unittest.TestCase):
 
     def setUp(self):
         chrome_options = Options()
@@ -17,7 +17,7 @@ class CSTitle(unittest.TestCase):
         self.driver = webdriver.Chrome(chrome_options=chrome_options)
 
 
-    def test_title_in_cloudskin(self):
+    def test_flow(self):
         driver = self.driver
         driver.get("http://localhost:3000")
         self.assertIn("cloudskin", driver.title)
@@ -35,16 +35,9 @@ class CSTitle(unittest.TestCase):
         print('here is button accessible name  ', element)
         element.click()
 
-
-    # def test_test_save_graph(self):
-    #     driver = self.driver
-    #     driver.get("http://localhost:3000")
-    #     element = driver.find_element(By.ID, "save_update")
-    #     print('here is button accessible name  ', element.accessible_name)
-
     def tearDown(self):
-        # self.driver.close()
-        pass
+        self.driver.close()
+
 
 if __name__ == "__main__":
     unittest.main()
@@ -53,13 +46,13 @@ if __name__ == "__main__":
 '''
 USAGE 1
 ------
-(venv) kannappannatarasan@kanna-mac test % python test_cs_title.py 
+(venv) kannappannatarasan@kanna-mac test % python test_cs_flow.py 
 .
 ----------------------------------------------------------------------
 Ran 1 test in 4.615s
 
 OK
-(venv) kannappannatarasan@kanna-mac test % python test_cs_title.py
+(venv) kannappannatarasan@kanna-mac test % python test_cs_flow.py
 .
 ----------------------------------------------------------------------
 Ran 1 test in 4.430s
@@ -70,6 +63,6 @@ OK
 
 USAGE 2
 ------
-python -m unittest test_cs_title.py 
+python -m unittest test_cs_flow.py 
 '''
 
