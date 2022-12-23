@@ -203,7 +203,7 @@ const DnDFlow = () => {
         <Sidebar />
 
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
+          <ReactFlow id="main-canvas"
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
