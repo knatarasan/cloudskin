@@ -2,10 +2,14 @@ import React from "react";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
+import { nanoid } from "nanoid"
 
-export default () => {
-  const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData("application/reactflow", nodeType);
+
+const ComponentsBar = () => {
+  const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string) => {
+    const id = nanoid()
+    const dataString = JSON.stringify({ id, nodeType })
+    event.dataTransfer.setData("application/reactflow", dataString);
     event.dataTransfer.effectAllowed = "move";
   };
 
@@ -31,3 +35,6 @@ export default () => {
     </aside>
   );
 };
+
+
+export default ComponentsBar;
