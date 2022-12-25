@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, memo, DragEvent } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -8,11 +8,6 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Connection,
-  useReactFlow,
-  NodeChange,
-  EdgeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
   ReactFlowInstance,
   OnConnect,
 
@@ -21,7 +16,6 @@ import "reactflow/dist/style.css";
 import {
   createGraph,
   updateGraph,
-  createInstance,
 } from "./services/api.service";
 import Sidebar from "./Sidebar";
 
@@ -30,7 +24,6 @@ import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 
 import "./index.css";
 
-const initialNodes: Node[] = [];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -44,11 +37,11 @@ const DnDFlow = () => {
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
   // const [ec2Id, setEc2Id] = useState(null);
-  const [nodeData, setNodeData] = useState(null);
-  const [health, setHealth] = useState("red");
+  // const [nodeData, setNodeData] = useState(null);
+  // const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isOpen, setIsOpen] = useState(false);
+  // const [position, setPosition] = useState({ x: 0, y: 0 });
+  // const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
 
   // useEffect(() => {
