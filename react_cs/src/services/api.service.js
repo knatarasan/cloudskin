@@ -56,7 +56,7 @@ export async function updateGraph(data, graph_id) {
     body: JSON.stringify(data),
   };
   const response = await fetch(
-    "/graphs/".concat(graph_id, "/"),
+    "/graph/".concat(graph_id, "/"),
     requestOptions
   );
   return await response.json();

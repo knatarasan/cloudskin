@@ -15,6 +15,7 @@ import ReactFlow, {
   applyEdgeChanges,
   ReactFlowInstance,
   OnConnect,
+  Position,
 
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -169,6 +170,8 @@ const DnDFlow = () => {
         return {
           id: getId(),
           position,
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
           style: { border: "100px", width: "5%", background: color },
           data: { label: comp },
         };
