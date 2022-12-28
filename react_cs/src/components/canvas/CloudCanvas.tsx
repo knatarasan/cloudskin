@@ -77,19 +77,32 @@ const DnDFlow = () => {
   );
 
   const onSave = () => {
+    const getCircularReplacer = () => {
+      const seen = new WeakSet();
+      return (key: string, value: string) => {
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
     // update graph
     if (graphId && reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      updateGraph(flow, graphId);
+      // updateGraph(flow, graphId);
       console.log("onSave graph updated id", graphId);
       // create new graph in backend
     } else if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // Graph stored locally
-      localStorage.setItem("flow-persist", JSON.stringify(flow));
+      const flow_obj = JSON.stringify(flow, getCircularReplacer())
+      console.log('flow_obj', flow_obj)
+      localStorage.setItem("flow-persist", flow_obj);
 
       // Graph stored in server
-      createGraph(flow).then((data) => {
+      createGraph(flow_obj).then((data) => {
         setGraphId(data.id);
         setSaveUpdate(false);
       });

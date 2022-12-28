@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer, GraphSerializer, \
     EC2Serializer, AwsCredsSerializer
-from .permissions import isAuthenticated
+# from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -41,6 +41,7 @@ class GraphList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        logger.info('Yes baby you are here boba')
         serializer = GraphSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=self.request.user)
