@@ -25,7 +25,7 @@ export async function createInstance() {
 // };
 
 export async function createGraph(data) {
-  data = { graph: data };
+  const graph_obj = { graph: data };
   const username = "admin";
   const password = "admin";
   const requestOptions = {
@@ -34,7 +34,7 @@ export async function createGraph(data) {
       "Content-Type": "application/json",
       Authorization: "Basic " + btoa(`${username}:${password}`),
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(graph_obj),
   };
   // fetch call is made with data object , but react takes care adding owner_id: 2
   const response = await fetch("/graph/", requestOptions);
