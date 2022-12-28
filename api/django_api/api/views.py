@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets
 from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import RegisterSerializer, UserSerializer, MyTokenObtainPairSerializer, GraphSerializer, \
+from .serializers import UserSerializer, GraphSerializer, \
     EC2Serializer, AwsCredsSerializer
 from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
@@ -20,25 +20,15 @@ logger = logging.getLogger('django')
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': reverse('user-list', request=request, format=format),
+        'user': reverse('user-list', request=request, format=format),
+        # 'login': reverse('login-obtain', request=request, format=format),
         'graph': reverse('graph-list', request=request, format=format),
         'ec2': reverse('ec2-list', request=request, format=format),
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
-
-class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class UserDetail(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
-class MyObtainTokenPairViewSet(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+# class MyObtainTokenPairViewSet(TokenObtainPairView):
+#     serializer_class = MyTokenObtainPairSerializer
 
 class GraphList(APIView):
     """
@@ -186,6 +176,35 @@ class AwsCredsDetail(APIView):
         cred.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class RegisterViewSet(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
+class UserList(APIView):
+    def get(self, request, format=None):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            # serializer.save(owner=self.request.user)
+            serializer.save(owner=self.request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserDetail(APIView):
+    def get(self, request, pk, format=None):
+        user = User.objects.get(pk=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        user = User.objects.get(pk=pk)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        user = User.objects.get(pk=pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,4 +1,4 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+# from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
@@ -8,15 +8,6 @@ import logging
 from .services import EC2Service
 
 logger = logging.getLogger('django')
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    graph = serializers.HyperlinkedRelatedField(view_name='graph-detail', read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['url', 'id', 'username', 'graph']
-
 
 class GraphSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
@@ -85,18 +76,19 @@ class AwsCredsSerializer(serializers.Serializer):
         return instance
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+#
+#     @classmethod
+#     def get_token(cls, user):
+#         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+#
+#         # Add custom claims
+#         token['username'] = user.username
+#         return token
 
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
-        return token
-
-
-class RegisterSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -108,7 +100,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2',
+        fields = ('id', 'username', 'password', 'password2',
                   'email', 'first_name', 'last_name')
         extra_kwargs = {
             'first_name': {'required': True},
