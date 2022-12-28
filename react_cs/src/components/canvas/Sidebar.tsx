@@ -3,6 +3,7 @@ import React from "react";
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 import { nanoid } from "nanoid"
+import {  Link } from "react-router-dom";
 
 
 const ComponentsBar = () => {
@@ -15,6 +16,7 @@ const ComponentsBar = () => {
 
   return (
     <aside>
+      <Link to="/">Home</Link>
       <div className="description">PALETTE</div>
       <div id='App'
         className="dndnode input"

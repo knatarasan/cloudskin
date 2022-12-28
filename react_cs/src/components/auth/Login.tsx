@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import Dashboard from "./Dashboard";
+import Dashboard from "../dashboard/Dashboard";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import logo from "./cloud.png";
-import { UserContext } from "./Context";
+import logo from "../../static/images/cloud.png";
+import { UserContext } from "../../context/Context";
 
 const Login = () => {
   const navigate = useNavigate();

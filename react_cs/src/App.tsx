@@ -1,7 +1,7 @@
-import DnDFlow from "./CloudCanvas";
-import Home from "./Home";
-import Login from "./Login";
-import Dashboard from "./Dashboard";
+import DnDFlow from "./components/canvas/CloudCanvas";
+import Home from "./components/landing/Home";
+import Login from "./components/auth/Login";
+import Dashboard from "./components/dashboard/Dashboard";
 import { Routes, Route } from "react-router-dom";
 import React from "react";
 

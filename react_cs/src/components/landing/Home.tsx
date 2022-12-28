@@ -2,9 +2,9 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import logo from "./cloud.png";
+import logo from "../../static/images/cloud.png";
 import { useContext } from "react";
-import { UserContext } from "./Context";
+import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
 
 function Home() {

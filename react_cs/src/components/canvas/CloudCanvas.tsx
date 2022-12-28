@@ -23,13 +23,13 @@ import {
   createGraph,
   updateGraph,
   createInstance,
-} from "./services/api.service";
+} from "../../services/api.service";
 import Sidebar from "./Sidebar";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 
-import "./index.css";
+import "./CloudCanvas.css";
 
 const initialNodes: Node[] = [];
 

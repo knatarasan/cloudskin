@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Navigate, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import { UserContext } from "./Context";
+import { UserContext } from "../../context/Context";
 
 const Dashboard = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);

@@ -4,7 +4,7 @@ import "./styles.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { ReactFlowProvider } from "reactflow";
-import { UserProvider } from "./Context";
+import { UserProvider } from "./context/Context";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 
