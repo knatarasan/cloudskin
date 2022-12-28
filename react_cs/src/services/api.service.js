@@ -48,7 +48,7 @@ export async function createUser(data) {
     body: JSON.stringify(data),
   };
   const response = await fetch("/user/", requestOptions);
-  console.log("response", response);
+  // console.log("response", response);
   return await response.json();
 }
 

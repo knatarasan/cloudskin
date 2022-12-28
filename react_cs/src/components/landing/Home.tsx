@@ -1,11 +1,10 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import logo from "../../static/images/cloud.png";
 import { useContext } from "react";
 import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
+import { Col, Row, Nav, Navbar } from "react-bootstrap";
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -21,15 +20,33 @@ function Home() {
             </Navbar.Brand>
           </Link>
           <Nav className="me-auto">
-            {/* <Nav.Link> */}
-            <Link to="/dashboard"> {currentUser ? "Dashboard" : null}</Link>
-            {/* </Nav.Link> */}
-            <Nav.Link href="/login">{!currentUser ? "Login" : null}</Nav.Link>
+            <Nav.Link href="/dashboard">{'id' in currentUser ? "Dashboard" : null}</Nav.Link>
+            <Nav.Link href="#">{'username' in currentUser ? "welcome  " + currentUser.username : null}</Nav.Link>
+            <Nav.Link href="/login">{!('id' in currentUser) ? "Login" : null}</Nav.Link>
+            <Nav.Link href="/register">{!('id' in currentUser) ? "Signup" : null}</Nav.Link>
           </Nav>
         </Container>
       </Navbar>
-
-      <h1>Welcome to App</h1>
+      <br />
+      <br />
+      <Container>
+        <Row>
+          <Col>      <h1>Welcome to auto deploy</h1></Col>
+        </Row>
+        <Row>
+          <Col>
+            <h3>We can offer:<br/></h3>
+            <ul>
+              <li>&nbsp;&nbsp;&nbsp; No code cloud deployment<br/></li>
+              <li>&nbsp;&nbsp;&nbsp; One click deployment<br/></li>
+              <li>&nbsp;&nbsp;&nbsp; Best practices applied [you can focus on your business]<br/></li>
+            </ul>
+                  
+                  
+                  
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }

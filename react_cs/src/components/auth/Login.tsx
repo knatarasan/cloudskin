@@ -23,7 +23,7 @@ const Login = () => {
     const account = users.find((user) => user.username === username);
     if (account && account.password === password) {
       // localStorage.setItem("authenticated", true);
-      setCurrentUser(true);
+      setCurrentUser({id:1,username:'admin'});
       console.log('User auth True is set at context', currentUser);
       navigate("/dashboard");
     }
