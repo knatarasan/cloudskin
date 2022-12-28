@@ -8,7 +8,7 @@ const Dashboard = () => {
   console.log("currentUser value from context :", currentUser);
   const [authenticated, setAuthenticated] = useState(currentUser);
 
-  const handleLogout = (e) => {
+  const handleLogout = (e: React.SyntheticEvent): void => {
     setAuthenticated(false);
     // localStorage.setItem("authenticated", false);
     setCurrentUser(false);
@@ -23,7 +23,7 @@ const Dashboard = () => {
       <div>
         {/* <a href="/home">home</a> */}
         <Link to="/">Home</Link>
-        <br/>
+        <br />
         <Link to="/plan">Plan</Link>
         <p>Welcome to your Dashboard</p>
         <Button variant="outline-danger" onClick={handleLogout}>

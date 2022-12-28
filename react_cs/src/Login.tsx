@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Button from "react-bootstrap/Button";
@@ -18,7 +18,7 @@ const Login = () => {
   //   localStorage.getItem(localStorage.getItem("authenticated") || false)
   // );
   const users = [{ username: "jane", password: "jane" }];
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.SyntheticEvent): void => {
     e.preventDefault();
     const account = users.find((user) => user.username === username);
     if (account && account.password === password) {
