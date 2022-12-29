@@ -17,15 +17,26 @@ export async function createInstance() {
   return await response.json();
 }
 
-// export const displayHealth = (data) => {
-//   fetch(`http://127.0.0.1:8000/ec2/${id}`)
-//     .then((response) => response.json())
-//     .then((response) => console.log("RESPONSE", response));
-//   console.log("data", data["ec2_instance_health"]);
-// };
-
 export async function createGraph(data) {
-  data = { graph: data };
+  const graph_obj = { graph: data };
+  const username = "admin";
+  const password = "admin";
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Basic " + btoa(`${username}:${password}`),
+    },
+    body: JSON.stringify(graph_obj),
+  };
+  // fetch call is made with data object , but react takes care adding owner_id: 2
+  console.log("request Options ", requestOptions);
+  const response = await fetch("/graph/", requestOptions);
+  console.log("response", response);
+  return await response.json();
+}
+
+export async function createUser(data) {
   const username = "admin";
   const password = "admin";
   const requestOptions = {
@@ -36,11 +47,11 @@ export async function createGraph(data) {
     },
     body: JSON.stringify(data),
   };
-  // fetch call is made with data object , but react takes care adding owner_id: 2
-  const response = await fetch("/graph/", requestOptions);
-  console.log("response", response);
+  const response = await fetch("/user/", requestOptions);
+  // console.log("response", response);
   return await response.json();
 }
+
 
 export async function updateGraph(data, graph_id) {
   data = { graph: data };
@@ -55,9 +66,6 @@ export async function updateGraph(data, graph_id) {
     },
     body: JSON.stringify(data),
   };
-  const response = await fetch(
-    "/graphs/".concat(graph_id, "/"),
-    requestOptions
-  );
+  const response = await fetch("/graph/".concat(graph_id, "/"), requestOptions);
   return await response.json();
 }

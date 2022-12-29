@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo, DragEvent } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -8,22 +8,30 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Connection,
+  useReactFlow,
+  NodeChange,
+  EdgeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
   ReactFlowInstance,
   OnConnect,
+  Position,
 
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
   createGraph,
   updateGraph,
-} from "./services/api.service";
+  createInstance,
+} from "../../services/api.service";
 import Sidebar from "./Sidebar";
 
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 
-import "./index.css";
+import "./CloudCanvas.css";
 
+const initialNodes: Node[] = [];
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -37,11 +45,11 @@ const DnDFlow = () => {
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [graphId, setGraphId] = useState(null);
   // const [ec2Id, setEc2Id] = useState(null);
-  // const [nodeData, setNodeData] = useState(null);
-  // const [health, setHealth] = useState("red");
+  const [nodeData, setNodeData] = useState(null);
+  const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
-  // const [isOpen, setIsOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
 
   // useEffect(() => {
@@ -69,19 +77,32 @@ const DnDFlow = () => {
   );
 
   const onSave = () => {
+    const getCircularReplacer = () => {
+      const seen = new WeakSet();
+      return (key: string, value: string) => {
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
     // update graph
     if (graphId && reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      updateGraph(flow, graphId);
+      // updateGraph(flow, graphId);
       console.log("onSave graph updated id", graphId);
       // create new graph in backend
     } else if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // Graph stored locally
-      localStorage.setItem("flow-persist", JSON.stringify(flow));
+      const flow_obj = JSON.stringify(flow, getCircularReplacer())
+      console.log('flow_obj', flow_obj)
+      localStorage.setItem("flow-persist", flow_obj);
 
       // Graph stored in server
-      createGraph(flow).then((data) => {
+      createGraph(flow_obj).then((data) => {
         setGraphId(data.id);
         setSaveUpdate(false);
       });
@@ -162,6 +183,8 @@ const DnDFlow = () => {
         return {
           id: getId(),
           position,
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
           style: { border: "100px", width: "5%", background: color },
           data: { label: comp },
         };
