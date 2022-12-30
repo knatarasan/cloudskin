@@ -52,7 +52,6 @@ export async function createUser(data) {
   return await response.json();
 }
 
-
 export async function updateGraph(data, graph_id) {
   data = { graph: data };
   console.log("updateGraph ", data);

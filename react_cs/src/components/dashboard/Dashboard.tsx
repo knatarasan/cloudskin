@@ -13,7 +13,15 @@ const Dashboard = () => {
   const handleLogout = (e: React.SyntheticEvent): void => {
     setAuthenticated({});
     // localStorage.setItem("authenticated", false);
-    setCurrentUser({});
+    // setCurrentUser({
+    //   username: undefined,
+    //   email: undefined,
+    //   tokenAccess: undefined,
+    //   tokenRefresh: undefined
+    // });
+
+    setCurrentUser(undefined);
+
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");
 
