@@ -3,8 +3,9 @@ from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .serializers import UserSerializer, GraphSerializer, \
-    EC2Serializer, AwsCredsSerializer
-# from .permissions import isAuthenticated
+    EC2Serializer, AwsCredsSerializer, MyTokenObtainPairSerializer
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -21,14 +22,14 @@ logger = logging.getLogger('django')
 def api_root(request, format=None):
     return Response({
         'user': reverse('user-list', request=request, format=format),
-        # 'login': reverse('login-obtain', request=request, format=format),
+        'token': reverse('token-obtain-pair', request=request, format=format),
         'graph': reverse('graph-list', request=request, format=format),
         'ec2': reverse('ec2-list', request=request, format=format),
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
-# class MyObtainTokenPairViewSet(TokenObtainPairView):
-#     serializer_class = MyTokenObtainPairSerializer
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
 
 class GraphList(APIView):
     """
@@ -178,6 +179,8 @@ class AwsCredsDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserList(APIView):
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)

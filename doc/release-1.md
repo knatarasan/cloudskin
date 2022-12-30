@@ -21,6 +21,8 @@ Release 1
 				- Show status of plan
 				- Edit plan
 				- re-deploy
+##### References
+1. [Authentication tutorial](https://medium.com/@sushil-kamble/django-rest-framework-react-authentication-workflow-2022-part-1-a21f22b3f358)
 
 #### User flow
 

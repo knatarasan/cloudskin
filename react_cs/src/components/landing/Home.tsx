@@ -39,7 +39,7 @@ function Home() {
             <ul>
               <li>&nbsp;&nbsp;&nbsp; No code cloud deployment<br/></li>
               <li>&nbsp;&nbsp;&nbsp; One click deployment<br/></li>
-              <li>&nbsp;&nbsp;&nbsp; Best practices applied [you can focus on your business]<br/></li>
+              <li>&nbsp;&nbsp;&nbsp; Best practices applied, <strong>you can focus on your business</strong><br/></li>
             </ul>
                   
                   
