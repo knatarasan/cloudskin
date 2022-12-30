@@ -17,7 +17,6 @@ from django.http import Http404
 
 logger = logging.getLogger('django')
 
-
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
@@ -33,7 +32,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 class GraphList(APIView):
     """
-    List all snippets, or create a new snippet.
+    Graph : Holds all the details of a plan
     """
 
     def get(self, request, format=None):
