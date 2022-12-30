@@ -2,11 +2,10 @@ from rest_framework import generics, viewsets
 from .models import Graph, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .permissions import GraphUserPermission  # , IsOwner
 from .serializers import UserSerializer, GraphSerializer, \
     EC2Serializer, AwsCredsSerializer, MyTokenObtainPairSerializer
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -18,6 +17,7 @@ from django.http import Http404
 
 logger = logging.getLogger('django')
 
+
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
@@ -28,23 +28,29 @@ def api_root(request, format=None):
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
 
 class GraphList(APIView):
     """
     Graph : Holds all the details of a plan
     """
-
-    # permission_classes = [isAuthenticated]
+    permission_classes = [GraphUserPermission]
 
     def get(self, request, format=None):
-        graphs = Graph.objects.all()
+        graphs = None
+
+        # for Authorization : su access all objects, specific owner access only his object
+        if request.user.is_superuser:
+            graphs = Graph.objects.all()
+        else:
+            graphs = Graph.objects.filter(owner=request.user)
         serializer = GraphSerializer(graphs, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        logger.info('Yes baby you are here boba')
         serializer = GraphSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=self.request.user)
@@ -56,15 +62,23 @@ class GraphDetail(APIView):
     """
     Retrieve, update or delete a graph instance.
     """
+    permission_classes = [GraphUserPermission]
 
-    def get_object(self, pk):
+    def get_object(self, request, pk):
+        graph = None
+
         try:
-            return Graph.objects.get(pk=pk)
+            # for Authorization : su access all objects, specific owner access only his object
+            if request.user.is_superuser:
+                graph = Graph.objects.get(pk=pk)
+            else:
+                graph = Graph.objects.get(pk=pk, owner=request.user)
+            return graph
         except Graph.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        graph = self.get_object(pk)
+        graph = self.get_object(request, pk)
         serializer = GraphSerializer(graph)
         return Response(serializer.data)
 
@@ -144,6 +158,7 @@ class EC2Detail(APIView):
         ec2.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class AwsCredsList(APIView):
     def get(self, request, format=None):
         creds = AwsCreds.objects.all()
@@ -156,6 +171,7 @@ class AwsCredsList(APIView):
             serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class AwsCredsDetail(APIView):
     """
@@ -180,6 +196,7 @@ class AwsCredsDetail(APIView):
         cred.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 class UserList(APIView):
     def get(self, request, format=None):
         users = User.objects.all()
@@ -193,6 +210,7 @@ class UserList(APIView):
             serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class UserDetail(APIView):
     def get(self, request, pk, format=None):
