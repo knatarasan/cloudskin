@@ -6,6 +6,7 @@ from .serializers import UserSerializer, GraphSerializer, \
     EC2Serializer, AwsCredsSerializer, MyTokenObtainPairSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from .permissions import isAuthenticated
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -34,6 +35,8 @@ class GraphList(APIView):
     """
     Graph : Holds all the details of a plan
     """
+
+    # permission_classes = [isAuthenticated]
 
     def get(self, request, format=None):
         graphs = Graph.objects.all()
@@ -178,8 +181,6 @@ class AwsCredsDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class UserList(APIView):
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
-    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)

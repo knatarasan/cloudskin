@@ -42,8 +42,8 @@ export async function createUser(data) {
   const requestOptions = {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: "Basic " + btoa(`${username}:${password}`),
+      "Content-Type": "application/json"
+      // Authorization: "Basic " + btoa(`${username}:${password}`),
     },
     body: JSON.stringify(data),
   };

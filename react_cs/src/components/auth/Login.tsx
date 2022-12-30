@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Alert from 'react-bootstrap/Alert';
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
@@ -47,6 +48,10 @@ const Login = () => {
     }).then((response) => {
       if (response.status !== 200) {
         console.log("Something went wrong!");
+        // <Alert key='danger' variant='danger'>
+        //   Username or Password not Found
+        // </Alert>
+        alert("Username or Password not Found")
       }
       return response.json()
     }).then((data) => {
