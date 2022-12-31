@@ -33,7 +33,7 @@ const Login = () => {
   }
 
 
-  const handleSubmit = (e: React.SyntheticEvent): void => {
+  const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
     fetch("http://127.0.0.1:3000/token/", {
@@ -48,15 +48,11 @@ const Login = () => {
     }).then((response) => {
       if (response.status !== 200) {
         console.log("Something went wrong!");
-        // <Alert key='danger' variant='danger'>
-        //   Username or Password not Found
-        // </Alert>
-        alert("Username or Password not Found")
       }
       return response.json()
     }).then((data) => {
       const decoded_token: MyUser = jwt_decode(data.access)
-      setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh });
+      setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh, loggedIn: true });
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/dashboard");
     })
@@ -71,7 +67,7 @@ const Login = () => {
             <a href="/">
               <img src={logo} width={75} height={"auto"} />
             </a>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={login}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
@@ -102,10 +98,6 @@ const Login = () => {
           </Col>
         </Row>
       </Container>
-      <br />
-      sample user : jane
-      <br />
-      smaple pass : jane
     </div>
   );
 };

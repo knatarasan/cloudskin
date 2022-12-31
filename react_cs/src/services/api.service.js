@@ -17,24 +17,30 @@ export async function createInstance() {
   return await response.json();
 }
 
-export async function createGraph(data) {
-  const graph_obj = { graph: data };
-  const username = "admin";
-  const password = "admin";
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Basic " + btoa(`${username}:${password}`),
-    },
-    body: JSON.stringify(graph_obj),
-  };
-  // fetch call is made with data object , but react takes care adding owner_id: 2
-  console.log("request Options ", requestOptions);
-  const response = await fetch("/graph/", requestOptions);
-  console.log("response", response);
-  return await response.json();
-}
+// export async function createGraph(data) {
+//   const graph_obj = { 
+//     graph: data,
+//     name:'unnammed',
+//     deploy_status:'not deployed',
+//     running_status:'NA',
+
+//   };
+//   // const username = "admin";
+//   // const password = "admin";
+//   const requestOptions = {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json"
+//       // 'Authorization': 'Bearer ' + currentUser.tokenAccess
+//     },
+//     body: JSON.stringify(graph_obj),
+//   };
+//   // fetch call is made with data object , but react takes care adding owner_id: 2
+//   console.log("request Options ", requestOptions);
+//   const response = await fetch("/graph/", requestOptions);
+//   console.log("response", response);
+//   return await response.json();
+// }
 
 export async function createUser(data) {
   const username = "admin";

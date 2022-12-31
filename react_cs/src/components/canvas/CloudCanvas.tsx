@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, memo, DragEvent } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo, DragEvent, useContext } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -20,16 +20,16 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
-  createGraph,
+  // createGraph,
   updateGraph,
   createInstance,
 } from "../../services/api.service";
 import Sidebar from "./Sidebar";
-
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
-
 import "./CloudCanvas.css";
+import { UserContext } from "../../context/Context";
+
 
 const initialNodes: Node[] = [];
 
@@ -37,6 +37,8 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
@@ -98,14 +100,33 @@ const DnDFlow = () => {
     } else if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
-      console.log('flow_obj', flow_obj)
       localStorage.setItem("flow-persist", flow_obj);
 
       // Graph stored in server
-      createGraph(flow_obj).then((data) => {
+      // graph save
+      const graph_obj = {
+        graph: flow_obj,
+        name: 'unnammed',
+        deploy_status: 'not deployed',
+        running_status: 'NA',
+
+      };
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + currentUser.tokenAccess
+        },
+        body: JSON.stringify(graph_obj),
+      };
+      // console.log("request Options ", requestOptions);
+      fetch("/graph/", requestOptions).then((response) => {
+        return response.json();
+      }).then((data) => {
+        console.log('plan saved , plan id:',data.id)
         setGraphId(data.id);
         setSaveUpdate(false);
-      });
+      })
     }
   };
 

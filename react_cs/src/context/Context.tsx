@@ -5,16 +5,23 @@ type User = {
   username: string, // eg'admin',
   email: string,
   tokenAccess: string,
-  tokenRefresh: string
+  tokenRefresh: string,
+  loggedIn: boolean
 }
 
 export type UserContent = {
-  currentUser: object,
+  currentUser: User,
   setCurrentUser: (c?: User) => void
 }
 
 export const UserContext = createContext<UserContent>({
-  currentUser: {},
+  currentUser: {
+    username: '', 
+    email: '',
+    tokenAccess: '',
+    tokenRefresh: '',
+    loggedIn: false
+  },
   setCurrentUser: () => null, 
 });
 

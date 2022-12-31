@@ -8,7 +8,6 @@ import { Col, Row, Nav, Navbar } from "react-bootstrap";
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  console.log("currentUser value from context :", currentUser);
 
   return (
     <div>
@@ -20,10 +19,25 @@ function Home() {
             </Navbar.Brand>
           </Link>
           <Nav className="me-auto">
-            <Nav.Link href="/dashboard">{'id' in currentUser ? "Dashboard" : null}</Nav.Link>
-            <Nav.Link href="#">{'username' in currentUser ? "welcome  " + currentUser.username : null}</Nav.Link>
-            <Nav.Link href="/login">{!('id' in currentUser) ? "Login" : null}</Nav.Link>
-            <Nav.Link href="/register">{!('id' in currentUser) ? "Signup" : null}</Nav.Link>
+            <>
+              {(() => {
+                if (currentUser && "loggedIn" in currentUser) {
+                  return (
+                    <>
+                      <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+                      <Nav.Link href="">Signed in: {currentUser.username}</Nav.Link>
+                    </>
+                  )
+                } else {
+                  return (
+                    <>
+                      <Nav.Link href="/login">Login</Nav.Link>
+                      <Nav.Link href="/register">Sign Up</Nav.Link>
+                    </>
+                  )
+                }
+              })()}
+            </>
           </Nav>
         </Container>
       </Navbar>
@@ -35,15 +49,15 @@ function Home() {
         </Row>
         <Row>
           <Col>
-            <h3>We can offer:<br/></h3>
+            <h3>We can offer:<br /></h3>
             <ul>
-              <li>&nbsp;&nbsp;&nbsp; No code cloud deployment<br/></li>
-              <li>&nbsp;&nbsp;&nbsp; One click deployment<br/></li>
-              <li>&nbsp;&nbsp;&nbsp; Best practices applied, <strong>you can focus on your business</strong><br/></li>
+              <li>&nbsp;&nbsp;&nbsp; No code cloud deployment<br /></li>
+              <li>&nbsp;&nbsp;&nbsp; One click deployment<br /></li>
+              <li>&nbsp;&nbsp;&nbsp; Best practices applied, <strong>you can focus on your business</strong><br /></li>
             </ul>
-                  
-                  
-                  
+
+
+
           </Col>
         </Row>
       </Container>
