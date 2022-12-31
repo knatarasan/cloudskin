@@ -32,7 +32,7 @@ const Dashboard = () => {
   // }
 
   useEffect(() => {
-    fetch("http://127.0.0.1:3000/graph/", {
+    fetch("http://127.0.0.1:3000/plan/", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + currentUser.tokenAccess

@@ -17,9 +17,9 @@ export async function createInstance() {
   return await response.json();
 }
 
-// export async function createGraph(data) {
-//   const graph_obj = { 
-//     graph: data,
+// export async function createPlan(data) {
+//   const plan_obj = { 
+//     plan: data,
 //     name:'unnammed',
 //     deploy_status:'not deployed',
 //     running_status:'NA',
@@ -33,11 +33,11 @@ export async function createInstance() {
 //       "Content-Type": "application/json"
 //       // 'Authorization': 'Bearer ' + currentUser.tokenAccess
 //     },
-//     body: JSON.stringify(graph_obj),
+//     body: JSON.stringify(plan_obj),
 //   };
 //   // fetch call is made with data object , but react takes care adding owner_id: 2
 //   console.log("request Options ", requestOptions);
-//   const response = await fetch("/graph/", requestOptions);
+//   const response = await fetch("/plan/", requestOptions);
 //   console.log("response", response);
 //   return await response.json();
 // }
@@ -58,9 +58,9 @@ export async function createUser(data) {
   return await response.json();
 }
 
-export async function updateGraph(data, graph_id) {
-  data = { graph: data };
-  console.log("updateGraph ", data);
+export async function updatePlan(data, plan_id) {
+  data = { plan: data };
+  console.log("updatePlan ", data);
   const username = "admin";
   const password = "admin";
   const requestOptions = {
@@ -71,6 +71,6 @@ export async function updateGraph(data, graph_id) {
     },
     body: JSON.stringify(data),
   };
-  const response = await fetch("/graph/".concat(graph_id, "/"), requestOptions);
+  const response = await fetch("/plan/".concat(plan_id, "/"), requestOptions);
   return await response.json();
 }

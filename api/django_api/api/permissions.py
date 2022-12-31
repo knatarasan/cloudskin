@@ -3,7 +3,7 @@ import logging
 
 logger = logging.getLogger('django')
 
-class GraphUserPermission(permissions.BasePermission):
+class PlanUserPermission(permissions.BasePermission):
     edit_methods = ("PUT", "PATCH")
 
     def has_permission(self, request, view):

@@ -20,8 +20,8 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
-  // createGraph,
-  updateGraph,
+  // createPlan,
+  updatePlan,
   createInstance,
 } from "../../services/api.service";
 import Sidebar from "./Sidebar";
@@ -45,7 +45,7 @@ const DnDFlow = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
 
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [graphId, setGraphId] = useState(null);
+  const [planId, setPlanId] = useState(null);
   // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
@@ -91,24 +91,24 @@ const DnDFlow = () => {
         return value;
       };
     };
-    // update graph
-    if (graphId && reactFlowInstance) {
+    // update plan
+    if (planId && reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      // updateGraph(flow, graphId);
-      console.log("onSave graph updated id", graphId);
-      // create new graph in backend
+      // updatePlan(flow, planId);
+      console.log("onSave plan updated id", planId);
+      // create new plan in backend
     } else if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
       localStorage.setItem("flow-persist", flow_obj);
 
-      // Graph stored in server
-      // graph save
-      const graph_obj = {
-        graph: flow_obj,
+      // Plan stored in server
+      // plan save
+      const plan_obj = {
+        plan: flow_obj,
         name: 'unnammed',
-        deploy_status: 'not deployed',
-        running_status: 'NA',
+        // deploy_status: 'not deployed',
+        // running_status: 'NA',
 
       };
       const requestOptions = {
@@ -117,14 +117,14 @@ const DnDFlow = () => {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ' + currentUser.tokenAccess
         },
-        body: JSON.stringify(graph_obj),
+        body: JSON.stringify(plan_obj),
       };
       // console.log("request Options ", requestOptions);
-      fetch("/graph/", requestOptions).then((response) => {
+      fetch("/plan/", requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         console.log('plan saved , plan id:',data.id)
-        setGraphId(data.id);
+        setPlanId(data.id);
         setSaveUpdate(false);
       })
     }
@@ -281,7 +281,7 @@ const DnDFlow = () => {
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
               <button id='save_update' onClick={onSave}>
-                {save_update ? "Save Graph" : "Update Graph"}
+                {save_update ? "Save Plan" : "Update Plan"}
               </button>
               {/*              <button onClick={onCreate}>Create Instance</button>
             <button onClick={updateNode}>Refresh Status</button> */}

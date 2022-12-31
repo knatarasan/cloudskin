@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from .models import Graph, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -10,26 +10,26 @@ import logging
 
 logger = logging.getLogger('django')
 
-class GraphSerializer(serializers.Serializer):
+class PlanSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
-    graph = serializers.JSONField()
+    plan = serializers.JSONField()
     # deploy_status =
     # running_status =
 
     def create(self, validated_data):
         '''
-        create and return a new `Graph` , given the validated data
+        create and return a new `Plan` , given the validated data
         '''
-        logger.info("Graph saved")
-        graph = Graph.objects.create(**validated_data)
+        logger.info("Plan saved")
+        plan = Plan.objects.create(**validated_data)
 
-        return graph
+        return plan
 
     def update(self, instance, validated_data):
-        instance.graph = validated_data.get('graph', instance.graph)
+        instance.plan = validated_data.get('plan', instance.plan)
         instance.save()
-        logger.info("Graph updated")
+        logger.info("Plan updated")
         return instance
 
 

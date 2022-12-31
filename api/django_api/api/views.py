@@ -1,10 +1,10 @@
 from rest_framework import generics, viewsets
-from .models import Graph, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .permissions import GraphUserPermission  # , IsOwner
-from .serializers import UserSerializer, GraphSerializer, \
+from .permissions import PlanUserPermission  # , IsOwner
+from .serializers import UserSerializer, PlanSerializer, \
     EC2Serializer, AwsCredsSerializer, MyTokenObtainPairSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -23,7 +23,7 @@ def api_root(request, format=None):
     return Response({
         'user': reverse('user-list', request=request, format=format),
         'token': reverse('token-obtain-pair', request=request, format=format),
-        'graph': reverse('graph-list', request=request, format=format),
+        'plan': reverse('plan-list', request=request, format=format),
         'ec2': reverse('ec2-list', request=request, format=format),
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
@@ -33,66 +33,66 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
-class GraphList(APIView):
+class PlanList(APIView):
     """
-    Graph : Holds all the details of a plan
+    Plan : Holds all the details of a plan
     """
-    permission_classes = [GraphUserPermission]
+    permission_classes = [PlanUserPermission]
 
     def get(self, request, format=None):
-        graphs = None
+        Plans = None
 
         # for Authorization : su access all objects, specific owner access only his object
         if request.user.is_superuser:
-            graphs = Graph.objects.all()
+            plans = Plan.objects.all()
         else:
-            graphs = Graph.objects.filter(owner=request.user)
-        serializer = GraphSerializer(graphs, many=True)
+            plans = Plan.objects.filter(owner=request.user)
+        serializer = PlanSerializer(plans, many=True)
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = GraphSerializer(data=request.data)
+        serializer = PlanSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class GraphDetail(APIView):
+class PlanDetail(APIView):
     """
-    Retrieve, update or delete a graph instance.
+    Retrieve, update or delete a plan instance.
     """
-    permission_classes = [GraphUserPermission]
+    permission_classes = [PlanUserPermission]
 
     def get_object(self, request, pk):
-        graph = None
+        plan = None
 
         try:
             # for Authorization : su access all objects, specific owner access only his object
             if request.user.is_superuser:
-                graph = Graph.objects.get(pk=pk)
+                plan = Plan.objects.get(pk=pk)
             else:
-                graph = Graph.objects.get(pk=pk, owner=request.user)
-            return graph
-        except Graph.DoesNotExist:
+                plan = Plan.objects.get(pk=pk, owner=request.user)
+            return plan
+        except Plan.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        graph = self.get_object(request, pk)
-        serializer = GraphSerializer(graph)
+        plan = self.get_object(request, pk)
+        serializer = PlanSerializer(plan)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        graph = self.get_object(pk)
-        serializer = GraphSerializer(graph, data=request.data)
+        plan = self.get_object(pk)
+        serializer = PlanSerializer(plan, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        graph = self.get_object(pk)
-        graph.delete()
+        plan = self.get_object(pk)
+        plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

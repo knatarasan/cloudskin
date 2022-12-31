@@ -9,11 +9,11 @@ class EC2(models.Model):
     )
     ec2_instance_id = models.TextField(null=True)
 
-class Graph(models.Model):
+class Plan(models.Model):
     owner = models.ForeignKey(
-        'auth.User', related_name='graph', on_delete=models.CASCADE
+        'auth.User', related_name='plan', on_delete=models.CASCADE
     )
-    graph = models.JSONField()
+    plan = models.JSONField()
 
 class AwsCreds(models.Model):
     owner = models.ForeignKey(
