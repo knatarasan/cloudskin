@@ -14,6 +14,8 @@ class GraphSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     graph = serializers.JSONField()
+    # deploy_status =
+    # running_status =
 
     def create(self, validated_data):
         '''

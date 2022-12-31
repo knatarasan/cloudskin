@@ -1,9 +1,8 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
-
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,9 +25,13 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  const loadPlan = (e: React.SyntheticEvent): void => {
+  // const loadPlan = (): void => {
 
-    // console.log("Current User at Dash. ", currentUser.tokenAccess);
+  //   // console.log("Current User at Dash. ", currentUser.tokenAccess);
+
+  // }
+
+  useEffect(() => {
     fetch("http://127.0.0.1:3000/graph/", {
       headers: {
         'Content-Type': 'application/json',
@@ -41,10 +44,11 @@ const Dashboard = () => {
       }
       return response.json()
     }).then((data) => {
-      console.log('data is ', data)
       setPlans(data)
     })
-  }
+  }, [])
+
+
   if (!authenticated) {
     console.log("not auth");
     return <Navigate replace to="/login" />;
@@ -63,7 +67,7 @@ const Dashboard = () => {
               <Navbar.Text>
                 {'username' in currentUser ? "Signed in:  " + currentUser.username : null}
               </Navbar.Text>
-              <Nav.Link href="#" onClick={handleLogout}>Logout</Nav.Link>
+              <Nav.Link href="" onClick={handleLogout}>Logout</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
@@ -73,10 +77,8 @@ const Dashboard = () => {
           <Row><br /></Row>
           <Row>
             <Col><h4> Plans </h4></Col>
-            <Col><Nav.Link href=""><Button variant="outline-primary" onClick={loadPlan} size="sm">Load Plans</Button></Nav.Link></Col>
-            {/* <Col><Nav.Link href="/plan"><Button variant="outline-primary" size="sm">Create plan</Button></Nav.Link></Col> */}
+            <Col></Col>
             <Col><Link to="/plan"><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
-
             <Row>
             </Row>
           </Row>
@@ -98,8 +100,8 @@ const Dashboard = () => {
                     <tr>
                       <td>{plan.id}</td>
                       <td>{plan.owner}</td>
-                      <td>{plan.graph.key}</td>
-                      <td>{plan.owner}</td>
+                      <td>{plan.deploy_status}</td>
+                      <td>{plan.running_status}</td>
                     </tr>
                   ))}
                 </tbody>
