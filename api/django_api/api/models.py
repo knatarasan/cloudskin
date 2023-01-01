@@ -1,5 +1,7 @@
 from django.db import models
+import logging
 
+logger = logging.getLogger('django')
 
 # Create your models here.
 
@@ -10,10 +12,24 @@ class EC2(models.Model):
     ec2_instance_id = models.TextField(null=True)
 
 class Plan(models.Model):
+
     owner = models.ForeignKey(
         'auth.User', related_name='plan', on_delete=models.CASCADE
     )
     plan = models.JSONField()
+    deploy_status = models.TextField(null=True)
+    # PREPARED
+    # DEPLOYED
+    running_status = models.TextField(null=True)
+    # STARTED
+    # RUNNING
+    # STOPPED
+    # FAILED
+
+    def save(self, *args, **kwargs):
+        logger.info(f'val of deploy_stat {self.deploy_status}')
+        super().save(*args, **kwargs)
+
 
 class AwsCreds(models.Model):
     owner = models.ForeignKey(

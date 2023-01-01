@@ -14,8 +14,8 @@ class PlanSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     plan = serializers.JSONField()
-    # deploy_status =
-    # running_status =
+    deploy_status = serializers.CharField()
+    running_status = serializers.CharField()
 
     def create(self, validated_data):
         '''
@@ -28,6 +28,7 @@ class PlanSerializer(serializers.Serializer):
 
     def update(self, instance, validated_data):
         instance.plan = validated_data.get('plan', instance.plan)
+        logger.info(f'instance values {str(validated_data)}')
         instance.save()
         logger.info("Plan updated")
         return instance

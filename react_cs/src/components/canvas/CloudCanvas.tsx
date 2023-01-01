@@ -106,9 +106,9 @@ const DnDFlow = () => {
       // plan save
       const plan_obj = {
         plan: flow_obj,
-        name: 'unnammed',
-        // deploy_status: 'not deployed',
-        // running_status: 'NA',
+        // name: 'unnammed',
+        deploy_status: 'PREPARED',
+        running_status: 'NA',
 
       };
       const requestOptions = {

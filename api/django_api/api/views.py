@@ -64,7 +64,7 @@ class PlanDetail(APIView):
     """
     permission_classes = [PlanUserPermission]
 
-    def get_object(self, request, pk):
+    def get_object(self, pk, request):
         plan = None
 
         try:
@@ -78,12 +78,12 @@ class PlanDetail(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
-        plan = self.get_object(request, pk)
+        plan = self.get_object(pk, request)
         serializer = PlanSerializer(plan)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        plan = self.get_object(pk)
+        plan = self.get_object(pk,request)
         serializer = PlanSerializer(plan, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -91,7 +91,7 @@ class PlanDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        plan = self.get_object(pk)
+        plan = self.get_object(pk,request)
         plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
