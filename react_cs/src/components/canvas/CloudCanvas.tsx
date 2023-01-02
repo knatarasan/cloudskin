@@ -38,7 +38,7 @@ const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
   const { plan_id_edit } = useParams()
-  console.log("param id ", plan_id_edit)
+  // console.log("param id ", plan_id_edit)
   const [planId, setPlanId] = useState<number | null>(null);
 
   const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -78,43 +78,45 @@ const DnDFlow = () => {
   //   )
   // );
 
+  useEffect(() => {
+
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + currentUser.tokenAccess,
+      },
+    };
+    fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
+      setPlanId(Number(plan_id_edit))
+      
+      if(Number(plan_id_edit) ){
+        setSaveUpdate(false)
+      }
+      return response.json()
+    }).then((data) => {
+      const flow = JSON.parse(data.plan);
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        // setViewPort({ x, y, zoom });
+      }
+    })
+  }, [])
 
   const onConnect = useCallback<OnConnect>(
     (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  const retrievePlan = useCallback(() => {
-    const restoreFlow = async () => {
+  // const retrievePlan = useCallback(() => {
+  //   const restoreFlow = async () => {
 
+  //   };
+  //   restoreFlow();
 
-      const requestOptions = {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + currentUser.tokenAccess,
-        },
-      };
-      // fetch call is made with data object , but react takes care adding owner_id: 2
-      console.log("request Options ", requestOptions);
-      fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
-        setPlanId(Number(plan_id_edit))
-        return response.json()
-      }).then((data) => {
-        const flow = JSON.parse(data.plan);
-        // console.log('flow', flow)
-        if (flow) {
-          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-          // setViewPort({ x, y, zoom });
-        }
-      })
-
-    };
-    restoreFlow();
-
-  }, [setNodes]);
-  // }, [setNodes, setViewPort]);
+  // }, [setNodes]);
+  // // }, [setNodes, setViewPort]);
 
 
   const onSave = () => {
@@ -130,15 +132,14 @@ const DnDFlow = () => {
         return value;
       };
     };
-    
-    if (planId === null && reactFlowInstance) {
+
+    console.log('BEFORE save or update ',planId);
+    if (!planId && reactFlowInstance) {
       console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
       localStorage.setItem("flow-persist", flow_obj);
 
-      // Plan stored in server
-      // plan save
       const plan_obj = {
         plan: flow_obj,
         // name: 'unnammed',
@@ -154,12 +155,12 @@ const DnDFlow = () => {
         },
         body: JSON.stringify(plan_obj),
       };
-      // console.log("request Options ", requestOptions);
       fetch("/plan/", requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         setPlanId(data.id);
         setSaveUpdate(false);
+        console.log('Plan successfully saved ', data.id)
       })
     } else if (reactFlowInstance) {
       // update plan
@@ -170,7 +171,7 @@ const DnDFlow = () => {
         deploy_status: 'Prepared',
         running_status: 'Stopped'
       };
-      console.log("updatePlan ", data);
+
       const requestOptions = {
         method: "PUT",
         headers: {
@@ -182,7 +183,7 @@ const DnDFlow = () => {
       fetch(`/plan/${planId}`, requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
-        console.log('updated ', data)
+        console.log('Plan successfully updated ', data.id)
       })
     }
   }
@@ -222,10 +223,6 @@ const DnDFlow = () => {
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      console.log(event);
-
-      // if(reactFlowWrapper.current && reactFlowInstance) {
-      // }
 
       const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
@@ -326,9 +323,6 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
-              <button id='retrieve' onClick={retrievePlan}>
-                retrieve plan
-              </button>
 
               <button id='save_update' onClick={onSave}>
                 {save_update ? "Save Plan" : "Update Plan"}
