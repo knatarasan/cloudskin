@@ -78,7 +78,7 @@ const Dashboard = () => {
           <Row>
             <Col><h4> Plans </h4></Col>
             <Col></Col>
-            <Col><Link to="/plan"><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
+            <Col><Link to={`/plan/${null}`}><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
             <Row>
             </Row>
           </Row>
@@ -97,8 +97,10 @@ const Dashboard = () => {
                 <tbody>
                   {/* {console.log('plans here',plans)} */}
                   {plans?.map((plan: any) => (
+
                     <tr>
-                      <td>{plan.id}</td>
+                      <td>
+                        <Link to={`/plan/${plan.id}`}>{plan.id}</Link></td>
                       <td>{plan.owner}</td>
                       <td>{plan.deploy_status}</td>
                       <td>{plan.running_status}</td>

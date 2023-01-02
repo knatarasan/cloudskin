@@ -21,7 +21,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import {
   // createPlan,
-  updatePlan,
+  // updatePlan,
   createInstance,
 } from "../../services/api.service";
 import Sidebar from "./Sidebar";
@@ -29,7 +29,7 @@ import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 import "./CloudCanvas.css";
 import { UserContext } from "../../context/Context";
-
+import { useParams } from 'react-router-dom';
 
 const initialNodes: Node[] = [];
 
@@ -37,15 +37,19 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  
+  const { id } = useParams()
+  console.log(" param id ", id)
+  const [planId, setPlanId] = useState(null);
+
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
+  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
 
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [planId, setPlanId] = useState(null);
+
   // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
@@ -53,6 +57,7 @@ const DnDFlow = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
+
 
   // useEffect(() => {
   //   console.log("inside useEffect", health);
@@ -73,10 +78,44 @@ const DnDFlow = () => {
   //   )
   // );
 
+
+
   const onConnect = useCallback<OnConnect>(
     (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  const retrievePlan = useCallback(() => {
+    const restoreFlow = async () => {
+
+
+      const requestOptions = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + currentUser.tokenAccess,
+        },
+      };
+      // fetch call is made with data object , but react takes care adding owner_id: 2
+      console.log("request Options ", requestOptions);
+      fetch(`/plan/${id}`, requestOptions).then((response) => {
+        return response.json()
+      }).then((data) => {
+        console.log('plan.json', typeof data.plan)
+        const flow = JSON.parse(data.plan);
+        console.log('flow', flow)
+        if (flow) {
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+          // setViewPort({ x, y, zoom });
+        }
+      })
+
+    };
+    restoreFlow();
+  }, [setNodes]);
+  // }, [setNodes, setViewPort]);
+
 
   const onSave = () => {
     const getCircularReplacer = () => {
@@ -91,13 +130,11 @@ const DnDFlow = () => {
         return value;
       };
     };
-    // update plan
-    if (planId && reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      // updatePlan(flow, planId);
-      console.log("onSave plan updated id", planId);
-      // create new plan in backend
-    } else if (reactFlowInstance) {
+
+    console.log('onSave planId ', planId)
+
+    if (planId === null && reactFlowInstance) {
+      console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
       localStorage.setItem("flow-persist", flow_obj);
@@ -123,12 +160,36 @@ const DnDFlow = () => {
       fetch("/plan/", requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
-        console.log('plan saved , plan id:',data.id)
+        console.log('plan saved , plan id:', data.id)
         setPlanId(data.id);
         setSaveUpdate(false);
       })
+    } else if (reactFlowInstance) {
+      // update plan
+      console.log("For update", planId);
+      const flow = reactFlowInstance.toObject();
+      const data = {
+        plan: flow,
+        deploy_status: 'Prepared',
+        running_status: 'Stopped'
+      };
+      console.log("updatePlan ", data);
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + currentUser.tokenAccess,
+        },
+        body: JSON.stringify(data),
+      }
+      fetch(`/plan/${planId}`, requestOptions).then((response) => {
+        return response.json();
+      }).then((data) => {
+        console.log('updated ', data)
+      })
     }
-  };
+  }
+
 
   // const onCreate = (e) => {
   //   createInstance().then((data) => {
@@ -140,20 +201,6 @@ const DnDFlow = () => {
   //   });
   // };
 
-  // const onRestore = useCallback(() => {
-  //   const restoreFlow = async () => {
-  //     const flow = JSON.parse(localStorage.getItem("flow-persist"));
-
-  //     if (flow) {
-  //       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-  //       setNodes(flow.nodes || []);
-  //       setEdges(flow.edges || []);
-  //       setViewPort({ x, y, zoom });
-  //     }
-  //   };
-
-  //   restoreFlow();
-  // }, [setNodes, setViewPort]);
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -196,9 +243,11 @@ const DnDFlow = () => {
         let comp = null;
 
         if (icon === "App") {
-          comp = <EC2Icon size={size} />;
+          // comp = <EC2Icon size={size} />;
+          comp = "EC2"
         } else if (icon === "LB") {
-          comp = <LoadBalancerIcon size={size} />;
+          // comp = <LoadBalancerIcon size={size} />;
+          comp = "LB"
         }
 
         return {
@@ -280,6 +329,10 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
+              <button id='retrieve' onClick={retrievePlan}>
+                retrieve plan
+              </button>
+
               <button id='save_update' onClick={onSave}>
                 {save_update ? "Save Plan" : "Update Plan"}
               </button>
