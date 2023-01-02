@@ -37,9 +37,9 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
-  const { id } = useParams()
-  console.log(" param id ", id)
-  const [planId, setPlanId] = useState(null);
+  const { plan_id_edit } = useParams()
+  console.log("param id ", plan_id_edit)
+  const [planId, setPlanId] = useState<number | null>(null);
 
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -79,7 +79,6 @@ const DnDFlow = () => {
   // );
 
 
-
   const onConnect = useCallback<OnConnect>(
     (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
@@ -97,12 +96,12 @@ const DnDFlow = () => {
       };
       // fetch call is made with data object , but react takes care adding owner_id: 2
       console.log("request Options ", requestOptions);
-      fetch(`/plan/${id}`, requestOptions).then((response) => {
+      fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
+        setPlanId(Number(plan_id_edit))
         return response.json()
       }).then((data) => {
-        console.log('plan.json', typeof data.plan)
         const flow = JSON.parse(data.plan);
-        console.log('flow', flow)
+        // console.log('flow', flow)
         if (flow) {
           const { x = 0, y = 0, zoom = 1 } = flow.viewport;
           setNodes(flow.nodes || []);
@@ -113,6 +112,7 @@ const DnDFlow = () => {
 
     };
     restoreFlow();
+
   }, [setNodes]);
   // }, [setNodes, setViewPort]);
 
@@ -130,9 +130,7 @@ const DnDFlow = () => {
         return value;
       };
     };
-
-    console.log('onSave planId ', planId)
-
+    
     if (planId === null && reactFlowInstance) {
       console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
@@ -160,7 +158,6 @@ const DnDFlow = () => {
       fetch("/plan/", requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
-        console.log('plan saved , plan id:', data.id)
         setPlanId(data.id);
         setSaveUpdate(false);
       })
@@ -169,7 +166,7 @@ const DnDFlow = () => {
       console.log("For update", planId);
       const flow = reactFlowInstance.toObject();
       const data = {
-        plan: flow,
+        plan: JSON.stringify(flow),
         deploy_status: 'Prepared',
         running_status: 'Stopped'
       };
