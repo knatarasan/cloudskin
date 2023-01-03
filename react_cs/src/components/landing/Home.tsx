@@ -31,8 +31,8 @@ function Home() {
                 } else {
                   return (
                     <>
-                      <Nav.Link href="/login">Login</Nav.Link>
-                      <Nav.Link href="/register">Sign Up</Nav.Link>
+                      <Nav.Link as={Link} to="/login" id="login">Login</Nav.Link>
+                      <Nav.Link as={Link} to="/register" id="register">Sign Up</Nav.Link>
                     </>
                   )
                 }

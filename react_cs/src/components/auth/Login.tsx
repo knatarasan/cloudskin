@@ -71,6 +71,7 @@ const Login = () => {
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
+                  id="username_field"
                   type="text"
                   placeholder="Enter username"
                   name="Username"
@@ -85,13 +86,14 @@ const Login = () => {
               <Form.Group className="mb-3" controlId="formBasicPassword">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
+                  id="password_field"
                   type="password"
                   placeholder="Password"
                   name="Password"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>
-              <Button variant="primary" type="submit">
+              <Button id="login_submit" variant="primary" type="submit">
                 Submit
               </Button>
             </Form>

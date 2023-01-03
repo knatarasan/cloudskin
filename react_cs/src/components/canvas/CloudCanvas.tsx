@@ -202,6 +202,7 @@ const DnDFlow = () => {
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    console.log("dragging ")
     event.dataTransfer.dropEffect = "move";
   }, []);
 
@@ -223,7 +224,7 @@ const DnDFlow = () => {
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-
+      console.log("dropped ")
       const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
@@ -298,7 +299,7 @@ const DnDFlow = () => {
       <ReactFlowProvider>
         <Sidebar />
 
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <div id="main-canvas" className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
