@@ -80,11 +80,11 @@ class AwsCredsSerializer(serializers.Serializer):
         return instance
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     @classmethod
     def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+        token = super(CSTokenObtainPairSerializer, cls).get_token(user)
 
         # Add custom claims
         token['username'] = user.username

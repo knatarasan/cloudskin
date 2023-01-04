@@ -22,7 +22,7 @@ const Login = () => {
   // );
   const users = [{ username: "jane", password: "jane" }];
 
-  type MyUser = {
+  type User = {
     email: string,
     exp: number,
     iat: number,
@@ -51,7 +51,7 @@ const Login = () => {
       }
       return response.json()
     }).then((data) => {
-      const decoded_token: MyUser = jwt_decode(data.access)
+      const decoded_token: User = jwt_decode(data.access)
       setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh, loggedIn: true });
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/dashboard");

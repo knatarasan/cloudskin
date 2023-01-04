@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
@@ -5,7 +6,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .permissions import PlanUserPermission  # , IsOwner
 from .serializers import UserSerializer, PlanSerializer, \
-    EC2Serializer, AwsCredsSerializer, MyTokenObtainPairSerializer
+    EC2Serializer, AwsCredsSerializer, CSTokenObtainPairSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -29,8 +30,8 @@ def api_root(request, format=None):
     })
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+class CSTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CSTokenObtainPairSerializer
 
 
 class PlanList(APIView):
@@ -67,15 +68,13 @@ class PlanDetail(APIView):
     def get_object(self, pk, request):
         plan = None
 
-        try:
-            # for Authorization : su access all objects, specific owner access only his object
-            if request.user.is_superuser:
-                plan = Plan.objects.get(pk=pk)
-            else:
-                plan = Plan.objects.get(pk=pk, owner=request.user)
-            return plan
-        except Plan.DoesNotExist:
-            raise Http404
+        logger.info(f'Requested usertype is superuser ? {request.user.is_superuser}')
+        # for Authorization : su access all objects, specific owner access only his object
+        if request.user.is_superuser:
+            plan = get_object_or_404(Plan , pk=pk)
+        else:
+            plan = get_object_or_404(Plan, pk=pk,owner=request.user)
+        return plan
 
     def get(self, request, pk, format=None):
         plan = self.get_object(pk, request)
@@ -129,7 +128,7 @@ class EC2Detail(APIView):
     """
 
     def get_object(self, pk):
-        ec2 = None
+
         try:
             ec2 = EC2.objects.get(ec2_instance_id=pk)
             return ec2
