@@ -45,3 +45,16 @@ python manage.py runserver 0:8000
 cd /home/ec2-user/cloudskin/api/django_api
 gunicorn --bind localhost:8000 django_api.wsgi:application
 sudo systemctl enable --now gunicorn.service
+
+
+# Deploy react  - http://www.theappliedarchitect.com/deploying-react-in-production/
+# from local machine
+# update proxy in package.json file to point ec2 instance  Eg: "proxy": "http://54.193.172.190/:8000",
+npm run build
+scp -i ~/.ssh/cloudskin_key.pem -r ./build/* ec2-user@ec2-54-193-172-190.us-west-1.compute.amazonaws.com:/tmp/build
+
+#At remote machine
+sudo scp -r /tmp/build/* /var/www/build/
+
+sudo service nginx stop
+sudo service nginx start
