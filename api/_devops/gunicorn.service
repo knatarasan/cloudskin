@@ -1,0 +1,13 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+Restart=on-failure
+WorkingDirectory=/home/ec2-user/cloudskin/api
+ExecStart=/home/ec2-user/.venv/bin/gunicorn --bind unix:/home/ec2-user/cloudskin/api/gunicorn.sock django_api.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

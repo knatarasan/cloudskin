@@ -41,3 +41,7 @@ mkdir cloudskin/api/log
 
 # For testing make sure the port number 0:8000
 python manage.py runserver 0:8000
+
+cd /home/ec2-user/cloudskin/api/django_api
+gunicorn --bind localhost:8000 django_api.wsgi:application
+sudo systemctl enable --now gunicorn.service
