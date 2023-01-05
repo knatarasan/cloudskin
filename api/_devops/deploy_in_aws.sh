@@ -47,14 +47,31 @@ gunicorn --bind localhost:8000 django_api.wsgi:application
 sudo systemctl enable --now gunicorn.service
 
 
-# Deploy react  - http://www.theappliedarchitect.com/deploying-react-in-production/
+# Deploy react
+    # https://blog.devgenius.io/using-nginx-to-serve-react-application-static-vs-proxy-69b85f368e6c
+    # http://www.theappliedarchitect.com/deploying-react-in-production/
 # from local machine
 # update proxy in package.json file to point ec2 instance  Eg: "proxy": "http://54.193.172.190/:8000",
+
 npm run build
-scp -i ~/.ssh/cloudskin_key.pem -r ./build/* ec2-user@ec2-54-193-172-190.us-west-1.compute.amazonaws.com:/tmp/build
+scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-193-172-190.us-west-1.compute.amazonaws.com:/tmp/build
 
 #At remote machine
+sudo rm -rf /var/www/build/*
+sudo rm -rf /tmp/build/*
+
 sudo scp -r /tmp/build/* /var/www/build/
 
 sudo service nginx stop
 sudo service nginx start
+
+/home/ec2-user/.venv/bin/python /home/ec2-user/cloudskin/api/django_api/manage.py runserver 0:8000 &
+tail -f /home/ec2-user/cloudskin/api/log/app.log
+
+socat TCP-LISTEN:8000,fork TCP:127.0.0.1:80
+
+firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000
+firewall-cmd  --remove-forward-port=port=80:proto=tcp:toport=8000
+
+firewall-cmd --runtime-to-permanent
+firewall-cmd --list-all

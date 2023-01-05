@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { api_host } from "../../env/global";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import Button from "react-bootstrap/Button";
@@ -36,7 +37,7 @@ const Login = () => {
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    fetch("http://127.0.0.1:3000/token/", {
+    fetch(`${api_host}/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

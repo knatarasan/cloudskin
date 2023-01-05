@@ -30,6 +30,7 @@ import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 import "./CloudCanvas.css";
 import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
+import { api_host } from "../../env/global";
 
 const initialNodes: Node[] = [];
 
@@ -86,7 +87,7 @@ const DnDFlow = () => {
         Authorization: "Bearer " + currentUser.tokenAccess,
       },
     };
-    fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
+    fetch(`${api_host}/plan/${plan_id_edit}`, requestOptions).then((response) => {
       setPlanId(Number(plan_id_edit))
       
       if(Number(plan_id_edit) ){
@@ -155,7 +156,7 @@ const DnDFlow = () => {
         },
         body: JSON.stringify(plan_obj),
       };
-      fetch("/plan/", requestOptions).then((response) => {
+      fetch(`${api_host}/plan/`, requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         setPlanId(data.id);
@@ -180,7 +181,7 @@ const DnDFlow = () => {
         },
         body: JSON.stringify(data),
       }
-      fetch(`/plan/${planId}`, requestOptions).then((response) => {
+      fetch(`${api_host}/plan/${planId}`, requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         console.log('Plan successfully updated ', data.id)
