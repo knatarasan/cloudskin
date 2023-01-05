@@ -50,6 +50,8 @@ sudo systemctl enable --now gunicorn.service
 # Deploy react
     # https://blog.devgenius.io/using-nginx-to-serve-react-application-static-vs-proxy-69b85f368e6c
     # http://www.theappliedarchitect.com/deploying-react-in-production/
+    # Global variables for REACT  https://medium.com/nerd-for-tech/get-global-variables-in-react-js-490cf68f2a73    
+
 # from local machine
 # update proxy in package.json file to point ec2 instance  Eg: "proxy": "http://54.193.172.190/:8000",
 
