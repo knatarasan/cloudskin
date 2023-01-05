@@ -1,7 +1,9 @@
+from enum import Enum
+
 from django.db import models
 import logging
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -17,14 +19,20 @@ class Plan(models.Model):
         'auth.User', related_name='plan', on_delete=models.CASCADE
     )
     plan = models.JSONField()
-    deploy_status = models.TextField(null=True)
-    # PREPARED
-    # DEPLOYED
-    running_status = models.TextField(null=True)
-    # STARTED
-    # RUNNING
-    # STOPPED
-    # FAILED
+
+    class DeployStatus(models.IntegerChoices):
+        PREPARED = 1
+        DEPLOYED = 2
+        FAILED = 0
+    deploy_status = models.IntegerField(choices=DeployStatus.choices, null=True)
+
+    class RunningStatus(models.IntegerChoices):
+        STARTED = 1
+        RUNNING = 2
+        STOPPED = 3
+        FAILED = 0
+
+    running_status = models.IntegerField(choices=RunningStatus.choices, null=True)
 
     def save(self, *args, **kwargs):
         logger.info(f'val of deploy_stat {self.deploy_status}')

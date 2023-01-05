@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.http import Http404
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 
 @api_view(['GET'])
@@ -66,15 +66,10 @@ class PlanDetail(APIView):
     permission_classes = [PlanUserPermission]
 
     def get_object(self, pk, request):
-        plan = None
-
         logger.info(f'Requested usertype is superuser ? {request.user.is_superuser}')
-        # for Authorization : su access all objects, specific owner access only his object
-        if request.user.is_superuser:
-            plan = get_object_or_404(Plan , pk=pk)
-        else:
-            plan = get_object_or_404(Plan, pk=pk,owner=request.user)
-        return plan
+
+        # Only user who created the object can access an object
+        return get_object_or_404(Plan, pk=pk,owner=request.user)
 
     def get(self, request, pk, format=None):
         plan = self.get_object(pk, request)

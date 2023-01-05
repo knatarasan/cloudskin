@@ -8,14 +8,14 @@ from django.contrib.auth.password_validation import validate_password
 from .services import EC2Service
 import logging
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 class PlanSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     plan = serializers.JSONField()
-    deploy_status = serializers.CharField()
-    running_status = serializers.CharField()
+    deploy_status = serializers.IntegerField()
+    running_status = serializers.IntegerField()
 
     def create(self, validated_data):
         '''
