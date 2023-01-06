@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
-import logo from "../../static/images/cloud.png";
+import logo from "../../static/images/Clouds-with-gears-altair-enhanced.png";
 import { UserContext } from "../../context/Context";
 
 const Dashboard = () => {
