@@ -1,7 +1,8 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import logo from "../../static/images/logo3.png";
-import landing_page_img from "../../static/images/Clouds-with-gears-altair-enhanced.png";
+import landing_page_img from "../../static/images/depict_product.png";
+import create_plan_img from "../../static/images/create_plan.png";
 import { useContext } from "react";
 import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
@@ -18,7 +19,6 @@ function Home() {
           <div className="container px-5">
             <Link to="/">
               <Navbar.Brand>
-                
                 <img src={logo} width={75} height={"auto"}></img>
               </Navbar.Brand>
             </Link>
@@ -68,8 +68,9 @@ function Home() {
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
                 <div className="my-5 text-center text-xl-start">
-                  <h1 className="display-5 fw-bolder text-white mb-2">Welcome to auto deploy</h1>
+                  <h1 className="display-5 fw-bolder text-white mb-2">Deploy an App in Cloud in Minutes</h1>
                   <p className="lead fw-normal text-white-50 mb-4">
+                    No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
                     No code cloud deployment<br />
                     One click deployment<br />
                     Best practices applied, <strong>you can focus on your business</strong><br />
@@ -85,62 +86,217 @@ function Home() {
             </div>
           </div>
         </header>
-        <br />
-        <br />
-        {/* <!-- Features section--> */}
+
+        {/* <!-- Motivation section--> */}
         <section className="py-5" id="features">
           <div className="container px-5 my-5">
             <div className="row gx-5">
-              <div className="col-lg-4 mb-5 mb-lg-0"><h2 className="fw-bolder mb-0">A better way to start building.</h2></div>
+              <div className="col-lg-4 mb-5 mb-lg-0"><h2 className="fw-bolder mb-0">Current deployment process is Complex, Slow and requires Deeper expertise in AWS </h2></div>
               <div className="col-lg-8">
                 <div className="row gx-5 row-cols-1 row-cols-md-2">
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
-                    <h2 className="h5">Featured title</h2>
-                    <p className="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
-                  </div>
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-building"></i></div>
-                    <h2 className="h5">Featured title</h2>
-                    <p className="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                  <div className="col mb-5 mb-md-0 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Infrastructure complexity:</h2>
+                    <p className="mb-0">
+                      In the cloud, you are responsible for managing the infrastructure that your applications run on. This includes things like choosing the right instance types, setting up load balancers, and configuring network and security settings.
+                    </p>
                   </div>
                   <div className="col mb-5 mb-md-0 h-100">
                     <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Featured title</h2>
-                    <p className="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                    <h2 className="h5">Managing dependencies:</h2>
+                    <p className="mb-0">
+                      Cloud applications often have a lot of dependencies, such as third-party libraries and APIs. Managing these dependencies can be complex, especially if you need to ensure that they are all compatible with each other and with the cloud platform you are using.
+                    </p>
                   </div>
+
+                  <div className="col mb-5 mb-md-0 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Security:</h2>
+                    <p className="mb-0">
+                      Ensuring that your applications are secure in the cloud is important, but it can also be complex. You need to consider things like access controls, encryption, and network security.
+                    </p>
+                  </div>
+
                   <div className="col h-100">
                     <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Featured title</h2>
-                    <p className="mb-0">Paragraph of text beneath the heading to explain the heading. Here is just a bit more text.</p>
+                    <h2 className="h5">Scaling and availability: </h2>
+                    <p className="mb-0">In the cloud, you need to design your applications to be scalable and highly available. This means designing them to be able to handle sudden increases in traffic, and to be able to recover from failures without downtime.</p>
+                  </div>
+                  <div className="col mb-5 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
+                    <h2 className="h5">Integration with other services:</h2>
+                    <p className="mb-0">Cloud platforms offer a wide range of services that can be used to build and deploy applications. However, integrating these services can be complex, especially if you need to connect them to on-premises systems or other third-party services.</p>
+                  </div>
+                </div>
+              </div>
+              <div className="row gx-5">
+                <h2 className="fw-bolder mb-0"><i>At ClEffex we deploy and manage your cloud application</i></h2>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* <!-- Features section--> */}
+        <section className="py-5 bg-light" id="features">
+          <div className="container px-5 my-5">
+            <div className="row gx-5">
+              <div className="col-lg-4 mb-5 mb-lg-0">
+                <h2 className="h5">FEATURES:</h2>
+                <h2 className="fw-bolder mb-0">Deploy your application simply and fast </h2></div>
+              <div className="col-lg-8">
+                <div className="row gx-5 row-cols-1 row-cols-md-2">
+                  <div className="col mb-5 mb-md-0 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Infrastructure as a plan:</h2>
+                    <p className="mb-0">
+                      This allows you to use block elements to define and manage your infrastructure, rather than manually configuring resources through a user interface.
+                    </p>
+                  </div>
+                  <div className="col mb-5 mb-md-0 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Resource provisioning:</h2>
+                    <p className="mb-0">
+                      We will be mindful of creating and provisioning new resources, such as virtual machines or storage containers.
+                    </p>
+                  </div>
+
+                  <div className="col mb-5 mb-md-0 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Scalability:</h2>
+                    <p className="mb-0">
+                      We will scale up or down your infrastructure and applications in response to changing demands.
+                    </p>
+                  </div>
+
+                  <div className="col h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
+                    <h2 className="h5">Configuration management: </h2>
+                    <p className="mb-0"> ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)</p>
+                  </div>
+                  <div className="col mb-5 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
+                    <h2 className="h5">Deployment automation:</h2>
+                    <p className="mb-0">ClEffex takes care of releasing updates and new versions of your applications.</p>
+                  </div>
+
+                  <div className="col mb-5 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
+                    <h2 className="h5">Monitoring and alerting:</h2>
+                    <p className="mb-0">We monitor and manage your infrastructure and applications (and will solve any problems raised by the application).</p>
+                  </div>
+
+                  <div className="col mb-5 h-100">
+                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
+                    <h2 className="h5">Cost optimization:</h2>
+                    <p className="mb-0">CLeFFeX helps you optimize your use of resources in order to minimize costs.</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-        {/* <!-- Testimonial section--> */}
-        <div className="py-5 bg-light">
+
+        {/* <!-- Process section--> */}
+        <section className="py-5" id="features">
           <div className="container px-5 my-5">
-            <div className="row gx-5 justify-content-center">
-              <div className="col-lg-10 col-xl-7">
-                <div className="text-center">
-                  <div className="fs-4 mb-4 fst-italic">"Working with Start Bootstrap templates has saved me tons of development time when building new projects! Starting with a Bootstrap template just makes things easier!"</div>
-                  <div className="d-flex align-items-center justify-content-center">
-                    <img className="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="..." />
-                    <div className="fw-bold">
-                      Tom Ato
-                      <span className="fw-bold text-primary mx-1">/</span>
-                      CEO, Pomodoro
-                    </div>
-                  </div>
-                </div>
+            <Container>
+              <Row className="text-center">
+                <h2 className="h5">PROCESS:</h2>
+                <h2 className="fw-bolder mb-0">Deploy your app in 3 steps </h2>
+
+              </Row>
+              <br />
+              <br />
+              <Row>
+                <Col >
+                  <h2 className="h5">1 Create Plan</h2>
+                  <p className="mb-0">
+                    Select components like App, Load Balancers and drag and drop to plan area
+                  </p>
+                </Col>
+                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
+              </Row>
+              <br />
+              <br />
+              <Row className="bg-light">
+                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
+                <Col >
+                  <h2 className="h5">2 Configure Plan</h2>
+                  <p className="mb-0">
+                    Configure EC2.  <br />
+                    Configure DataBase<br />
+                    Configure Load Balancer<br />
+                  </p>
+                </Col>
+              </Row>
+              <br />
+              <br />
+              <Row>
+                <Col >
+                  <h2 className="h5">3 Deploy Plan</h2>
+                  <p className="mb-0">
+                    Configure EC2 IAM<br />
+                    Deploy App : Create required AWS assets in backend
+                  </p>
+                </Col>
+                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
+              </Row>
+              <br />
+              <br />
+              <Row className="bg-light">
+                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
+                <Col >
+                  <h2 className="h5">4 Monitor Plan</h2>
+                  <p className="mb-0">
+                    Monitor health of  EC2  <br />
+                    Monitor health of  DataBase  <br />
+                    Monitor health of  LoadBalancer  <br />
+                  </p>
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        </section>
+
+        {/* <!-- Cant wait--> */}
+        <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+          <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+            <div className="mb-4 mb-xl-0">
+              <div className="fs-3 fw-bold text-white">Wanna join our waitlist</div>
+            </div>
+            <div className="ms-xl-4">
+              <div className="input-group mb-2">
+                <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
+                <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
               </div>
+              <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
             </div>
           </div>
-        </div>
+        </aside>
+
+        {/* <!-- Status Quo section--> */}
+        <section className="py-5" id="features">
+          <div className="container px-5 my-5">
+            <Container>
+              <Row>
+                <Col >
+                  <p className="mb-0 text-center">Status Quo</p>
+                  <h2 className="h5  text-center">Complexity</h2>
+                  <img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." />
+                </Col>
+                <Col>
+                  <p className="mb-0 text-center">Simplified Deployment</p>
+                  <h2 className="h5  text-center">Piece of Mind</h2>
+                  <img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." />
+                </Col>
+              </Row>
+            </Container>
+          </div>
+        </section>
+
+
         {/* <!-- Blog preview section--> */}
-        <section className="py-5">
+        <section className="py-5 bg-light">
           <div className="container px-5 my-5">
             <div className="row gx-5 justify-content-center">
               <div className="col-lg-8 col-xl-6">
@@ -215,25 +371,27 @@ function Home() {
                 </div>
               </div>
             </div>
-            {/* <!-- Call to action--> */}
-            <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
-              <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
-                <div className="mb-4 mb-xl-0">
-                  <div className="fs-3 fw-bold text-white">New products, delivered to you.</div>
-                  <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
-                </div>
-                <div className="ms-xl-4">
-                  <div className="input-group mb-2">
-                    <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
-                    <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
-                  </div>
-                  <div className="small text-white-50">We care about privacy, and will never share your data.</div>
-                </div>
-              </div>
-            </aside>
           </div>
         </section>
       </main>
+
+      {/* <!-- Call to action--> */}
+      <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
+        <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
+          <div className="mb-4 mb-xl-0">
+            <div className="fs-3 fw-bold text-white">To know more about deploy your app fast</div>
+            <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
+          </div>
+          <div className="ms-xl-4">
+            <div className="input-group mb-2">
+              <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
+              <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
+            </div>
+            <div className="small text-white-50">We care about privacy, and will never share your data.</div>
+          </div>
+        </div>
+      </aside>
+
       {/* // <!-- Footer--> */}
       <footer className="bg-dark py-4 mt-auto">
         <div className="container px-5">
