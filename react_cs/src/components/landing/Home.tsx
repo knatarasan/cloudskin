@@ -3,19 +3,51 @@ import Container from "react-bootstrap/Container";
 import logo from "../../static/images/logo3.png";
 import landing_page_img from "../../static/images/depict_product.png";
 import create_plan_img from "../../static/images/create_plan.png";
+import how_to_use_img from "../../static/images/landing_page_eng.png"
 import { useContext } from "react";
 import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
-import { Col, Row, Nav, Navbar, Button } from "react-bootstrap";
+import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
 
   return (
     <div>
+
+
+      <style type="text/css">
+        {`
+
+    .navbar-custom {
+      background-color: #72ADDE;
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-text {
+      color: green;
+    }
+
+    .card-title-motivation-gradient {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to right, #fa0202,
+        #fc0a0a, #ff1717, #ff2424, #ff3838);
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+
+    .card-title-features-gradient {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(to right, #0711db,
+        #2f39fa, #525aff, #4d85ff, #02bae3);
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+    }
+
+    `}
+      </style>
+
       <main className="flex-shrink-0">
         {/* Navigation */}
-        <Navbar className="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+        <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom" >
           <div className="container px-5">
             <Link to="/">
               <Navbar.Brand>
@@ -63,7 +95,7 @@ function Home() {
           </div>
         </Navbar>
         {/* Header */}
-        <header className="bg-dark py-5">
+        <header className="bg-primary py-5">
           <div className="container px-5">
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
@@ -77,63 +109,141 @@ function Home() {
                   </p>
 
                   <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                    <a className="btn btn-primary btn-lg px-4 me-sm-3" href="#features">Get Started</a>
+                    <a className="btn btn-light btn-lg px-4 me-sm-3" href="#features">Get Started</a>
                     <a className="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
                   </div>
                 </div>
               </div>
-              <div className="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img className="img-fluid rounded-3 my-5" src={landing_page_img} alt="..." /></div>
+              <div className="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img className="img-fluid rounded-3 my-5" src={how_to_use_img} alt="..." /></div>
             </div>
           </div>
         </header>
 
         {/* <!-- Motivation section--> */}
         <section className="py-5" id="features">
-          <div className="container px-5 my-5">
-            <div className="row gx-5">
-              <div className="col-lg-4 mb-5 mb-lg-0"><h2 className="fw-bolder mb-0">Current deployment process is Complex, Slow and requires Deeper expertise in AWS </h2></div>
-              <div className="col-lg-8">
-                <div className="row gx-5 row-cols-1 row-cols-md-2">
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Infrastructure complexity:</h2>
-                    <p className="mb-0">
+
+          <Container>
+            <Row className="text-center">
+              <h2 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h2>
+            </Row>
+            <br />
+            <br />
+            <Row>
+              <Col>
+                <Card
+                  bg="#F8F4F3"
+                  background-image="card-title-motivation-gradient"
+                  border="danger"
+                  key="light"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100"
+                >
+
+                  <Card.Body>
+                    <Card.Title className="card-title-motivation-gradient"><strong>Infrastructure Complexity:</strong></Card.Title><br />
+                    <Card.Text>
                       In the cloud, you are responsible for managing the infrastructure that your applications run on. This includes things like choosing the right instance types, setting up load balancers, and configuring network and security settings.
-                    </p>
-                  </div>
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Managing dependencies:</h2>
-                    <p className="mb-0">
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+
+                  bg="#F8F4F3"
+                  border="danger"
+                  key="light"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100"
+                >
+
+                  <Card.Body>
+                    <Card.Title className="card-title-motivation-gradient"><strong>Managing dependencies:</strong></Card.Title>
+                    <Card.Text>
                       Cloud applications often have a lot of dependencies, such as third-party libraries and APIs. Managing these dependencies can be complex, especially if you need to ensure that they are all compatible with each other and with the cloud platform you are using.
-                    </p>
-                  </div>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <Row className="bg-light">
+              <Col>
+                <Card
+                  bg="#F8F4F3"
+                  border="danger"
+                  key="light"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100"
+                >
 
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Security:</h2>
-                    <p className="mb-0">
+                  <Card.Body>
+                    <Card.Title className="card-title-motivation-gradient"><strong>Security:</strong></Card.Title>
+                    <Card.Text>
                       Ensuring that your applications are secure in the cloud is important, but it can also be complex. You need to consider things like access controls, encryption, and network security.
-                    </p>
-                  </div>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
 
-                  <div className="col h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Scaling and availability: </h2>
-                    <p className="mb-0">In the cloud, you need to design your applications to be scalable and highly available. This means designing them to be able to handle sudden increases in traffic, and to be able to recover from failures without downtime.</p>
-                  </div>
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
-                    <h2 className="h5">Integration with other services:</h2>
-                    <p className="mb-0">Cloud platforms offer a wide range of services that can be used to build and deploy applications. However, integrating these services can be complex, especially if you need to connect them to on-premises systems or other third-party services.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="row gx-5">
-                <h2 className="fw-bolder mb-0"><i>At ClEffex we deploy and manage your cloud application</i></h2>
-              </div>
-            </div>
-          </div>
+              </Col>
+              <Col >
+                <Card
+                  bg="#F8F4F3"
+                  border="danger"
+                  key="light"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100"
+                >
+
+                  <Card.Body>
+                    <Card.Title className="card-title-motivation-gradient"><strong>Scaling and availability:</strong></Card.Title>
+                    <Card.Text>
+                      In the cloud, you need to design your applications to be scalable and highly available. This means designing them to be able to handle sudden increases in traffic, and to be able to recover from failures without downtime.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <Row>
+              <Col >
+              </Col>
+              <Col>
+                <Card
+                  bg="#F8F4F3"
+                  border="danger"
+                  key="light"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100"
+                >
+
+                  <Card.Body>
+                    <Card.Title className="card-title-motivation-gradient"><strong>Integration with other services:</strong></Card.Title>
+                    <Card.Text>
+                      Cloud platforms offer a wide range of services that can be used to build and deploy applications. However, integrating these services can be complex, especially if you need to connect them to on-premises systems or other third-party services.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+
+              </Col>
+            </Row>
+            <br />
+            <br />
+          </Container>
+
+          <Row className="text-center">
+            <h2 className="h5">At ClEffex we deploy and manage your cloud application </h2>
+          </Row>
+
+
         </section>
 
         {/* <!-- Features section--> */}
