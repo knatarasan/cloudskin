@@ -21,7 +21,6 @@ function Home() {
   return (
     <div>
 
-
       <style type="text/css">
         {`
 
