@@ -21,7 +21,17 @@ Release 1
 				- Show status of plan
 				- Edit plan
 				- re-deploy
+##### References
+1. [Authentication tutorial](https://medium.com/@sushil-kamble/django-rest-framework-react-authentication-workflow-2022-part-1-a21f22b3f358)
+2. [Enable swagger documentation for django restframework ](https://www.jasonmars.org/2020/04/22/add-swagger-to-django-rest-api-quickly-4-mins-without-hiccups/)
+3. [Implement Authorization in DRF Django Rest Framework](https://testdriven.io/blog/drf-permissions/)
+4. [Core params to create postgres](https://pgtune.leopard.in.ua/)
+5. [How to prepare IAM user](https://src-bin.com/an-aws-account-just-for-getting-into-other-aws-accounts/)
+6. [skin for cloud from GCP](https://cloud.google.com/blog/topics/developers-practitioners/introducing-google-cloud-architecture-diagramming-tool)
+7. [React Router and Link](https://www.freecodecamp.org/news/react-router-tutorial/)
 
+Business
+1. [Startup checklist ](https://artistic-aura-eff.notion.site/The-Startup-Checklist-89ae7a59975b4064b4a9fff146f2ce4c)
 #### User flow
 
 User --> login --> www.cs.io -->

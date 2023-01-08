@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
@@ -6,18 +6,48 @@ import { UserContext } from "../../context/Context";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [plans, setPlans] = useState<any>();
+
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  console.log("currentUser value from context :", currentUser);
+  // console.log("currentUser value from context :", currentUser);
   const [authenticated, setAuthenticated] = useState(currentUser);
 
   const handleLogout = (e: React.SyntheticEvent): void => {
-    setAuthenticated({});
-    // localStorage.setItem("authenticated", false);
-    setCurrentUser({});
+    setAuthenticated({
+      username: '',
+      email: '',
+      tokenAccess: '',
+      tokenRefresh: '',
+      loggedIn: false
+    });
+    setCurrentUser(undefined);
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");
-
   };
+
+  // const loadPlan = (): void => {
+
+  //   // console.log("Current User at Dash. ", currentUser.tokenAccess);
+
+  // }
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:3000/plan/", {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + currentUser.tokenAccess
+      }
+    }).then((response) => {
+
+      if (response.status !== 200) {
+        console.log("Something went wrong!", response);
+      }
+      return response.json()
+    }).then((data) => {
+      setPlans(data)
+    })
+  }, [])
+
 
   if (!authenticated) {
     console.log("not auth");
@@ -35,9 +65,9 @@ const Dashboard = () => {
             </Link>
             <Nav className="me-auto">
               <Navbar.Text>
-                Signed in as: <a href="#login">{'username' in currentUser ? "welcome to " + currentUser.username : null}</a>
+                {'username' in currentUser ? "Signed in:  " + currentUser.username : null}
               </Navbar.Text>
-              <Nav.Link href="#" onClick={handleLogout}>Logout</Nav.Link>
+              <Nav.Link href="" onClick={handleLogout}>Logout</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
@@ -48,7 +78,7 @@ const Dashboard = () => {
           <Row>
             <Col><h4> Plans </h4></Col>
             <Col></Col>
-            <Col><Nav.Link href="/plan"><Button variant="outline-primary" size="sm">Create plan</Button></Nav.Link></Col>
+            <Col><Link to={`/plan/${null}`}><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
             <Row>
             </Row>
           </Row>
@@ -65,32 +95,22 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Dev App 1</td>
-                    <td>Deployed </td>
-                    <td>Running</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Prod App 1</td>
-                    <td>Not Deployed</td>
-                    <td>NA</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>Prod App 2</td>
-                    <td>Deployed</td>
-                    <td>Running</td>
-                  </tr>
+                  {/* {console.log('plans here',plans)} */}
+                  {plans?.map((plan: any) => (
+
+                    <tr>
+                      <td>
+                        <Link to={`/plan/${plan.id}`}>{plan.id}</Link></td>
+                      <td>{plan.owner}</td>
+                      <td>{plan.deploy_status}</td>
+                      <td>{plan.running_status}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
-
-
             </Col>
           </Row>
         </Container>
-
       </>
     );
   }

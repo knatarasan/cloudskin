@@ -1,32 +1,36 @@
-# from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from rest_framework import serializers
-from .models import Graph, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
-import logging
 from .services import EC2Service
+import logging
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
-class GraphSerializer(serializers.Serializer):
+class PlanSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
-    graph = serializers.JSONField()
+    plan = serializers.JSONField()
+    deploy_status = serializers.IntegerField()
+    running_status = serializers.IntegerField()
 
     def create(self, validated_data):
         '''
-        create and return a new `Graph` , given the validated data
+        create and return a new `Plan` , given the validated data
         '''
-        logger.info("Graph saved")
-        graph = Graph.objects.create(**validated_data)
+        logger.info("Plan saved")
+        plan = Plan.objects.create(**validated_data)
 
-        return graph
+        return plan
 
     def update(self, instance, validated_data):
-        instance.graph = validated_data.get('graph', instance.graph)
+        instance.plan = validated_data.get('plan', instance.plan)
+        logger.info(f'instance values {str(validated_data)}')
         instance.save()
-        logger.info("Graph updated")
+        logger.info("Plan updated")
         return instance
 
 
@@ -76,15 +80,16 @@ class AwsCredsSerializer(serializers.Serializer):
         return instance
 
 
-# class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-#
-#     @classmethod
-#     def get_token(cls, user):
-#         token = super(MyTokenObtainPairSerializer, cls).get_token(user)
-#
-#         # Add custom claims
-#         token['username'] = user.username
-#         return token
+class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
+
+    @classmethod
+    def get_token(cls, user):
+        token = super(CSTokenObtainPairSerializer, cls).get_token(user)
+
+        # Add custom claims
+        token['username'] = user.username
+        token['email'] = user.email
+        return token
 
 
 class UserSerializer(serializers.ModelSerializer):

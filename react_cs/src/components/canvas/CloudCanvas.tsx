@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, memo, DragEvent } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo, DragEvent, useContext } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -20,16 +20,16 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import {
-  createGraph,
-  updateGraph,
+  // createPlan,
+  // updatePlan,
   createInstance,
 } from "../../services/api.service";
 import Sidebar from "./Sidebar";
-
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
-
 import "./CloudCanvas.css";
+import { UserContext } from "../../context/Context";
+import { useParams } from 'react-router-dom';
 
 const initialNodes: Node[] = [];
 
@@ -37,13 +37,19 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  const { plan_id_edit } = useParams()
+  // console.log("param id ", plan_id_edit)
+  const [planId, setPlanId] = useState<number | null>(null);
+
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
+  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
 
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [graphId, setGraphId] = useState(null);
+
   // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
@@ -51,6 +57,7 @@ const DnDFlow = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
+
 
   // useEffect(() => {
   //   console.log("inside useEffect", health);
@@ -71,10 +78,46 @@ const DnDFlow = () => {
   //   )
   // );
 
+  useEffect(() => {
+
+    const requestOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + currentUser.tokenAccess,
+      },
+    };
+    fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
+      setPlanId(Number(plan_id_edit))
+      
+      if(Number(plan_id_edit) ){
+        setSaveUpdate(false)
+      }
+      return response.json()
+    }).then((data) => {
+      const flow = JSON.parse(data.plan);
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        // setViewPort({ x, y, zoom });
+      }
+    })
+  }, [])
+
   const onConnect = useCallback<OnConnect>(
     (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  // const retrievePlan = useCallback(() => {
+  //   const restoreFlow = async () => {
+
+  //   };
+  //   restoreFlow();
+
+  // }, [setNodes]);
+  // // }, [setNodes, setViewPort]);
+
 
   const onSave = () => {
     const getCircularReplacer = () => {
@@ -89,25 +132,62 @@ const DnDFlow = () => {
         return value;
       };
     };
-    // update graph
-    if (graphId && reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      // updateGraph(flow, graphId);
-      console.log("onSave graph updated id", graphId);
-      // create new graph in backend
-    } else if (reactFlowInstance) {
+
+    console.log('BEFORE save or update ',planId);
+    if (!planId && reactFlowInstance) {
+      console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
-      console.log('flow_obj', flow_obj)
       localStorage.setItem("flow-persist", flow_obj);
 
-      // Graph stored in server
-      createGraph(flow_obj).then((data) => {
-        setGraphId(data.id);
+      const plan_obj = {
+        plan: flow_obj,
+        // name: 'unnammed',
+        deploy_status: 'PREPARED',
+        running_status: 'NA',
+
+      };
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + currentUser.tokenAccess
+        },
+        body: JSON.stringify(plan_obj),
+      };
+      fetch("/plan/", requestOptions).then((response) => {
+        return response.json();
+      }).then((data) => {
+        setPlanId(data.id);
         setSaveUpdate(false);
-      });
+        console.log('Plan successfully saved ', data.id)
+      })
+    } else if (reactFlowInstance) {
+      // update plan
+      console.log("For update", planId);
+      const flow = reactFlowInstance.toObject();
+      const data = {
+        plan: JSON.stringify(flow),
+        deploy_status: 'Prepared',
+        running_status: 'Stopped'
+      };
+
+      const requestOptions = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + currentUser.tokenAccess,
+        },
+        body: JSON.stringify(data),
+      }
+      fetch(`/plan/${planId}`, requestOptions).then((response) => {
+        return response.json();
+      }).then((data) => {
+        console.log('Plan successfully updated ', data.id)
+      })
     }
-  };
+  }
+
 
   // const onCreate = (e) => {
   //   createInstance().then((data) => {
@@ -119,20 +199,6 @@ const DnDFlow = () => {
   //   });
   // };
 
-  // const onRestore = useCallback(() => {
-  //   const restoreFlow = async () => {
-  //     const flow = JSON.parse(localStorage.getItem("flow-persist"));
-
-  //     if (flow) {
-  //       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-  //       setNodes(flow.nodes || []);
-  //       setEdges(flow.edges || []);
-  //       setViewPort({ x, y, zoom });
-  //     }
-  //   };
-
-  //   restoreFlow();
-  // }, [setNodes, setViewPort]);
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -157,10 +223,6 @@ const DnDFlow = () => {
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      console.log(event);
-
-      // if(reactFlowWrapper.current && reactFlowInstance) {
-      // }
 
       const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
@@ -175,9 +237,11 @@ const DnDFlow = () => {
         let comp = null;
 
         if (icon === "App") {
-          comp = <EC2Icon size={size} />;
+          // comp = <EC2Icon size={size} />;
+          comp = "EC2"
         } else if (icon === "LB") {
-          comp = <LoadBalancerIcon size={size} />;
+          // comp = <LoadBalancerIcon size={size} />;
+          comp = "LB"
         }
 
         return {
@@ -259,8 +323,9 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
+
               <button id='save_update' onClick={onSave}>
-                {save_update ? "Save Graph" : "Update Graph"}
+                {save_update ? "Save Plan" : "Update Plan"}
               </button>
               {/*              <button onClick={onCreate}>Create Instance</button>
             <button onClick={updateNode}>Refresh Status</button> */}
