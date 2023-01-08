@@ -1,7 +1,7 @@
 from rest_framework import permissions
 import logging
 
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 class PlanUserPermission(permissions.BasePermission):
     edit_methods = ("PUT", "PATCH")

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, memo, DragEvent, useContext } from "react";
+import React, { useState, useRef, useCallback, useEffect, memo, DragEvent, useContext } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -22,6 +23,8 @@ import "reactflow/dist/style.css";
 import {
   // createPlan,
   // updatePlan,
+  // createPlan,
+  // updatePlan,
   createInstance,
 } from "../../services/api.service";
 import Sidebar from "./Sidebar";
@@ -43,13 +46,20 @@ const DnDFlow = () => {
   const [planId, setPlanId] = useState<number | null>(null);
 
   const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { plan_id_edit } = useParams()
+  // console.log("param id ", plan_id_edit)
+  const [planId, setPlanId] = useState<number | null>(null);
+
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
   // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
+  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
 
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
+
 
   // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
@@ -58,6 +68,7 @@ const DnDFlow = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
+
 
 
   // useEffect(() => {
@@ -137,6 +148,10 @@ const DnDFlow = () => {
     console.log('BEFORE save or update ',planId);
     if (!planId && reactFlowInstance) {
       console.log("For save", planId);
+
+    console.log('BEFORE save or update ',planId);
+    if (!planId && reactFlowInstance) {
+      console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
       localStorage.setItem("flow-persist", flow_obj);
@@ -187,6 +202,8 @@ const DnDFlow = () => {
         console.log('Plan successfully updated ', data.id)
       })
     }
+  }
+
   }
 
 
@@ -240,7 +257,11 @@ const DnDFlow = () => {
         if (icon === "App") {
           // comp = <EC2Icon size={size} />;
           comp = "EC2"
+          // comp = <EC2Icon size={size} />;
+          comp = "EC2"
         } else if (icon === "LB") {
+          // comp = <LoadBalancerIcon size={size} />;
+          comp = "LB"
           // comp = <LoadBalancerIcon size={size} />;
           comp = "LB"
         }
@@ -325,7 +346,9 @@ const DnDFlow = () => {
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
 
+
               <button id='save_update' onClick={onSave}>
+                {save_update ? "Save Plan" : "Update Plan"}
                 {save_update ? "Save Plan" : "Update Plan"}
               </button>
               {/*              <button onClick={onCreate}>Create Instance</button>

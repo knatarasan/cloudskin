@@ -8,8 +8,11 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from 'react-bootstrap/Alert';
+import Alert from 'react-bootstrap/Alert';
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
+import jwt_decode from "jwt-decode";
+
 import jwt_decode from "jwt-decode";
 
 
@@ -23,7 +26,7 @@ const Login = () => {
   // );
   const users = [{ username: "jane", password: "jane" }];
 
-  type MyUser = {
+  type User = {
     email: string,
     exp: number,
     iat: number,
@@ -68,6 +71,7 @@ const Login = () => {
             <a href="/">
               <img src={logo} width={75} height={"auto"} />
             </a>
+            <Form onSubmit={login}>
             <Form onSubmit={login}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
