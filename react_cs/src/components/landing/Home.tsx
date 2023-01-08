@@ -28,7 +28,11 @@ function Home() {
     }
 
     .card-bg-gradient {
-      background: linear-gradient(to right, #F8F4F3,#e1fafa);
+      background: linear-gradient(to right, #ffffff,#ebf7f7);
+    }
+
+    .alt-bg {
+      background: #ebf7f7
     }
 
     .card-title-motivation-gradient {
@@ -123,25 +127,24 @@ function Home() {
           </div>
         </header>
 
-        {/* <!-- Motivation section--> */}
-        <section className="py-5" id="features">
 
+        {/* <!-- Motivation section--> */}
+        <section className="py-5 alt-bg" id="features">
           <Container>
             <Row className="text-center">
-              <h2 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h2>
+              <h4 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h4>
             </Row>
             <br />
             <br />
             <Row>
               <Col>
                 <Card
-                  border="danger"
+                  border="light"
                   key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
-
                   <Card.Body>
                     <Card.Title className="card-title-motivation-gradient"><strong>Infrastructure Complexity:</strong></Card.Title><br />
                     <Card.Text>
@@ -151,14 +154,13 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-              <Card
-                  border="danger"
+                <Card
+                  border="light"
                   key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
-
                   <Card.Body>
                     <Card.Title className="card-title-motivation-gradient"><strong>Managing dependencies:</strong></Card.Title>
                     <Card.Text>
@@ -167,19 +169,14 @@ function Home() {
                   </Card.Body>
                 </Card>
               </Col>
-            </Row>
-            <br />
-            <br />
-            <Row className="bg-light">
               <Col>
-              <Card
-                  border="danger"
+                <Card
+                  border="light"
                   key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
-
                   <Card.Body>
                     <Card.Title className="card-title-motivation-gradient"><strong>Security:</strong></Card.Title>
                     <Card.Text>
@@ -187,17 +184,19 @@ function Home() {
                     </Card.Text>
                   </Card.Body>
                 </Card>
-
               </Col>
+            </Row>
+            <br />
+            <br />
+            <Row>
               <Col >
-              <Card
-                  border="danger"
+                <Card
+                  border="light"
                   key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
-
                   <Card.Body>
                     <Card.Title className="card-title-motivation-gradient"><strong>Scaling and availability:</strong></Card.Title>
                     <Card.Text>
@@ -205,23 +204,15 @@ function Home() {
                     </Card.Text>
                   </Card.Body>
                 </Card>
-
-              </Col>
-            </Row>
-            <br />
-            <br />
-            <Row>
-              <Col >
               </Col>
               <Col>
-              <Card
-                  border="danger"
+                <Card
+                  border="light"
                   key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
-
                   <Card.Body>
                     <Card.Title className="card-title-motivation-gradient"><strong>Integration with other services:</strong></Card.Title>
                     <Card.Text>
@@ -229,78 +220,153 @@ function Home() {
                     </Card.Text>
                   </Card.Body>
                 </Card>
-
               </Col>
+              <Col></Col>
             </Row>
             <br />
             <br />
           </Container>
 
           <Row className="text-center">
-            <h2 className="h5">At ClEffex we deploy and manage your cloud application </h2>
+            <h2><strong>At ClEffex we deploy and manage your cloud application</strong></h2>
           </Row>
-
-
         </section>
 
         {/* <!-- Features section--> */}
-        <section className="py-5 bg-light" id="features">
-          <div className="container px-5 my-5">
-            <div className="row gx-5">
-              <div className="col-lg-4 mb-5 mb-lg-0">
-                <h2 className="h5">FEATURES:</h2>
-                <h2 className="fw-bolder mb-0">Deploy your application simply and fast </h2></div>
-              <div className="col-lg-8">
-                <div className="row gx-5 row-cols-1 row-cols-md-2">
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Infrastructure as a plan:</h2>
-                    <p className="mb-0">
+        <section className="py-5 bg-primary" id="features">
+          <Container>
+            <Row className="text-center">
+              <h5 className="fw-bolder mb-0">FEATURES:</h5>
+              <h2 className="fw-bolder mb-0">Deploy your application simply and fast</h2>
+            </Row>
+            <br />
+            <br />
+            <Row>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Infrastructure as a plan:</strong></Card.Title><br />
+                    <Card.Text>
                       This allows you to use block elements to define and manage your infrastructure, rather than manually configuring resources through a user interface.
-                    </p>
-                  </div>
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Resource provisioning:</h2>
-                    <p className="mb-0">
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Resource provisioning:</strong></Card.Title>
+                    <Card.Text>
                       We will be mindful of creating and provisioning new resources, such as virtual machines or storage containers.
-                    </p>
-                  </div>
-
-                  <div className="col mb-5 mb-md-0 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Scalability:</h2>
-                    <p className="mb-0">
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Scalability:</strong></Card.Title>
+                    <Card.Text>
                       We will scale up or down your infrastructure and applications in response to changing demands.
-                    </p>
-                  </div>
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <Row>
+              <Col >
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
 
-                  <div className="col h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-toggles2"></i></div>
-                    <h2 className="h5">Configuration management: </h2>
-                    <p className="mb-0"> ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)</p>
-                  </div>
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
-                    <h2 className="h5">Deployment automation:</h2>
-                    <p className="mb-0">ClEffex takes care of releasing updates and new versions of your applications.</p>
-                  </div>
-
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
-                    <h2 className="h5">Monitoring and alerting:</h2>
-                    <p className="mb-0">We monitor and manage your infrastructure and applications (and will solve any problems raised by the application).</p>
-                  </div>
-
-                  <div className="col mb-5 h-100">
-                    <div className="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i className="bi bi-collection"></i></div>
-                    <h2 className="h5">Cost optimization:</h2>
-                    <p className="mb-0">CLeFFeX helps you optimize your use of resources in order to minimize costs.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Configuration management:</strong></Card.Title>
+                    <Card.Text>
+                      ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Deployment automation:</strong></Card.Title>
+                    <Card.Text>
+                      ClEffex takes care of releasing updates and new versions of your applications.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Monitoring and alerting:</strong></Card.Title>
+                    <Card.Text>
+                      We monitor and manage your infrastructure and applications (and will solve any problems raised by the application).
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <Row>
+              <Col>
+                <Card
+                  border="primary"
+                  key="primary"
+                  text='dark'
+                  style={{ width: '18rem' }}
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                >
+                  <Card.Body>
+                    <Card.Title className="card-title-features-gradient"><strong>Cost optimization:</strong></Card.Title>
+                    <Card.Text>
+                      CLeFFeX helps you optimize your use of resources in order to minimize costs.
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+            <br />
+            <br />
+          </Container>
         </section>
 
         {/* <!-- Process section--> */}
