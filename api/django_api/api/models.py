@@ -15,10 +15,7 @@ class EC2(models.Model):
 
 class Plan(models.Model):
 
-class Plan(models.Model):
-
     owner = models.ForeignKey(
-        'auth.User', related_name='plan', on_delete=models.CASCADE
         'auth.User', related_name='plan', on_delete=models.CASCADE
     )
     plan = models.JSONField()

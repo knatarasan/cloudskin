@@ -8,13 +8,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Alert from 'react-bootstrap/Alert';
-import Alert from 'react-bootstrap/Alert';
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
-
-import jwt_decode from "jwt-decode";
-
 
 const Login = () => {
   const navigate = useNavigate();
@@ -55,7 +51,7 @@ const Login = () => {
       }
       return response.json()
     }).then((data) => {
-      const decoded_token: MyUser = jwt_decode(data.access)
+      const decoded_token: User = jwt_decode(data.access)
       setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh, loggedIn: true });
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/dashboard");
@@ -71,7 +67,6 @@ const Login = () => {
             <a href="/">
               <img src={logo} width={75} height={"auto"} />
             </a>
-            <Form onSubmit={login}>
             <Form onSubmit={login}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>Username</Form.Label>
