@@ -8,6 +8,12 @@ import { useContext } from "react";
 import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
 import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
+import { FaSitemap, FaMap } from 'react-icons/fa';
+import { AiOutlineArrowRight } from 'react-icons/ai';
+import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
+import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
+import { IoIosPulse } from 'react-icons/io';
+
 
 function Home() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -31,6 +37,9 @@ function Home() {
       background: linear-gradient(to right, #ffffff,#ebf7f7);
     }
 
+    .card-feature-bg-gradient {
+      background: linear-gradient(to right, #ffffff,#5DB1E9);
+    }
     .alt-bg {
       background: #ebf7f7
     }
@@ -136,7 +145,7 @@ function Home() {
             </Row>
             <br />
             <br />
-            <Row>
+            <Row xs={1} md={3} className="g-4">
               <Col>
                 <Card
                   border="light"
@@ -187,8 +196,7 @@ function Home() {
               </Col>
             </Row>
             <br />
-            <br />
-            <Row>
+            <Row xs={1} md={3} className="g-4">
               <Col >
                 <Card
                   border="light"
@@ -241,16 +249,17 @@ function Home() {
             </Row>
             <br />
             <br />
-            <Row>
+            <Row xs={1} md={3} className="g-4">
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><FaSitemap /> <AiOutlineArrowRight /> <FaMap /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Infrastructure as a plan:</strong></Card.Title><br />
                     <Card.Text>
                       This allows you to use block elements to define and manage your infrastructure, rather than manually configuring resources through a user interface.
@@ -259,14 +268,15 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><GrResources /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Resource provisioning:</strong></Card.Title>
                     <Card.Text>
                       We will be mindful of creating and provisioning new resources, such as virtual machines or storage containers.
@@ -275,14 +285,15 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><GiHealthIncrease /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Scalability:</strong></Card.Title>
                     <Card.Text>
                       We will scale up or down your infrastructure and applications in response to changing demands.
@@ -293,17 +304,18 @@ function Home() {
             </Row>
             <br />
             <br />
-            <Row>
+            <Row xs={1} md={3} className="g-4">
               <Col >
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
 
                   <Card.Body>
+                    <h1><GrConfigure /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Configuration management:</strong></Card.Title>
                     <Card.Text>
                       ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
@@ -312,14 +324,15 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><GrDeploy /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Deployment automation:</strong></Card.Title>
                     <Card.Text>
                       ClEffex takes care of releasing updates and new versions of your applications.
@@ -328,14 +341,15 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><IoIosPulse /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Monitoring and alerting:</strong></Card.Title>
                     <Card.Text>
                       We monitor and manage your infrastructure and applications (and will solve any problems raised by the application).
@@ -346,16 +360,17 @@ function Home() {
             </Row>
             <br />
             <br />
-            <Row>
+            <Row xs={1} md={3} className="g-4">
               <Col>
-                <Card
-                  border="primary"
-                  key="primary"
+              <Card
+                  border="dark"
+                  key="light"
                   text='dark'
-                  style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
+                  style={{ width: '18rem', border: '3px solid' }}
+                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
+                    <h1><GiPiggyBank /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Cost optimization:</strong></Card.Title>
                     <Card.Text>
                       CLeFFeX helps you optimize your use of resources in order to minimize costs.
