@@ -27,12 +27,16 @@ function Home() {
       color: green;
     }
 
+    .card-bg-gradient {
+      background: linear-gradient(to right, #F8F4F3,#e1fafa);
+    }
+
     .card-title-motivation-gradient {
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to right, #fa0202,
-        #fc0a0a, #ff1717, #ff2424, #ff3838);
+      background: linear-gradient(to right, #700808,#ff3838);
       -webkit-text-fill-color: transparent;
       -webkit-background-clip: text;
+    }
 
     .card-title-features-gradient {
       font-family: Arial, Helvetica, sans-serif;
@@ -131,13 +135,11 @@ function Home() {
             <Row>
               <Col>
                 <Card
-                  bg="#F8F4F3"
-                  background-image="card-title-motivation-gradient"
                   border="danger"
                   key="light"
                   text='dark'
                   style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100"
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
                 >
 
                   <Card.Body>
@@ -149,14 +151,12 @@ function Home() {
                 </Card>
               </Col>
               <Col>
-                <Card
-
-                  bg="#F8F4F3"
+              <Card
                   border="danger"
                   key="light"
                   text='dark'
                   style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100"
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
                 >
 
                   <Card.Body>
@@ -172,13 +172,12 @@ function Home() {
             <br />
             <Row className="bg-light">
               <Col>
-                <Card
-                  bg="#F8F4F3"
+              <Card
                   border="danger"
                   key="light"
                   text='dark'
                   style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100"
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
                 >
 
                   <Card.Body>
@@ -191,13 +190,12 @@ function Home() {
 
               </Col>
               <Col >
-                <Card
-                  bg="#F8F4F3"
+              <Card
                   border="danger"
                   key="light"
                   text='dark'
                   style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100"
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
                 >
 
                   <Card.Body>
@@ -216,13 +214,12 @@ function Home() {
               <Col >
               </Col>
               <Col>
-                <Card
-                  bg="#F8F4F3"
+              <Card
                   border="danger"
                   key="light"
                   text='dark'
                   style={{ width: '18rem' }}
-                  className="col mb-5 mb-md-0 h-100"
+                  className="col mb-5 mb-md-0 h-100 card-bg-gradient"
                 >
 
                   <Card.Body>
