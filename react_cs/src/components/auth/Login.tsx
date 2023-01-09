@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { api_host } from "../../env/global";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import Button from "react-bootstrap/Button";
@@ -11,7 +12,6 @@ import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
 
-
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
@@ -22,7 +22,7 @@ const Login = () => {
   // );
   const users = [{ username: "jane", password: "jane" }];
 
-  type MyUser = {
+  type User = {
     email: string,
     exp: number,
     iat: number,
@@ -36,7 +36,7 @@ const Login = () => {
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    fetch("http://127.0.0.1:3000/token/", {
+    fetch(`${api_host}/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -51,7 +51,7 @@ const Login = () => {
       }
       return response.json()
     }).then((data) => {
-      const decoded_token: MyUser = jwt_decode(data.access)
+      const decoded_token: User = jwt_decode(data.access)
       setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh, loggedIn: true });
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/dashboard");

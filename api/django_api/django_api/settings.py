@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-^i93n1dzwm_$fkupi+ck#!ngk^=))ih#$+a4f$46^15m&#c*ks
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -40,7 +40,7 @@ CORS_ORIGIN_WHITELIST = [
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 
@@ -195,6 +195,10 @@ LOGGING = {
         }
     },
     'loggers': {
+        '': {
+            'level': 'INFO',
+            'handlers': ['console', 'file']
+        },
         'django': {
             'level': 'INFO',
             'handlers': ['console', 'file']

@@ -10,7 +10,7 @@ class APIGraph(unittest.TestCase):
     def test_graph_post(self):
 
         # Make a post call
-        url = 'http://127.0.0.1:8000/graph/'
+        url = 'http://127.0.0.1:8000/plan/'
         mygraph = {'graph':{'my_key':'my_value'}}
         auth = HTTPBasicAuth('admin', 'admin')
         res = requests.post(url,json=mygraph,auth = auth).json()

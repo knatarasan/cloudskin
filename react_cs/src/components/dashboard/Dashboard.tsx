@@ -1,8 +1,9 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
-import logo from "../../static/images/cloud.png";
+import logo from "../../static/images/Clouds-with-gears-altair-enhanced.png";
 import { UserContext } from "../../context/Context";
+import { api_host } from "../../env/global";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Dashboard = () => {
   // }
 
   useEffect(() => {
-    fetch("http://127.0.0.1:3000/plan/", {
+    fetch(`${api_host}/plan/`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + currentUser.tokenAccess

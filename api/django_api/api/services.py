@@ -3,7 +3,7 @@ from .models import AwsCreds
 import logging
 from django.conf import settings
 import time
-logger = logging.getLogger('django')
+logger = logging.getLogger(__name__)
 
 
 class EC2Service:
