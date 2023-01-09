@@ -30,6 +30,7 @@ import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 import "./CloudCanvas.css";
 import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
+import { api_host } from "../../env/global";
 
 const initialNodes: Node[] = [];
 
@@ -37,17 +38,17 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
   // console.log("param id ", plan_id_edit)
   const [planId, setPlanId] = useState<number | null>(null);
 
-  const { currentUser, setCurrentUser } = useContext(UserContext);
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
-  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
 
+  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   // const [ec2Id, setEc2Id] = useState(null);
@@ -57,6 +58,7 @@ const DnDFlow = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
   // const { setViewPort } = useReactFlow();
+
 
 
   // useEffect(() => {
@@ -86,7 +88,7 @@ const DnDFlow = () => {
         Authorization: "Bearer " + currentUser.tokenAccess,
       },
     };
-    fetch(`/plan/${plan_id_edit}`, requestOptions).then((response) => {
+    fetch(`${api_host}/plan/${plan_id_edit}`, requestOptions).then((response) => {
       setPlanId(Number(plan_id_edit))
       
       if(Number(plan_id_edit) ){
@@ -136,6 +138,10 @@ const DnDFlow = () => {
     console.log('BEFORE save or update ',planId);
     if (!planId && reactFlowInstance) {
       console.log("For save", planId);
+
+    console.log('BEFORE save or update ',planId);
+    if (!planId && reactFlowInstance) {
+      console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
       localStorage.setItem("flow-persist", flow_obj);
@@ -155,7 +161,7 @@ const DnDFlow = () => {
         },
         body: JSON.stringify(plan_obj),
       };
-      fetch("/plan/", requestOptions).then((response) => {
+      fetch(`${api_host}/plan/`, requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         setPlanId(data.id);
@@ -180,12 +186,14 @@ const DnDFlow = () => {
         },
         body: JSON.stringify(data),
       }
-      fetch(`/plan/${planId}`, requestOptions).then((response) => {
+      fetch(`${api_host}/plan/${planId}`, requestOptions).then((response) => {
         return response.json();
       }).then((data) => {
         console.log('Plan successfully updated ', data.id)
       })
     }
+  }
+
   }
 
 
@@ -323,6 +331,7 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               {/* <span style='font-size:50px;'>&#128308;</span> */}
+
 
               <button id='save_update' onClick={onSave}>
                 {save_update ? "Save Plan" : "Update Plan"}

@@ -1,3 +1,5 @@
+import { api_host } from "../env/global";
+
 export async function createInstance() {
   const data = { ec2_instance_id: "not determined" };
   const username = "admin";
@@ -12,7 +14,7 @@ export async function createInstance() {
     body: JSON.stringify(data),
   };
   console.log("requestOptions", JSON.stringify(requestOptions));
-  const response = await fetch("/ec2/", requestOptions);
+  const response = await fetch(`${api_host}/ec2/`, requestOptions);
   console.log("Response", response);
   return await response.json();
 }
@@ -28,7 +30,7 @@ export async function createUser(data) {
     },
     body: JSON.stringify(data),
   };
-  const response = await fetch("/user/", requestOptions);
+  const response = await fetch(`${api_host}/user/`, requestOptions);
   // console.log("response", response);
   return await response.json();
 }
