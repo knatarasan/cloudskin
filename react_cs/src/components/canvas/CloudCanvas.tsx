@@ -47,6 +47,7 @@ const DnDFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
+  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
 
   // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
   // const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -192,8 +193,7 @@ const DnDFlow = () => {
         console.log('Plan successfully updated ', data.id)
       })
     }
-  }
-
+  };
   }
 
 
@@ -210,6 +210,7 @@ const DnDFlow = () => {
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
+    console.log("dragging ")
     event.dataTransfer.dropEffect = "move";
   }, []);
 
@@ -306,7 +307,7 @@ const DnDFlow = () => {
       <ReactFlowProvider>
         <Sidebar />
 
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+        <div id="main-canvas" className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
             edges={edges}

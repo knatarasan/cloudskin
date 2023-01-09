@@ -79,7 +79,7 @@ const Dashboard = () => {
           <Row>
             <Col><h4> Plans </h4></Col>
             <Col></Col>
-            <Col><Link to={`/plan/${null}`}><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
+            <Col><Link id="create_plan" to={`/plan/${null}`}><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
             <Row>
             </Row>
           </Row>
