@@ -1,0 +1,51 @@
+{
+  "$id": "https://cs.com/schemas/hardware",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Schema for VM",
+  "type": "object",
+  "properties": {
+    "credentials": {
+      "type": "object",
+      "properties": {
+        "string_field": {
+          "type": "string",
+          "default": "Default String"
+        },
+        "integer_field": {
+          "type": "integer"
+        },
+        "number_field": {
+          "type": "number"
+        },
+        "array_field": {
+          "type": "array"
+        },
+        "boolean_field": {
+          "type": "boolean"
+        },
+        "date_field": {
+          "type": "string",
+          "format": "date"
+        },
+        "select_field": {
+          "type": "string",
+          "default": "AWS",
+          "options" : [[1, "AWS"], [2, "Azure"], [3, "GCP"], [4, "Digital Ocean"]],
+          "order": 1
+        }
+      },
+      "required": [
+        "string_field",
+        "integer_field",
+        "number_field",
+        "array_field",
+        "boolean_field",
+        "date_field",
+        "select_field"
+      ]
+    }
+  },
+  "required": [
+    "credentials"
+  ]
+}
