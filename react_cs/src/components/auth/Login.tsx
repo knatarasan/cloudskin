@@ -11,6 +11,7 @@ import Alert from 'react-bootstrap/Alert';
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
+import axios from 'axios'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -35,27 +36,24 @@ const Login = () => {
 
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
-
-    fetch(`${api_host}/token/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        password
-      })
-    }).then((response) => {
-      if (response.status !== 200) {
-        console.log("Something went wrong!");
-      }
-      return response.json()
-    }).then((data) => {
-      const decoded_token: User = jwt_decode(data.access)
-      setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: data.access, tokenRefresh: data.refresh, loggedIn: true });
-      localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/dashboard");
+    axios.post(`${api_host}/token/`, { username, password }, {
     })
+      .then(function (response) {
+        console.log('axios res', response);
+        const decoded_token: User = jwt_decode(response.data.access)
+        setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: response.data.access, tokenRefresh: response.data.refresh, loggedIn: true });
+        localStorage.setItem("authTokens", JSON.stringify(response));
+        navigate("/dashboard");
+
+        if (response.status >= 200 && response.status < 300) {
+          console.log("Token successfully received", response.data.id)
+        } else {
+          console.log("Token not received", response.status)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
   };
 
 

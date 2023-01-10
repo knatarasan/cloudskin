@@ -4,6 +4,7 @@ import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap
 import logo from "../../static/images/Clouds-with-gears-altair-enhanced.png";
 import { UserContext } from "../../context/Context";
 import { api_host } from "../../env/global";
+import axios from 'axios'
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -26,27 +27,24 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  // const loadPlan = (): void => {
-
-  //   // console.log("Current User at Dash. ", currentUser.tokenAccess);
-
-  // }
-
   useEffect(() => {
-    fetch(`${api_host}/plan/`, {
+    axios.get(`${api_host}/plan/`, {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + currentUser.tokenAccess
       }
-    }).then((response) => {
-
-      if (response.status !== 200) {
-        console.log("Something went wrong!", response);
-      }
-      return response.json()
-    }).then((data) => {
-      setPlans(data)
     })
+      .then(function (response) {
+        if (response.status >= 200 && response.status < 300) {
+          console.log("Plans successfully retrieved", response.data.id)
+          setPlans(response.data)
+
+        } else {
+          console.log("Plans not retrieved", response.status)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
   }, [])
 
 
@@ -72,8 +70,6 @@ const Dashboard = () => {
             </Nav>
           </Container>
         </Navbar>
-
-
         <Container>
           <Row><br /></Row>
           <Row>

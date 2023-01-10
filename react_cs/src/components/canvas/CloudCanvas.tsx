@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, memo, DragEvent, useContext } from "react";
+import React, { useState, useRef, useCallback, useEffect, useContext } from "react";
 import ReactFlow, {
   Node,
   Edge,
@@ -8,22 +8,12 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Connection,
-  useReactFlow,
-  NodeChange,
-  EdgeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
   ReactFlowInstance,
   OnConnect,
   Position,
 
 } from "reactflow";
 import "reactflow/dist/style.css";
-import {
-  // createPlan,
-  // updatePlan,
-  createInstance,
-} from "../../services/api.service";
 import Sidebar from "./Sidebar";
 import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
 import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
@@ -33,93 +23,60 @@ import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
 import axios from 'axios';
 
-const initialNodes: Node[] = [];
-
 let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
-  // console.log("param id ", plan_id_edit)
+  console.log("param id ", plan_id_edit)
   const [planId, setPlanId] = useState<number | null>(null);
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
-
-  // const [reactFlowInstance, setReactFlowInstance] = useState<any>(null)
-  // const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
-  // const [ec2Id, setEc2Id] = useState(null);
   const [nodeData, setNodeData] = useState(null);
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isOpen, setIsOpen] = useState(false);
-  // const { setViewPort } = useReactFlow();
 
-
-
-  // useEffect(() => {
-  //   console.log("inside useEffect", health);
-  //   if (nodeData !== null) {
-  //     nodeData.style["background"] = health;
-  //     setNodeData(nodeData);
-  //   }
-  // }, [health]);
-
-  // const onConnect = useCallback((params) =>
-  //   setEdges(
-  //     (eds) => {
-  //       params["animated"] = true;
-  //       params["style"] = { stroke: "red" };
-  //       return addEdge(params, eds);
-  //     },
-  //     [setEdges]
-  //   )
-  // );
 
   useEffect(() => {
-
-    const requestOptions = {
+    axios.get(`${api_host}/plan/${plan_id_edit}`, {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + currentUser.tokenAccess,
-      },
-    };
-    fetch(`${api_host}/plan/${plan_id_edit}`, requestOptions).then((response) => {
-      setPlanId(Number(plan_id_edit))
-      
-      if(Number(plan_id_edit) ){
-        setSaveUpdate(false)
-      }
-      return response.json()
-    }).then((data) => {
-      const flow = JSON.parse(data.plan);
-      if (flow) {
-        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-        setNodes(flow.nodes || []);
-        setEdges(flow.edges || []);
-        // setViewPort({ x, y, zoom });
+        'Authorization': 'Bearer ' + currentUser.tokenAccess
       }
     })
+      .then(function (response) {
+        console.log('axios res', response);
+        setPlanId(Number(plan_id_edit))
+        if (Number(plan_id_edit)) {
+          setSaveUpdate(false)
+        }
+        const flow = JSON.parse(response.data.plan)
+        if (flow) {
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+        }
+
+        if (response.status >= 200 && response.status < 300) {
+          console.log("Plan successfully retrieved", response.data.id)
+        } else {
+          console.log("Plan not retrieved", response.status)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
   }, [])
 
   const onConnect = useCallback<OnConnect>(
     (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
-  // const retrievePlan = useCallback(() => {
-  //   const restoreFlow = async () => {
-
-  //   };
-  //   restoreFlow();
-
-  // }, [setNodes]);
-  // // }, [setNodes, setViewPort]);
 
 
   const onSave = () => {
@@ -136,92 +93,70 @@ const DnDFlow = () => {
       };
     };
 
-    console.log('BEFORE save or update ',planId);
+    console.log('BEFORE save or update ', planId, reactFlowInstance);
+
     if (!planId && reactFlowInstance) {
+
       console.log("For save", planId);
+      const flow = reactFlowInstance.toObject();
+      const flow_obj = JSON.stringify(flow, getCircularReplacer())
+      localStorage.setItem("flow-persist", flow_obj);
 
-      console.log('BEFORE save or update ', planId);
-      if (!planId && reactFlowInstance) {
+      const plan_obj = {
+        plan: flow_obj,
+        // name: 'unnammed',
+        deploy_status: 1,
+        running_status: 1,
 
-        console.log("For save", planId);
-        const flow = reactFlowInstance.toObject();
-        const flow_obj = JSON.stringify(flow, getCircularReplacer())
-        localStorage.setItem("flow-persist", flow_obj);
+      };
 
-        const plan_obj = {
-          plan: flow_obj,
-          // name: 'unnammed',
-          deploy_status: 1,
-          running_status: 1,
-
-        };
-
-        // save starts ###########
-        // const requestOptions = {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     'Authorization': 'Bearer ' + currentUser.tokenAccess
-        //   },
-        //   body: JSON.stringify(plan_obj),
-        // };
-        // console.log('url is ', `${api_host}/plan/`)
-        // fetch(`${api_host}/plan/`, requestOptions).then((response) => {
-        //   console.log('response ', response.status)
-        //   return response.json();
-        // }).then((data) => {
-
-        //   setPlanId(data.id);
-        //   setSaveUpdate(false);
-        //   console.log('Plan successfully saved ', data.id)
-        // }).catch((error) => {
-        //   console.log('error', error)
-        // });
-        // save ends ###########
-
-        axios.post(`${api_host}/plan/`, plan_obj, {
-          // axios.post('/plan/', plan_obj, {
-          headers: {
-            // 'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + currentUser.tokenAccess
+      axios.post(`${api_host}/plan/`, plan_obj, {
+        headers: {
+          'Authorization': 'Bearer ' + currentUser.tokenAccess
+        }
+      })
+        .then(function (response) {
+          console.log('axios res', response);
+          if (response.status >= 200 && response.status < 300) {
+            setPlanId(Number(response.data.id))
+            setSaveUpdate(false)
+            console.log("Plan successfully saved", response.data.id)
+          } else {
+            console.log("Plan not saved", response.status)
           }
         })
-          .then(function (response) {
-            console.log('axios res',response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-
-      } else if (reactFlowInstance) {
-        // update plan
-        console.log("For update", planId);
-        const flow = reactFlowInstance.toObject();
-        const data = {
-          plan: JSON.stringify(flow),
-          deploy_status: 'Prepared',
-          running_status: 'Stopped'
-        };
-
-        const requestOptions = {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + currentUser.tokenAccess,
-          },
-          body: JSON.stringify(data),
-        }
-        fetch(`${api_host}/plan/${planId}`, requestOptions).then((response) => {
-          return response.json();
-        }).then((data) => {
-          console.log('Plan successfully updated ', data.id)
-        }).catch((error) => {
-          console.log('error', error)
+        .catch(function (error) {
+          console.log(error);
         })
-      }
-    }
 
+
+    } else if (reactFlowInstance) {
+      // update plan
+      console.log("For update", planId);
+      const flow = reactFlowInstance.toObject();
+      const data = {
+        plan: JSON.stringify(flow),
+        deploy_status: 1,
+        running_status: 1
+      };
+
+      axios.put(`${api_host}/plan/${planId}`, data, {
+        headers: {
+          'Authorization': 'Bearer ' + currentUser.tokenAccess
+        }
+      })
+        .then(function (response) {
+          console.log('axios res', response);
+          if (response.status >= 200 && response.status < 300) {
+            console.log("Plan successfully updated", response.data.id)
+          } else {
+            console.log("Plan not updated", response.status)
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
   }
 
 
@@ -295,40 +230,6 @@ const DnDFlow = () => {
     [reactFlowInstance]
   );
 
-  // const onContextMenu = (e, node) => {
-  //   setNodeData(node);
-  //   e.preventDefault();
-  //   setPosition({ x: e.clientX, y: e.clientY });
-  //   setIsOpen(true);
-  //   console.log("onContextMenuNode", node.id);
-  // };
-
-  // const ContextMenu = memo(({ isOpen, position, actions = [], onMouseLeave }) =>
-  //   isOpen ? (
-  //     <div
-  //       style={{
-  //         position: "absolute",
-  //         left: position.x,
-  //         top: position.y,
-  //         zIndex: 1000,
-  //         border: "solid 1px #CCC",
-  //         borderRadius: 3,
-  //         backgroundColor: "white",
-  //         padding: 5,
-  //         display: "flex",
-  //         flexDirections: "column",
-  //       }}
-  //       onMouseLeave={onMouseLeave}
-  //     >
-  //       {actions.map((action) => (
-  //         <button key={action.label} onClick={action.effect}>
-  //           {action.label}
-  //         </button>
-  //       ))}
-  //     </div>
-  //   ) : null
-  // );
-
   return (
     <div className="dndflow">
       <ReactFlowProvider>
@@ -344,29 +245,13 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            // onNodeContextMenu={onContextMenu}
             fitView
           >
-            {/* <ContextMenu
-              isOpen={isOpen}
-              position={position}
-              onMouseLeave={() => setIsOpen(false)}
-              actions={[
-                { label: "Create Instance", effect: onCreate },
-                { label: "Update Status", effect: updateNode },
-              ]}
-            /> */}
             <Controls />
             <div className="save__controls">
-              {/* <span style='font-size:50px;'>&#128308;</span> */}
-
-
               <button id='save_update' onClick={onSave}>
                 {save_update ? "Save Plan" : "Update Plan"}
               </button>
-              {/*              <button onClick={onCreate}>Create Instance</button>
-            <button onClick={updateNode}>Refresh Status</button> */}
-              {/* <button onClick={onRestore}>Restore - !working</button> */}
             </div>
           </ReactFlow>
         </div>
