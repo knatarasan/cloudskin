@@ -1,3 +1,1 @@
-const api_host = 'http://54.193.172.190:8000'
-
-export { api_host}
+export const api_host = 'http://127.0.0.1:8000'

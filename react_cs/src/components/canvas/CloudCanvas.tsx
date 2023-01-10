@@ -31,6 +31,7 @@ import "./CloudCanvas.css";
 import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
+import axios from 'axios';
 
 const initialNodes: Node[] = [];
 
@@ -139,60 +140,87 @@ const DnDFlow = () => {
     if (!planId && reactFlowInstance) {
       console.log("For save", planId);
 
-    console.log('BEFORE save or update ',planId);
-    if (!planId && reactFlowInstance) {
-      console.log("For save", planId);
-      const flow = reactFlowInstance.toObject();
-      const flow_obj = JSON.stringify(flow, getCircularReplacer())
-      localStorage.setItem("flow-persist", flow_obj);
+      console.log('BEFORE save or update ', planId);
+      if (!planId && reactFlowInstance) {
 
-      const plan_obj = {
-        plan: flow_obj,
-        // name: 'unnammed',
-        deploy_status: 'PREPARED',
-        running_status: 'NA',
+        console.log("For save", planId);
+        const flow = reactFlowInstance.toObject();
+        const flow_obj = JSON.stringify(flow, getCircularReplacer())
+        localStorage.setItem("flow-persist", flow_obj);
 
-      };
-      const requestOptions = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer ' + currentUser.tokenAccess
-        },
-        body: JSON.stringify(plan_obj),
-      };
-      fetch(`${api_host}/plan/`, requestOptions).then((response) => {
-        return response.json();
-      }).then((data) => {
-        setPlanId(data.id);
-        setSaveUpdate(false);
-        console.log('Plan successfully saved ', data.id)
-      })
-    } else if (reactFlowInstance) {
-      // update plan
-      console.log("For update", planId);
-      const flow = reactFlowInstance.toObject();
-      const data = {
-        plan: JSON.stringify(flow),
-        deploy_status: 'Prepared',
-        running_status: 'Stopped'
-      };
+        const plan_obj = {
+          plan: flow_obj,
+          // name: 'unnammed',
+          deploy_status: 1,
+          running_status: 1,
 
-      const requestOptions = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + currentUser.tokenAccess,
-        },
-        body: JSON.stringify(data),
+        };
+
+        // save starts ###########
+        // const requestOptions = {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     'Authorization': 'Bearer ' + currentUser.tokenAccess
+        //   },
+        //   body: JSON.stringify(plan_obj),
+        // };
+        // console.log('url is ', `${api_host}/plan/`)
+        // fetch(`${api_host}/plan/`, requestOptions).then((response) => {
+        //   console.log('response ', response.status)
+        //   return response.json();
+        // }).then((data) => {
+
+        //   setPlanId(data.id);
+        //   setSaveUpdate(false);
+        //   console.log('Plan successfully saved ', data.id)
+        // }).catch((error) => {
+        //   console.log('error', error)
+        // });
+        // save ends ###########
+
+        axios.post(`${api_host}/plan/`, plan_obj, {
+          // axios.post('/plan/', plan_obj, {
+          headers: {
+            // 'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + currentUser.tokenAccess
+          }
+        })
+          .then(function (response) {
+            console.log('axios res',response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+
+      } else if (reactFlowInstance) {
+        // update plan
+        console.log("For update", planId);
+        const flow = reactFlowInstance.toObject();
+        const data = {
+          plan: JSON.stringify(flow),
+          deploy_status: 'Prepared',
+          running_status: 'Stopped'
+        };
+
+        const requestOptions = {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + currentUser.tokenAccess,
+          },
+          body: JSON.stringify(data),
+        }
+        fetch(`${api_host}/plan/${planId}`, requestOptions).then((response) => {
+          return response.json();
+        }).then((data) => {
+          console.log('Plan successfully updated ', data.id)
+        }).catch((error) => {
+          console.log('error', error)
+        })
       }
-      fetch(`${api_host}/plan/${planId}`, requestOptions).then((response) => {
-        return response.json();
-      }).then((data) => {
-        console.log('Plan successfully updated ', data.id)
-      })
     }
-  }
 
   }
 
