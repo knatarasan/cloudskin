@@ -57,6 +57,7 @@ class PlanList(APIView):
             serializer.save(owner=self.request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        # logger.info(f'\n content_type: {request.content_type}, \n stream: {request.stream}, \n query_params {request.query_params},\n data: {request.data},  \n user: {request.user}, \n auth {request.auth},\n successful_authenticator: {request.successful_authenticator}')
         logger.info(f'400 Check your data obj \n {str(request.data)} has all the elements expected by api end point')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

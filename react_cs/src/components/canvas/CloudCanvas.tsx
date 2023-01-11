@@ -21,7 +21,7 @@ import "./CloudCanvas.css";
 import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
-import axios from 'axios';
+import { authAxios } from "../auth/AuthServiceAxios";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -29,7 +29,7 @@ const getId = () => `dndnode_${id++}`;
 const DnDFlow = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
-  console.log("param id ", plan_id_edit)
+  // console.log("param id ", plan_id_edit)
   const [planId, setPlanId] = useState<number | null>(null);
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -40,17 +40,12 @@ const DnDFlow = () => {
   const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isOpen, setIsOpen] = useState(false);
 
 
   useEffect(() => {
-    axios.get(`${api_host}/plan/${plan_id_edit}`, {
-      headers: {
-        'Authorization': 'Bearer ' + currentUser.tokenAccess
-      }
-    })
-      .then(function (response) {
-        console.log('axios res', response);
+    authAxios.get("/plan/"+`${plan_id_edit}`)
+      .then((response) => {
+        console.log('axios res useEffect', response);
         setPlanId(Number(plan_id_edit))
         if (Number(plan_id_edit)) {
           setSaveUpdate(false)
@@ -68,7 +63,7 @@ const DnDFlow = () => {
           console.log("Plan not retrieved", response.status)
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       })
   }, [])
@@ -96,7 +91,6 @@ const DnDFlow = () => {
     console.log('BEFORE save or update ', planId, reactFlowInstance);
 
     if (!planId && reactFlowInstance) {
-
       console.log("For save", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
@@ -107,16 +101,11 @@ const DnDFlow = () => {
         // name: 'unnammed',
         deploy_status: 1,
         running_status: 1,
-
       };
 
-      axios.post(`${api_host}/plan/`, plan_obj, {
-        headers: {
-          'Authorization': 'Bearer ' + currentUser.tokenAccess
-        }
-      })
-        .then(function (response) {
-          console.log('axios res', response);
+      authAxios.post("/plan/", plan_obj)
+        .then((response) => {
+          // console.log('axios res SAVE', response);
           if (response.status >= 200 && response.status < 300) {
             setPlanId(Number(response.data.id))
             setSaveUpdate(false)
@@ -125,7 +114,7 @@ const DnDFlow = () => {
             console.log("Plan not saved", response.status)
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error);
         })
 
@@ -140,20 +129,16 @@ const DnDFlow = () => {
         running_status: 1
       };
 
-      axios.put(`${api_host}/plan/${planId}`, data, {
-        headers: {
-          'Authorization': 'Bearer ' + currentUser.tokenAccess
-        }
-      })
-        .then(function (response) {
-          console.log('axios res', response);
+      authAxios.put("/plan/"+`${planId}`, data)
+        .then((response) => {
+          // console.log('axios res UPDATE', response);
           if (response.status >= 200 && response.status < 300) {
             console.log("Plan successfully updated", response.data.id)
           } else {
             console.log("Plan not updated", response.status)
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.log(error);
         })
     }

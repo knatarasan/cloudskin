@@ -15,7 +15,7 @@ import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 
 
-function Home() {
+const Home = ()=>  {
   const { currentUser, setCurrentUser } = useContext(UserContext);
 
   return (

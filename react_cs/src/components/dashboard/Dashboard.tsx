@@ -3,15 +3,12 @@ import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
 import logo from "../../static/images/Clouds-with-gears-altair-enhanced.png";
 import { UserContext } from "../../context/Context";
-import { api_host } from "../../env/global";
-import axios from 'axios'
+import { authAxios } from "../auth/AuthServiceAxios";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [plans, setPlans] = useState<any>();
-
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  // console.log("currentUser value from context :", currentUser);
   const [authenticated, setAuthenticated] = useState(currentUser);
 
   const handleLogout = (e: React.SyntheticEvent): void => {
@@ -23,27 +20,18 @@ const Dashboard = () => {
       loggedIn: false
     });
     setCurrentUser(undefined);
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");
   };
 
   useEffect(() => {
-    axios.get(`${api_host}/plan/`, {
-      headers: {
-        'Authorization': 'Bearer ' + currentUser.tokenAccess
-      }
-    })
-      .then(function (response) {
-        if (response.status >= 200 && response.status < 300) {
-          console.log("Plans successfully retrieved", response.data.id)
-          setPlans(response.data)
-
-        } else {
-          console.log("Plans not retrieved", response.status)
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
+    authAxios.get("/plan/")
+      .then((response: any): void => {
+        setPlans(response.data)
       })
   }, [])
 
