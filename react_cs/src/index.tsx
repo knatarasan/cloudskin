@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import "./styles.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
-import { ReactFlowProvider } from "reactflow";
 import { UserProvider } from "./context/Context";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
@@ -13,9 +12,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
-        <ReactFlowProvider>
-          <App />
-        </ReactFlowProvider>
+        <App />
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
