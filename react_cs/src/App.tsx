@@ -6,7 +6,8 @@ import Dashboard from "./components/dashboard/Dashboard";
 import { Routes, Route } from "react-router-dom";
 import React from "react";
 import JsonEditor from "./components/editor/JsonEditor";
-import schema from "./components/editor/schema/virtualMachine.json";
+import vmschema from "./components/editor/schema/virtualMachine.json";
+import vmdata from "./components/editor/schema/virtualMachine-data.json";
 
 const App = () => {
   return (
@@ -17,7 +18,7 @@ const App = () => {
       <Route path="register" element={<Register />} />
       <Route path="plan/:plan_id_edit" element={<DnDFlow />} />
       <Route path="dashboard" element={<Dashboard />} />
-      <Route path="test" element={<JsonEditor schema={schema} />} />
+      <Route path="test" element={<JsonEditor schema={vmschema} data={vmdata} />} />
     </Routes>
   );
 };

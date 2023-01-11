@@ -8,26 +8,39 @@ interface RadioInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const RadioInput = (props: RadioInputProps): ReactElement => {
-
     return (
         <>
-            <span>{props.name}:</span>
+            <span
+                key={"title-" + props.dataPath}
+                id={"title-" + props.dataPath}
+            >
+                {props.name}:
+            </span>
             {props.options.map((option, index) => {
+                console.log(props.id + "-" + option.value)
                 return (
                     <>
                         <input
-                            id={option.id}
+                            key={"radio-input-" + props.dataPath + "-" + option.value}
+                            id={"radio-input-" + props.dataPath + "-" + option.value}
                             type="radio"
                             name={props.name}
+                            data-object-path={props.dataPath}
                             value={option.value}
-                            checked={option.selected}
+                            // checked={props.value === option.selected}
                             onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
                         />
-                        <label htmlFor={option.id}>{option.label}</label>
+                        <label
+                            key={"label-" + props.dataPath + "-" + option.value}
+                            id={"label-" + props.dataPath + "-" + option.value}
+                            htmlFor={"radio-input-" + props.dataPath + "-" + option.value}
+                        >
+                            {option.label}
+                        </label>
                     </>
                 )
             }
-            )};
+            )}
         </>
     )
 }

@@ -1,12 +1,13 @@
 import React, { ReactElement } from 'react'
 import {
+    get,
     set
 } from "lodash";
 import Input from './Input';
 import { useImmer } from "use-immer";
 import RadioInput from './RadioInput';
 import SelectInput from './SelectInput';
-
+import { nanoid } from "nanoid"
 
 type JsonEditorProps = {
     readonly schema: any,
@@ -31,9 +32,8 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
         for (var elem in schemaFragment) {
             var dataPath = (parentPath ? `${parentPath}.${elem}` : elem);
             var elemDef = schemaFragment[elem];
-            console.log(elem + ' - ' + elemDef);
-            console.log(dataPath);
-
+            // console.log(elem + ' - ' + elemDef);
+            // console.log(dataPath);
 
             var inputType = elemDef['type'].toLowerCase()
             switch (inputType) {
@@ -42,15 +42,15 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
                     htmlElements = htmlElements.concat(childHTMLElems);
                     break;
                 case 'string':
-                    if (elemDef['enum']) {
+                    if (elemDef['options']) {
                         htmlElements.push(
                             <tr key={`tr-${elem}`}>
                                 <td>
                                     <SelectInput
                                         name={elem}
                                         label={elem}
-                                        value={elemDef['default']}
-                                        options={elemDef['enum'].map(
+                                        value={get(data, dataPath, elemDef['default'])}
+                                        options={elemDef['options'].map(
                                             (option: [number, string]) => {
                                                 return {
                                                     id: option[0],
@@ -74,7 +74,7 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
                                         name={elem}
                                         label={elem}
                                         type={elemDef['format'] === 'date' ? 'date' : 'text'}
-                                        value={elemDef['default']}
+                                        value={get(data, dataPath, elemDef['default'])}
                                         dataPath={dataPath}
                                         onDataChange={onChange}
                                     />
@@ -93,7 +93,7 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
                                     label={elem}
                                     type='number'
                                     step={inputType === 'integer' ? 1 : 0.01}
-                                    value={elemDef['default']}
+                                    value={get(data, dataPath, elemDef['default'])}
                                     dataPath={dataPath}
                                     onDataChange={onChange}
                                 />
@@ -109,7 +109,8 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
                                     name={elem}
                                     label={elem}
                                     type='radio'
-                                    options={[{ id: 'yes', label: 'yes', value: 1 }, { id: 'no', label: 'no', value: 0 }]}
+                                    value={get(data, dataPath, elemDef['default'])}
+                                    options={[{ label: 'yes', value: 1 }, { label: 'no', value: 0 }]}
                                     dataPath={dataPath}
                                     onDataChange={onChange}
                                 />
