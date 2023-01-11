@@ -1,10 +1,10 @@
 {
     "credentials": {
-      "string_field": "sunt aliquip nulla veniam exercitation",
-      "integer_field": -95910782,
-      "number_field": 10598717.708849475,
+      "string_field": "Sample",
+      "integer_field": 10,
+      "number_field": 1.5,
       "array_field": [],
-      "boolean_field": true,
+      "boolean_field": "false",
       "date_field": "1973-05-14",
       "select_field": "2"
     }

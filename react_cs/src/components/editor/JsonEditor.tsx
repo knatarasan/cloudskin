@@ -110,7 +110,7 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
                                     label={elem}
                                     type='radio'
                                     value={get(data, dataPath, elemDef['default'])}
-                                    options={[{ label: 'yes', value: 1 }, { label: 'no', value: 0 }]}
+                                    options={[{ label: 'Yes', value: "true" }, { label: 'No', value: "false" }]}
                                     dataPath={dataPath}
                                     onDataChange={onChange}
                                 />

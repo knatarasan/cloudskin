@@ -10,34 +10,24 @@ interface RadioInputProps extends InputHTMLAttributes<HTMLInputElement> {
 const RadioInput = (props: RadioInputProps): ReactElement => {
     return (
         <>
-            <span
-                key={"title-" + props.dataPath}
-                id={"title-" + props.dataPath}
-            >
-                {props.name}:
-            </span>
+            <span>{props.name}:</span>
             {props.options.map((option, index) => {
-                console.log(props.id + "-" + option.value)
                 return (
-                    <>
-                        <input
-                            key={"radio-input-" + props.dataPath + "-" + option.value}
-                            id={"radio-input-" + props.dataPath + "-" + option.value}
-                            type="radio"
-                            name={props.name}
-                            data-object-path={props.dataPath}
-                            value={option.value}
-                            // checked={props.value === option.selected}
-                            onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
-                        />
-                        <label
-                            key={"label-" + props.dataPath + "-" + option.value}
-                            id={"label-" + props.dataPath + "-" + option.value}
-                            htmlFor={"radio-input-" + props.dataPath + "-" + option.value}
-                        >
+                    <span key={"div-input-" + props.dataPath + "-" + option.value}>
+                        <label htmlFor={"radio-input-" + props.dataPath + "-" + option.value}>
+                            <input
+                                key={"radio-input-" + props.dataPath + "-" + option.value}
+                                id={"radio-input-" + props.dataPath + "-" + option.value}
+                                type="radio"
+                                name={props.name}
+                                data-object-path={props.dataPath}
+                                value={option.value}
+                                checked={option.value === props.value}
+                                onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
+                            />
                             {option.label}
                         </label>
-                    </>
+                    </span>
                 )
             }
             )}
