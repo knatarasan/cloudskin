@@ -35,9 +35,6 @@ INSTALLED_APPS = [
     'api'
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.BasicAuthentication',
@@ -82,9 +79,8 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,8 +88,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000'
+# ]
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'django_api.urls'
 
@@ -183,7 +188,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
@@ -196,7 +201,7 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'handlers': ['console', 'file']
         },
         'django': {
