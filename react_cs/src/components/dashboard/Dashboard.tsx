@@ -83,7 +83,7 @@ const Dashboard = () => {
                   {/* {console.log('plans here',plans)} */}
                   {plans?.map((plan: any) => (
 
-                    <tr>
+                    <tr id={plan.id}>
                       <td>
                         <Link to={`/plan/${plan.id}`}>{plan.id}</Link></td>
                       <td>{plan.owner}</td>

@@ -6,11 +6,6 @@ const authAxios = axios.create({
   headers: {}
 });
 
-const publicAxios = axios.create({
-  baseURL: "http://localhost:8000",
-  headers: {}
-});
-
 
 authAxios.interceptors.request.use((config: any) => {
   //   config.headers = {} as { [key: string]: string }
@@ -62,7 +57,7 @@ authAxios.interceptors.response.use(
   }
 );
 
-export { authAxios, publicAxios };
+export { authAxios };
 
 
 //config when PRINTED
