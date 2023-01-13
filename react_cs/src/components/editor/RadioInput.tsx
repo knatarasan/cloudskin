@@ -1,3 +1,4 @@
+import React from "react";
 import { InputHTMLAttributes, OptionHTMLAttributes, ReactElement } from "react";
 
 interface RadioInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -13,7 +14,7 @@ const RadioInput = (props: RadioInputProps): ReactElement => {
             <span>{props.name}:</span>
             {props.options.map((option, index) => {
                 return (
-                    <span key={"div-input-" + props.dataPath + "-" + option.value}>
+                    <React.Fragment key={"fragment-input-" + props.dataPath + "-" + option.value}>
                         <label htmlFor={"radio-input-" + props.dataPath + "-" + option.value}>
                             <input
                                 key={"radio-input-" + props.dataPath + "-" + option.value}
@@ -27,7 +28,7 @@ const RadioInput = (props: RadioInputProps): ReactElement => {
                             />
                             {option.label}
                         </label>
-                    </span>
+                    </React.Fragment>
                 )
             }
             )}

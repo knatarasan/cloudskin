@@ -30,8 +30,23 @@
         "select_field": {
           "type": "string",
           "default": "AWS",
-          "options" : [[1, "AWS"], [2, "Azure"], [3, "GCP"], [4, "Digital Ocean"]],
-          "order": 1
+          "options" : [[1, "AWS"], [2, "Azure"], [3, "GCP"], [4, "Digital Ocean"]]
+        },
+        "object_field": {
+          "type": "object",
+          "properties": {
+            "inner_string_field": {
+              "type": "string",
+              "default": "Default Inner String"
+            },
+            "inner_integer_field": {
+              "type": "integer",
+              "default": 1
+            },
+            "inner_number_field": {
+              "type": "number"
+            }
+          }
         }
       },
       "required": [

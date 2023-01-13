@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react'
 import {
+    cloneDeep,
     get,
     set
 } from "lodash";
@@ -17,7 +18,44 @@ type JsonEditorProps = {
 
 const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
 
-    const [dataObj, setDataObj] = useImmer<any>(data);
+    const [dataObj, setDataObj] = useImmer<any>(() => {
+        // Insert missing values in the data with default values from schema 
+        function initialize(parentPath: string, schema: any, clonedData: any) {
+            for (var elem in schema) {
+                var dataPath = (parentPath ? `${parentPath}.${elem}` : elem);
+                var elemDef = schema[elem];
+                var inputType = elemDef['type'].toLowerCase()
+
+                if (inputType === 'object') {
+                    initialize(dataPath, elemDef['properties'], clonedData);
+                }
+                else if (get(clonedData, dataPath) === undefined) {
+                    if (elemDef['default']) {
+                        set(clonedData, dataPath, elemDef['default'])
+                    }
+                    else {
+                        switch (inputType) {
+                            case 'string':
+                                set(clonedData, dataPath, "");
+                                break;
+                            case 'number':
+                            case 'integer':
+                                set(clonedData, dataPath, 0);
+                                break;
+                            case 'boolean':
+                                set(clonedData, dataPath, "false");
+                                break;
+                        }
+                    }
+                }
+            }
+            return clonedData;
+        }
+        console.log(cloneDeep(data));
+        var clone = initialize('', schema['properties'], cloneDeep(data));
+        console.log(clone);
+        return clone;
+    });
 
     const onChange = (dataPath: string, newValue: number | string | boolean) => {
         setDataObj((draft: any) => {
@@ -32,6 +70,7 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
         for (var elem in schemaFragment) {
             var dataPath = (parentPath ? `${parentPath}.${elem}` : elem);
             var elemDef = schemaFragment[elem];
+
             // console.log(elem + ' - ' + elemDef);
             // console.log(dataPath);
 
@@ -39,83 +78,75 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
             switch (inputType) {
                 case 'object':
                     var childHTMLElems = recursiveParseJson(dataPath, elemDef['properties'], dataObj, onChange);
-                    htmlElements = htmlElements.concat(childHTMLElems);
+                    htmlElements = htmlElements.concat(<li key={`li-${elem}`}>{elem}{childHTMLElems}</li>);
                     break;
                 case 'string':
                     if (elemDef['options']) {
                         htmlElements.push(
-                            <tr key={`tr-${elem}`}>
-                                <td>
-                                    <SelectInput
-                                        name={elem}
-                                        label={elem}
-                                        value={get(data, dataPath, elemDef['default'])}
-                                        options={elemDef['options'].map(
-                                            (option: [number, string]) => {
-                                                return {
-                                                    id: option[0],
-                                                    label: option[1],
-                                                    value: option[0]
-                                                }
+                            <li key={`tr-${elem}`}>
+                                <SelectInput
+                                    name={elem}
+                                    label={elem}
+                                    value={get(data, dataPath, elemDef['default'])}
+                                    options={elemDef['options'].map(
+                                        (option: [number, string]) => {
+                                            return {
+                                                id: option[0],
+                                                label: option[1],
+                                                value: option[0]
                                             }
-                                        )}
-                                        dataPath={dataPath}
-                                        onDataChange={onChange}
-                                    />
-                                </td>
-                            </tr>
+                                        }
+                                    )}
+                                    dataPath={dataPath}
+                                    onDataChange={onChange}
+                                />
+                            </li>
                         );
                     }
                     else {
                         htmlElements.push(
-                            <tr key={`tr-${elem}`}>
-                                <td>
-                                    <Input
-                                        name={elem}
-                                        label={elem}
-                                        type={elemDef['format'] === 'date' ? 'date' : 'text'}
-                                        value={get(data, dataPath, elemDef['default'])}
-                                        dataPath={dataPath}
-                                        onDataChange={onChange}
-                                    />
-                                </td>
-                            </tr>
+                            <li key={`tr-${elem}`}>
+                                <Input
+                                    name={elem}
+                                    label={elem}
+                                    type={elemDef['format'] === 'date' ? 'date' : 'text'}
+                                    value={get(data, dataPath, elemDef['default'])}
+                                    dataPath={dataPath}
+                                    onDataChange={onChange}
+                                />
+                            </li>
                         );
                     }
                     break;
                 case 'number':
                 case 'integer':
                     htmlElements.push(
-                        <tr key={`tr-${elem}`}>
-                            <td>
-                                <Input
-                                    name={elem}
-                                    label={elem}
-                                    type='number'
-                                    step={inputType === 'integer' ? 1 : 0.01}
-                                    value={get(data, dataPath, elemDef['default'])}
-                                    dataPath={dataPath}
-                                    onDataChange={onChange}
-                                />
-                            </td>
-                        </tr>
+                        <li key={`tr-${elem}`}>
+                            <Input
+                                name={elem}
+                                label={elem}
+                                type='number'
+                                step={inputType === 'integer' ? 1 : 0.01}
+                                value={get(data, dataPath, elemDef['default'])}
+                                dataPath={dataPath}
+                                onDataChange={onChange}
+                            />
+                        </li>
                     );
                     break;
                 case 'boolean':
                     htmlElements.push(
-                        <tr key={`tr-${elem}`}>
-                            <td className={elem}>
-                                <RadioInput
-                                    name={elem}
-                                    label={elem}
-                                    type='radio'
-                                    value={get(data, dataPath, elemDef['default'])}
-                                    options={[{ label: 'Yes', value: "true" }, { label: 'No', value: "false" }]}
-                                    dataPath={dataPath}
-                                    onDataChange={onChange}
-                                />
-                            </td>
-                        </tr >
+                        <li key={`tr-${elem}`}>
+                            <RadioInput
+                                name={elem}
+                                label={elem}
+                                type='radio'
+                                value={get(data, dataPath, elemDef['default'])}
+                                options={[{ label: 'Yes', value: "true" }, { label: 'No', value: "false" }]}
+                                dataPath={dataPath}
+                                onDataChange={onChange}
+                            />
+                        </li>
                     );
                     break;
             }
@@ -136,19 +167,16 @@ const JsonEditor = ({ schema, data }: JsonEditorProps): ReactElement => {
             // }
         }
 
-        return htmlElements;
+        return (
+            <ul>{htmlElements}</ul>
+        );
     }
 
     var elems = recursiveParseJson('', schema['properties'], dataObj, onChange)
 
-
     return (
         <>
-            <table>
-                <tbody>
-                    {elems}
-                </tbody>
-            </table>
+            {elems}
             {JSON.stringify(dataObj)}
         </>
     )
