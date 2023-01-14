@@ -16,13 +16,11 @@ const Dashboard = () => {
       username: '',
       email: '',
       tokenAccess: '',
-      tokenRefresh: '',
       loggedIn: false
     });
     setCurrentUser(undefined);
 
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
 
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");

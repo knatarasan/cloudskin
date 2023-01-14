@@ -28,16 +28,14 @@ const Login = () => {
     e.preventDefault();
 
     authAxios.post("/token/", { username: username, password: password })
-      .then((response: { status: number; data: { access: any; refresh: string; }; }) => {
+      .then((response: { status: number; data: { access: any }; }) => {
         console.log('response from axios ', response)
 
         const accessToken = response.data.access
-        const refreshToken = response.data.refresh
         localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", response.data.refresh);
         
         const decoded_token: User = jwt_decode(accessToken)
-        setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, tokenRefresh: refreshToken, loggedIn: true });
+        setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, loggedIn: true });
         navigate("/dashboard");
       })
       .catch(e => {

@@ -5,7 +5,6 @@ type User = {
   username: string, // eg'admin',
   email: string,
   tokenAccess: string,
-  tokenRefresh: string,
   loggedIn: boolean
 }
 
@@ -19,7 +18,6 @@ export const UserContext = createContext<UserContent>({
     username: '', 
     email: '',
     tokenAccess: '',
-    tokenRefresh: '',
     loggedIn: false
   },
   setCurrentUser: () => null, 

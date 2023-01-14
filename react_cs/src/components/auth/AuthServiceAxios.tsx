@@ -24,33 +24,26 @@ authAxios.interceptors.response.use(
     //extracting response and config objects
     const { response, config } = error;
     //checking if error is Aunothorized error
+    console.log('config is ',config)
     if (response.status === 401) {
-      let refreshToken = localStorage.getItem("refreshToken");
-      if (refreshToken) {
         //if refresh token exists in local storage proceed
         try {
           //try refreshing token
-          const data = await authAxios.post("token/refresh/", {
-            refresh: refreshToken,
-          });
-          let accessToken = data.data.accessToken;
+          const response = await authAxios.post("token/refresh/");
+          console.log('res interceptor ',response.data.access)
+          let accessToken = response.data.access;
           if (accessToken) {
             //if request is successiful and token exists in response data
             //store it in local storage
             localStorage.setItem("accessToken", accessToken);
             //with new token retry original request
+            
             config.headers["Authorization"] = accessToken;
             return authAxios(config);
           }
         } catch (e) {
           console.log(e);
         }
-      }
-      console.log('refresh token failed')
-      console.log('local storage removed')
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-    
       return error;
         
     }
