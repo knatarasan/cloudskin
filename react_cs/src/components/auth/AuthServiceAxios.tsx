@@ -3,6 +3,7 @@ import { api_host } from "../../env/global";
 
 const authAxios = axios.create({
   baseURL: "http://localhost:8000",
+  withCredentials: true,
   headers: {}
 });
 
