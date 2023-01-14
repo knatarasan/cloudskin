@@ -29,8 +29,10 @@ urlpatterns = [
     path('user/', views.UserList.as_view(), name='user-list'),
     path('user/<int:pk>', views.UserDetail.as_view(), name='user-detail'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('token/', views.CSTokenObtainPairView.as_view(), name='token-obtain-pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    # path('token/', views.CSTokenObtainPairView.as_view(), name='token-obtain-pair'),
+    # path('token/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+    path("token/", views.CookieTokenObtainPairView.as_view(), name="jwt_token_obtain_pair"),
+    path("token/refresh/", views.CookieTokenRefreshView.as_view(), name="jwt_token_refresh"),
 
     # For swagger documentation
     # re_path(r'^doc(?P<format>\.json|\.yaml)$',

@@ -2,11 +2,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .permissions import PlanUserPermission  # , IsOwner
 from .serializers import UserSerializer, PlanSerializer, \
-    EC2Serializer, AwsCredsSerializer, CSTokenObtainPairSerializer
+    EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -23,16 +23,55 @@ logger = logging.getLogger(__name__)
 def api_root(request, format=None):
     return Response({
         'user': reverse('user-list', request=request, format=format),
-        'token': reverse('token-obtain-pair', request=request, format=format),
+        'token': reverse('jwt_token_obtain_pair', request=request, format=format),
+        'refresh': reverse('jwt_token_refresh', request=request, format=format),
         'plan': reverse('plan-list', request=request, format=format),
         'ec2': reverse('ec2-list', request=request, format=format),
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
 
-class CSTokenObtainPairView(TokenObtainPairView):
+class CookieTokenObtainPairView(TokenObtainPairView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        logger.debug(f"This is called for endpoint /token | When a user login first time ")
+        logger.debug(f"Upon successful login, it returns access token on response, stores refresh token in httpOnly cookie ")
+        if response.data.get("refresh"):
+            logger.debug(f"here COOKIE is set START ")
+            cookie_max_age = 3600 * 24 * 14  # 14 days
+            # https://docs.djangoproject.com/en/3.2/ref/request-response/#django.http.HttpResponse.set_cookie
+            response.set_cookie(
+                "refresh_token",
+                response.data["refresh"],
+                max_age=cookie_max_age,
+                httponly=True,
+                samesite="None",
+                secure=False,
+            )
+            logger.debug(f"here COOKIE is set END cookies {response.get}")
+            del response.data["refresh"] # So final api response not going to have refresh token
+        return super().finalize_response(request, response, *args, **kwargs)
     serializer_class = CSTokenObtainPairSerializer
 
+
+class CookieTokenRefreshView(TokenRefreshView):
+    def finalize_response(self, request, response, *args, **kwargs):
+        logger.debug(f"This is called for endpoint /token/refresh | This can only be called after user login successfully and refresh token avl in cookie ")
+        logger.debug(f"Until refresh token avl in cookie , This returns access token on response, stores refresh token in httpOnly cookie ")
+
+        if response.data.get("refresh"):
+            cookie_max_age = 3600 * 24 * 14  # 14 days
+            response.set_cookie(
+                "refresh_token",
+                response.data["refresh"],
+                max_age=cookie_max_age,
+                samesite="None",
+                httponly=True,
+                secure=False,
+            )
+            del response.data["refresh"]
+        return super().finalize_response(request, response, *args, **kwargs)
+
+    serializer_class = CookieTokenRefreshSerializer
 
 class PlanList(APIView):
     """

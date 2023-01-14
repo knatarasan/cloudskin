@@ -3,7 +3,8 @@ from rest_framework import serializers
 from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
+from rest_framework_simplejwt.exceptions import InvalidToken
 from django.contrib.auth.password_validation import validate_password
 from .services import EC2Service
 import logging
@@ -90,6 +91,18 @@ class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['email'] = user.email
         return token
+
+
+class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+    refresh = None
+
+    def validate(self, attrs):
+        logger.debug(f'context request {self.context["request"].COOKIES}')
+        attrs["refresh"] = self.context["request"].COOKIES.get("refresh_token")
+        if attrs["refresh"]:
+            return super().validate(attrs)
+        else:
+            raise InvalidToken("No valid token found in cookie 'refresh_token'")
 
 
 class UserSerializer(serializers.ModelSerializer):
