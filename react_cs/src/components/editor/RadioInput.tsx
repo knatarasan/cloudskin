@@ -1,3 +1,4 @@
+import React from "react";
 import { InputHTMLAttributes, OptionHTMLAttributes, ReactElement } from "react";
 
 interface RadioInputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -8,26 +9,29 @@ interface RadioInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const RadioInput = (props: RadioInputProps): ReactElement => {
-
     return (
         <>
             <span>{props.name}:</span>
             {props.options.map((option, index) => {
                 return (
-                    <>
-                        <input
-                            id={option.id}
-                            type="radio"
-                            name={props.name}
-                            value={option.value}
-                            checked={option.selected}
-                            onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
-                        />
-                        <label htmlFor={option.id}>{option.label}</label>
-                    </>
+                    <React.Fragment key={"fragment-input-" + props.dataPath + "-" + option.value}>
+                        <label htmlFor={"radio-input-" + props.dataPath + "-" + option.value}>
+                            <input
+                                key={"radio-input-" + props.dataPath + "-" + option.value}
+                                id={"radio-input-" + props.dataPath + "-" + option.value}
+                                type="radio"
+                                name={props.name}
+                                data-object-path={props.dataPath}
+                                value={option.value}
+                                checked={option.value === props.value}
+                                onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
+                            />
+                            {option.label}
+                        </label>
+                    </React.Fragment>
                 )
             }
-            )};
+            )}
         </>
     )
 }

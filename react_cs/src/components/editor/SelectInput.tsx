@@ -12,12 +12,19 @@ const SelectInput = (props: SelectInputProps): ReactElement => {
     return (
         <>
             <label htmlFor={props.id}>{props.label}:</label>
-            <select id={props.id} onChange={(event) => console.log(event.target.value)}>
+            <select
+                key={"select-" + props.dataPath}
+                id={"select-" + props.dataPath}
+                value={props.value}
+                data-object-path={props.dataPath}
+                onChange={(event) => props.onDataChange(props.dataPath, event.target.value)}
+            >
                 {props.options.map((option, index) => {
                     return (
                         <option
+                            key={"select-option-" + props.dataPath + "-" + option.value}
+                            id={"select-option-" + props.dataPath + "-" + option.value}
                             value={option.value}
-                            selected={option.selected}
                         >
                             {option.label}
                         </option>

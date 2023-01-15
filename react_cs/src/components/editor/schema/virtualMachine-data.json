@@ -1,0 +1,15 @@
+{
+    "credentials": {
+      "string_field": "Sample",
+      "integer_field": 10,
+      "number_field": 1.5,
+      "array_field": [],
+      "boolean_field": "false",
+      "date_field": "1973-05-14",
+      "select_field": "2",
+      "object_field": {
+        "deprecated_string_field": "Sample",
+        "inner_number_field": 1.5
+      }
+    }
+  }
