@@ -3,7 +3,7 @@ import { api_host } from "../../env/global";
 
 const authAxios = axios.create({
   baseURL: "http://localhost:8000",
-  withCredentials: true,
+  withCredentials: true,                    //  Without this  httpOnly cookie can't be set from Backend
   headers: {}
 });
 
@@ -18,6 +18,11 @@ authAxios.interceptors.request.use((config: any) => {
   return config;
 });
 
+
+/*
+TODO : Following interceptor may fall in endless loop when refresh token not set in httpOnly cookie
+Backend has throttle control, which won't entertain more than 60 requests/sec
+*/
 authAxios.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -51,43 +56,3 @@ authAxios.interceptors.response.use(
 );
 
 export { authAxios };
-
-
-//config when PRINTED
-
-// type Config = {
-//   headers: string
-// }
-
-// Typical config looks like
-// {
-//   "transitional": {
-//       "silentJSONParsing": true,
-//       "forcedJSONParsing": true,
-//       "clarifyTimeoutError": false
-//   },
-//   "adapter": [
-//       "xhr",
-//       "http"
-//   ],
-//   "transformRequest": [
-//       null
-//   ],
-//   "transformResponse": [
-//       null
-//   ],
-//   "timeout": 0,
-//   "xsrfCookieName": "XSRF-TOKEN",
-//   "xsrfHeaderName": "X-XSRF-TOKEN",
-//   "maxContentLength": -1,
-//   "maxBodyLength": -1,
-//   "env": {},
-//   "headers": {
-//       "Accept": "application/json, text/plain, */*",
-//       "Content-Type": "application/json"
-//   },
-//   "baseURL": "http://localhost:8000",
-//   "method": "post",
-//   "url": "/token/",
-//   "data": "{\"username\":\"kanna\",\"password\":\"Honey200$\"}"
-// }

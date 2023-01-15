@@ -22,16 +22,12 @@ class PlanSerializer(serializers.Serializer):
         '''
         create and return a new `Plan` , given the validated data
         '''
-        logger.info("Plan saved")
         plan = Plan.objects.create(**validated_data)
-
         return plan
 
     def update(self, instance, validated_data):
         instance.plan = validated_data.get('plan', instance.plan)
-        logger.info(f'instance values {str(validated_data)}')
         instance.save()
-        logger.info("Plan updated")
         return instance
 
 
@@ -82,9 +78,10 @@ class AwsCredsSerializer(serializers.Serializer):
 
 
 class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
-
+    """ It's an inherited class to augment JWT payload """
     @classmethod
     def get_token(cls, user):
+        """ This class method is overloaded to augment username and email into JWT token payload """
         token = super(CSTokenObtainPairSerializer, cls).get_token(user)
 
         # Add custom claims
@@ -94,9 +91,13 @@ class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
+    """ Executed during /token/refresh endpoint needed to set httpOnly from backend """
     refresh = None
 
     def validate(self, attrs):
+        """ when /token/refresh endpoint is called,
+        picks the refresh token from httpOnly cookie and returns an access token
+        """
         logger.debug(f'context request {self.context["request"].COOKIES}')
         attrs["refresh"] = self.context["request"].COOKIES.get("refresh_token")
         if attrs["refresh"]:

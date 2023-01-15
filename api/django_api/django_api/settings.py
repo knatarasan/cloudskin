@@ -103,7 +103,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.0.14:3000",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True   #  Without this  httpOnly cookie can't be set from Backend
 
 ROOT_URLCONF = 'django_api.urls'
 

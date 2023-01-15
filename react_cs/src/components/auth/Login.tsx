@@ -33,6 +33,7 @@ const Login = () => {
 
         const accessToken = response.data.access
         localStorage.setItem("accessToken", accessToken);
+        // TODO : After successful login accessToken can be stored in React Context
         
         const decoded_token: User = jwt_decode(accessToken)
         setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, loggedIn: true });
