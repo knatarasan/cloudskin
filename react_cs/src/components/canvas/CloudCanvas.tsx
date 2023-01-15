@@ -43,29 +43,24 @@ const DnDFlow = () => {
 
 
   useEffect(() => {
-    authAxios.get("/plan/"+`${plan_id_edit}`)
-      .then((response) => {
-        console.log('axios res useEffect', response);
-        setPlanId(Number(plan_id_edit))
-        if (Number(plan_id_edit)) {
-          setSaveUpdate(false)
-        }
-        const flow = JSON.parse(response.data.plan)
-        if (flow) {
-          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-          setNodes(flow.nodes || []);
-          setEdges(flow.edges || []);
-        }
-
-        if (response.status >= 200 && response.status < 300) {
+      authAxios.get("/plan/" + `${plan_id_edit}`)
+        .then((response) => {
+          console.log('axios res useEffect', response);
+          setPlanId(Number(plan_id_edit))
+          if (Number(plan_id_edit)) {
+            setSaveUpdate(false)
+          }
+          const flow = JSON.parse(response.data.plan)
+          if (flow) {
+            const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+            setNodes(flow.nodes || []);
+            setEdges(flow.edges || []);
+          }
           console.log("Plan successfully retrieved", response.data.id)
-        } else {
-          console.log("Plan not retrieved", response.status)
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+        })
+        .catch((error) => {
+          console.log(plan_id_edit, ' is not right plan id to edit', error);
+        })
   }, [])
 
   const onConnect = useCallback<OnConnect>(
@@ -106,16 +101,12 @@ const DnDFlow = () => {
       authAxios.post("/plan/", plan_obj)
         .then((response) => {
           // console.log('axios res SAVE', response);
-          if (response.status >= 200 && response.status < 300) {
-            setPlanId(Number(response.data.id))
-            setSaveUpdate(false)
-            console.log("Plan successfully saved", response.data.id)
-          } else {
-            console.log("Plan not saved", response.status)
-          }
+          setPlanId(Number(response.data.id))
+          setSaveUpdate(false)
+          console.log("Plan successfully saved", response.data.id)
         })
         .catch((error) => {
-          console.log(error);
+          console.log("Plan not saved", error.response.status)
         })
 
 
@@ -129,17 +120,13 @@ const DnDFlow = () => {
         running_status: 1
       };
 
-      authAxios.put("/plan/"+`${planId}`, data)
+      authAxios.put("/plan/" + `${planId}`, data)
         .then((response) => {
           // console.log('axios res UPDATE', response);
-          if (response.status >= 200 && response.status < 300) {
-            console.log("Plan successfully updated", response.data.id)
-          } else {
-            console.log("Plan not updated", response.status)
-          }
+          console.log("Plan successfully updated", response.data.id)
         })
         .catch((error) => {
-          console.log(error);
+          console.log("Plan not updated", error)
         })
     }
   }

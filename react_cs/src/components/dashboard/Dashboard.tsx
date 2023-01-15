@@ -16,13 +16,11 @@ const Dashboard = () => {
       username: '',
       email: '',
       tokenAccess: '',
-      tokenRefresh: '',
       loggedIn: false
     });
     setCurrentUser(undefined);
 
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
 
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");
@@ -83,7 +81,7 @@ const Dashboard = () => {
                   {/* {console.log('plans here',plans)} */}
                   {plans?.map((plan: any) => (
 
-                    <tr>
+                    <tr id={plan.id}>
                       <td>
                         <Link to={`/plan/${plan.id}`}>{plan.id}</Link></td>
                       <td>{plan.owner}</td>

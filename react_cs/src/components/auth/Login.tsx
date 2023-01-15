@@ -4,7 +4,8 @@ import { Button, Form, Container, Row, Col, } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
-import { publicAxios } from "./AuthServiceAxios";
+import { authAxios } from "./AuthServiceAxios";
+import Cookies from 'universal-cookie';
 
 
 const Login = () => {
@@ -26,26 +27,23 @@ const Login = () => {
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    publicAxios.post("/token/", { username: username, password: password })
-      .then(response => {
-        console.log('response in Login.publicAxios ', response)
-        if (response.status >=200 && response.status <300){
-          const accessToken = response.data.access
-          const refreshToken = response.data.refresh
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", response.data.refresh);  
-          const decoded_token: User = jwt_decode(accessToken)
-          setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, tokenRefresh: refreshToken, loggedIn: true });
-          navigate("/dashboard");  
-        }else{
-          navigate("/login");    
-        }
+    authAxios.post("/token/", { username: username, password: password })
+      .then((response: { status: number; data: { access: any }; }) => {
+        console.log('response from axios ', response)
+
+        const accessToken = response.data.access
+        localStorage.setItem("accessToken", accessToken);
+        // TODO : After successful login accessToken can be stored in React Context
+        
+        const decoded_token: User = jwt_decode(accessToken)
+        setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, loggedIn: true });
+        navigate("/dashboard");
       })
       .catch(e => {
-        console.log('error occured in login',e)
-        
+        console.log('Check your request ', e, e.response.status)
+        navigate("/login");
       });
-    
+
   };
 
   return (
