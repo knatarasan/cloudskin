@@ -3,7 +3,7 @@ from rest_framework import generics, viewsets
 from .models import Plan, EC2, AwsCreds
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-
+from rest_framework.throttling import UserRateThrottle
 from .permissions import PlanUserPermission  # , IsOwner
 from .serializers import UserSerializer, PlanSerializer, \
     EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer
@@ -17,7 +17,6 @@ from rest_framework import status
 from django.http import Http404
 
 logger = logging.getLogger(__name__)
-
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -54,6 +53,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
 
 class CookieTokenRefreshView(TokenRefreshView):
+    throttle_classes = [UserRateThrottle]
+
     def finalize_response(self, request, response, *args, **kwargs):
         logger.debug(f"This is called for endpoint /token/refresh | This can only be called after user login successfully and refresh token avl in cookie ")
         logger.debug(f"Until refresh token avl in cookie , This returns access token on response, stores refresh token in httpOnly cookie ")

@@ -10,3 +10,27 @@
         headers: {}
     });
 ```
+
+```mermaid
+sequenceDiagram
+    actor user
+    user->>Server: /token POST { username:'Bob', password:'Bobs_secret' } can I get access token    
+    Server-->>user: Let me check { access token }  and httpOnly cookie :  refresh token
+    user->>Server: /plan GET { access token } :  can I get protected resource  
+    activate Server 
+    Server-->>user:  { access token } => [ user_id , user_name , email] here is list of plans 
+    user->>Server: Thx 
+    deactivate Server
+    Note left of Server: 5 min Gap
+    user->>Server: /plan GET { access token } :  can I get protected resource
+    activate Server 
+    Server-->>user:  { access token } 401 your access token expired 
+    user->>Server: /token/refresh POST { refresh token } httpOnly cookie
+    Server-->>user: Let me check , { access token }  and httpOnly cookie :  refresh token
+    
+    user->>Server: /plan GET { access token } :  can I get protected resource  
+    activate Server 
+    Server-->>user:  { access token } => [ user_id , user_name , email] here is list of plans 
+    user->>Server: Thx 
+    deactivate Server
+```
