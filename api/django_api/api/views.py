@@ -43,7 +43,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 response.data["refresh"],
                 max_age=cookie_max_age,
                 httponly=True,
-                samesite="None",
+                samesite="Lax",
                 secure=False,
             )
             logger.debug(f"here COOKIE is set END cookies {response.get}")
@@ -65,8 +65,8 @@ class CookieTokenRefreshView(TokenRefreshView):
                 "refresh_token",
                 response.data["refresh"],
                 max_age=cookie_max_age,
-                samesite="None",
                 httponly=True,
+                samesite="Lax",
                 secure=False,
             )
             del response.data["refresh"]

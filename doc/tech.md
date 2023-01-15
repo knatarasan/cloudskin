@@ -12,6 +12,7 @@
 ### Authentication
 1. [JWT DRF](https://briancaffey.github.io/ru/2021/08/07/authenticating-requests-with-jwt-tokens-stored-in-httponly-cookies-in-django/) 
 2. [Cookies and Django](https://medium.com/@maester_sheeps/sessions-in-django-30d538dac81)
+3. [Chrome wont allow cookies from localhost](https://medium.com/swlh/how-the-new-chrome-80-cookie-rule-samesite-none-secure-affects-web-development-c06380220ced)
 2. https://stackoverflow.com/questions/48983708/where-to-store-access-token-in-react-js
 3. https://medium.com/lightrail/getting-token-authentication-right-in-a-stateless-single-page-application-57d0c6474e3
 4. https://www.procoding.org/jwt-token-as-httponly-cookie-in-django/

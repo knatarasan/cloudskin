@@ -26,11 +26,10 @@ authAxios.interceptors.response.use(
     //checking if error is Aunothorized error
     console.log('config is ',config)
     if (response.status === 401) {
-        //if refresh token exists in local storage proceed
+        //if refresh token exists in httpOnly cookie  proceed
         try {
           //try refreshing token
           const response = await authAxios.post("token/refresh/");
-          console.log('res interceptor ',response.data.access)
           let accessToken = response.data.access;
           if (accessToken) {
             //if request is successiful and token exists in response data
