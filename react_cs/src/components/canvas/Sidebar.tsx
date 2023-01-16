@@ -16,7 +16,7 @@ const ComponentsBar = () => {
 
   return (
     <aside>
-      <Link to="/">Home</Link>
+      <Link to="/dashboard">Dashboard</Link>
       <div className="description">PALETTE</div>
       <div id='App'
         className="dndnode input"

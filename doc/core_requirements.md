@@ -1,6 +1,6 @@
 ### User to deploy an EC2 instance
 - cloud_type : aws
-- iam policy (cs supplied)  
+- iam policy (cx supplied)  
 - aws iam user (this user uses above policy)
   - AWS_ACCESS_KEY_ID="PLACEHOLDER"
   - AWS_SECRET_ACCESS_KEY="PLACEHOLDER"
@@ -60,3 +60,13 @@ i-09f110d1dccb60681     None
 
 Used this resource: https://blog.knoldus.com/how-to-create-ec2-instance-using-python3-with-boto3/
 ARN for created user: arn:aws:iam::334431854769:user/resource-manager
+
+```mermaid
+  flowchart TD;
+  HP[Homepage]-->LG[Login]
+  HP-->SU[Signup]
+  LG-->DB[Dashboard]
+  SU-->DB
+  DB-->CC[CloudCanvas]
+  DB-->IU[Create IAM User]
+```

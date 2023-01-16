@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
-import logo from "../../static/images/Clouds-with-gears-altair-enhanced.png";
+import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
 import { authAxios } from "../auth/AuthServiceAxios";
 
@@ -53,6 +53,7 @@ const Dashboard = () => {
                 {'username' in currentUser ? "Signed in:  " + currentUser.username : null}
               </Navbar.Text>
               <Nav.Link href="" onClick={handleLogout}>Logout</Nav.Link>
+              <Nav.Link as={Link} to="/iamuser">IAM User</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
