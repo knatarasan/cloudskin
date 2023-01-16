@@ -8,27 +8,57 @@ import { authAxios } from "../auth/AuthServiceAxios";
 
 const IAMUser = () => {
     const [aws_key, setAWSKey] = useState("");
-  const [aws_secret, setAWSSecret] = useState("");
-  
-  const login = (e: React.SyntheticEvent): void => {
-    e.preventDefault();
+    const [aws_secret, setAWSSecret] = useState("");
 
-    authAxios.post("/aws_creds/", { aws_key: aws_key, aws_secret: aws_secret })
-      .then((response: { status: number; data: { access: any }; }) => {
-        console.log('response from axios ', response)
+    const login = (e: React.SyntheticEvent): void => {
+        e.preventDefault();
 
-        const accessToken = response.data.access
-        localStorage.setItem("accessToken", accessToken);
-        // TODO : After successful login accessToken can be stored in React Context
-        
-      })
-      .catch(e => {
-        console.log('Check your request ', e, e.response.status)
-      });
+        authAxios.post("/aws_creds/", { aws_key: aws_key, aws_secret: aws_secret })
+            .then((response: { status: number; data: { access: any }; }) => {
+                console.log('response from axios ', response)
 
-  };
+                const accessToken = response.data.access
+                localStorage.setItem("accessToken", accessToken);
+                // TODO : After successful login accessToken can be stored in React Context
 
-    const codeString = '{\n' +
+            })
+            .catch(e => {
+                console.log('Check your request ', e, e.response.status)
+            });
+
+    };
+
+    const codeStringCreateUser =
+        '    mac ~ % aws iam create-user --user-name cx_user \n' +
+        '    { \n' +
+        '        "User": { \n' +
+        '            "Path": "/", \n' +
+        '            "UserName": "cx_user", \n' +
+        '            "UserId": "AIDAU3XNRECYRMBO5REZH", \n' +
+        '            "Arn": "arn:aws:iam::334431854769:user/cx_user", \n' +
+        '            "CreateDate": "2023-01-16T18:22:47+00:00" \n' +
+        '        } \n' +
+        '    } \n'
+
+    const codeStringCreatePolicy =
+        'mac ~ % aws iam create-policy --policy-name cx_policy --policy-document file://cx_policy.json, \n' +
+        '    { \n' +
+        '       "Policy": { \n' +
+        '            "PolicyName": "cx_policy", \n' +
+        '            "PolicyId": "ANPAU3XNRECYZ5QTGBGH3", \n' +
+        '            "Arn": "arn:aws:iam::334431854769:policy/cx_policy", \n' +
+        '            "Path": "/",\n' +
+        '            "DefaultVersionId": "v1",\n' +
+        '            "AttachmentCount": 0,\n' +
+        '            "PermissionsBoundaryUsageCount": 0,\n' +
+        '            "IsAttachable": true,\n' +
+        '            "CreateDate": "2023-01-16T18:28:38+00:00",\n' +
+        '            "UpdateDate": "2023-01-16T18:28:38+00:00"\n' +
+        '        } \n' +
+        '    } \n';
+
+
+    const codeStringPolicy = '{\n' +
         '   "Version": "2012-10-17",\n' +
         '   "Statement": [\n' +
         '   {\n' +
@@ -57,6 +87,9 @@ const IAMUser = () => {
         '        }\n' +
         '    ]\n' +
         '}'
+
+    const codeStringAttachPolicy = 'mac ~ % aws iam attach-user-policy --policy-arn arn:aws:iam::334431854769:policy/cx_policy --user-name cx_user'
+
     return (
         <>
             <Navbar bg="light" variant="light">
@@ -77,17 +110,32 @@ const IAMUser = () => {
                     <Col>
                         <div>
                             <ol>
-                                <li><a href="">Click here to create an IAM user in AWS</a>
-
+                                <li> Create IAM User <br />
+                                    <SyntaxHighlighter language="json" style={docco}>
+                                        {codeStringCreateUser}
+                                    </SyntaxHighlighter>
                                 </li>
-                                <li>Add a Policy to your IAM user <br />
 
-                                    <SyntaxHighlighter language="javascript" style={docco}>
-                                        {codeString}
+                                <li> Create a policy file named cx_policy.json <br />
+
+                                    <SyntaxHighlighter language="json" style={docco}>
+                                        {codeStringPolicy}
+                                    </SyntaxHighlighter>
+                                </li>
+
+                                <li>Create a Policy<br />
+
+                                    <SyntaxHighlighter language="json" style={docco}>
+                                        {codeStringCreatePolicy}
+                                    </SyntaxHighlighter>
+                                </li>
+                                <li> Add a Policy to your IAM user <br />
+                                    <SyntaxHighlighter language="json" style={docco}>
+                                        {codeStringAttachPolicy}
                                     </SyntaxHighlighter>
                                 </li>
                                 <li>
-                                    Enter AWS credentials <br/>
+                                    Enter AWS credentials <br />
                                     <div>
                                         <Container>
                                             <Row>
@@ -124,11 +172,10 @@ const IAMUser = () => {
                                             </Row>
                                         </Container>
                                     </div>
-
-
                                 </li>
                                 <br />
                             </ol>
+                            <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_cliwpsapi" target="_blank" rel="noreferrer noopener">Click here to refer IAM User creation</a>
                         </div>
                     </Col>
                 </Row>
