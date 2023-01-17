@@ -30,30 +30,36 @@ class PlanSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+class EC2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = EC2
+        fields = ['id', 'owner', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region', 'securityGroup', 'subnet','date_created_or_modified']
 
-class EC2Serializer(serializers.Serializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    ec2_instance_id = serializers.CharField()
-    ec2_instance_health = serializers.SerializerMethodField()
 
-    def get_ec2_instance_health(self, obj):
-        service = EC2Service()
-        return service.get_health(obj.ec2_instance_id)
 
-    def create(self, validated_data):
-        '''
-        create and return a new `EC2` , given the validated data
-        '''
-        logger.info(f"validated data {validated_data}")
-        ec2 = EC2.objects.create(**validated_data)
-        logger.info("EC2 created")
-        return ec2
-
-    def update(self, instance, validated_data):
-        instance.ec2 = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
-        instance.save()
-        logger.info("EC2 updated")
-        return instance
+# class EC2Serializer(serializers.Serializer):
+#     owner = serializers.ReadOnlyField(source='owner.username')
+#     ec2_instance_id = serializers.CharField()
+#     ec2_instance_health = serializers.SerializerMethodField()
+#
+#     def get_ec2_instance_health(self, obj):
+#         service = EC2Service()
+#         return service.get_health(obj.ec2_instance_id)
+#
+#     def create(self, validated_data):
+#         '''
+#         create and return a new `EC2` , given the validated data
+#         '''
+#         logger.info(f"validated data {validated_data}")
+#         ec2 = EC2.objects.create(**validated_data)
+#         logger.info("EC2 created")
+#         return ec2
+#
+#     def update(self, instance, validated_data):
+#         instance.ec2 = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
+#         instance.save()
+#         logger.info("EC2 updated")
+#         return instance
 
 
 class AwsCredsSerializer(serializers.Serializer):
