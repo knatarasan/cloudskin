@@ -8,10 +8,20 @@ logger = logging.getLogger(__name__)
 
 # Create your models here.
 
-class EC2(models.Model):
-    owner = models.ForeignKey(
-        'auth.User', related_name='ec2', on_delete=models.CASCADE # When deleted, the ec2 instances created by the user should be terminated
+class AWSComponent(models.Model):
+
+    plan = models.ForeignKey(
+        'plan', related_name='aws_components',on_delete=models.PROTECT  # When deleted, the ec2 instances created by the user should be terminated
     )
+    region = models.TextField(default="us-west-1")
+    securityGroup = models.TextField(default="NOT-SET")
+    subnet = models.TextField(default="NOT-SET")
+    date_created_or_modified = models.DateTimeField(default=datetime.now)
+
+    class Meta:
+        abstract = True
+
+class EC2(AWSComponent):
     ec2_instance_id = models.TextField(null=True)
 
     class EC2Status(models.IntegerChoices):
@@ -22,13 +32,11 @@ class EC2(models.Model):
         RUNNING = 10
         FAILED = -1
     ec2_status = models.IntegerField(choices=EC2Status.choices, default=EC2Status.PREPARED)
-
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
-    region = models.TextField(default="us-west-1")
-    securityGroup = models.TextField(default="NOT-SET")
-    subnet = models.TextField(default="NOT-SET")
-    date_created_or_modified = models.DateTimeField(default=datetime.now)
+    def __str__(self):
+        return f'id:{str(self.id)}  plan: {str(self.plan)}  ec2_instance_id: {self.ec2_instance_id} instance_type:{self.instance_type}  ec2_status:{self.ec2_status}'
+
 
 
 #
