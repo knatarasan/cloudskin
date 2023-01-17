@@ -170,8 +170,7 @@ class EC2List(APIView):
 
         serializer = EC2Serializer(data=request.data)
         if serializer.is_valid():
-            owner = serializer.validated_data['owner']              # here validated_data['owner'] returns owner not id
-            serializer.save(owner= owner)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.info("Response 400 Bad request")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
