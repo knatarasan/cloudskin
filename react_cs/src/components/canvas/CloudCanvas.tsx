@@ -31,7 +31,7 @@ const DnDFlow = () => {
   const { plan_id_edit } = useParams()
   // console.log("param id ", plan_id_edit)
   const [planId, setPlanId] = useState<number>(-1);
-  const planCreatedRef = useRef(false);
+  const planCreatedRef = useRef(false);                // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
@@ -97,7 +97,7 @@ const DnDFlow = () => {
         console.log(plan_id_edit, ' is not right plan id to edit', error);
 
         if (planCreatedRef.current) return;
-        planCreatedRef.current = true;
+        planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
         createPlan()
       })
   }, [])
