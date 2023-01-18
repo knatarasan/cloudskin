@@ -3,6 +3,7 @@ import Home from "./components/landing/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
+import IAMUser from "./components/aws/IAMUser";
 import { Routes, Route } from "react-router-dom";
 import React from "react";
 import JsonEditor from "./components/editor/JsonEditor";
@@ -19,6 +20,7 @@ const App = () => {
       <Route path="plan/:plan_id_edit" element={<DnDFlow />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="test" element={<JsonEditor schema={vmschema} data={vmdata} />} />
+      <Route path="iamuser" element={<IAMUser />} />
     </Routes>
   );
 };

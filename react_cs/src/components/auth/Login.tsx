@@ -1,11 +1,10 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Container, Row, Col, } from "react-bootstrap";
-import logo from "../../static/images/cloud.png";
+import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
 import { authAxios } from "./AuthServiceAxios";
-import Cookies from 'universal-cookie';
 
 
 const Login = () => {
