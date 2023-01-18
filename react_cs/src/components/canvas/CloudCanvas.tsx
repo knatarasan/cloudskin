@@ -30,7 +30,8 @@ const DnDFlow = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
   // console.log("param id ", plan_id_edit)
-  const [planId, setPlanId] = useState<number | null>(null);
+  const [planId, setPlanId] = useState<number>(-1);
+  const planCreatedRef = useRef(false);
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
@@ -42,34 +43,7 @@ const DnDFlow = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
 
-  useEffect(() => {
-      authAxios.get("/plan/" + `${plan_id_edit}`)
-        .then((response) => {
-          console.log('axios res useEffect', response);
-          setPlanId(Number(plan_id_edit))
-          if (Number(plan_id_edit)) {
-            setSaveUpdate(false)
-          }
-          const flow = JSON.parse(response.data.plan)
-          if (flow) {
-            const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-            setNodes(flow.nodes || []);
-            setEdges(flow.edges || []);
-          }
-          console.log("Plan successfully retrieved", response.data.id)
-        })
-        .catch((error) => {
-          console.log(plan_id_edit, ' is not right plan id to edit', error);
-        })
-  }, [])
-
-  const onConnect = useCallback<OnConnect>(
-    (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
-    [setEdges]
-  );
-
-
-  const onSave = () => {
+  const createPlan = () => {
     const getCircularReplacer = () => {
       const seen = new WeakSet();
       return (key: string, value: string) => {
@@ -82,35 +56,64 @@ const DnDFlow = () => {
         return value;
       };
     };
+    //create Plan
+    console.log("For save", planId);
+    const plan_obj = {
+      plan: {},
+      // name: 'unnammed',
+      deploy_status: 1,
+      running_status: 1,
+    };
+
+    authAxios.post("/plan/", plan_obj)
+      .then((response) => {
+        setPlanId(Number(response.data.id))
+        setSaveUpdate(false)
+        console.log("Plan successfully saved", response.data.id)
+      })
+      .catch((error) => {
+        console.log("Plan not saved", error.response.status)
+      })
+    //create Plan    
+
+  }
+  useEffect(() => {
+    authAxios.get("/plan/" + `${plan_id_edit}`)
+      .then((response) => {
+        console.log('axios res useEffect', response);
+        setPlanId(Number(plan_id_edit))
+        if (Number(plan_id_edit)) {
+          setSaveUpdate(false)
+        }
+        const flow = JSON.parse(response.data.plan)
+        if (flow) {
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+        }
+        console.log("Plan successfully retrieved", response.data.id)
+      })
+      .catch((error) => {
+        console.log(plan_id_edit, ' is not right plan id to edit', error);
+
+        if (planCreatedRef.current) return;
+        planCreatedRef.current = true;
+        createPlan()
+      })
+  }, [])
+
+  const onConnect = useCallback<OnConnect>(
+    (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
+  );
+
+
+  const onSave = () => {
 
     console.log('BEFORE save or update ', planId, reactFlowInstance);
 
-    if (!planId && reactFlowInstance) {
-      console.log("For save", planId);
-      const flow = reactFlowInstance.toObject();
-      const flow_obj = JSON.stringify(flow, getCircularReplacer())
-      localStorage.setItem("flow-persist", flow_obj);
 
-      const plan_obj = {
-        plan: flow_obj,
-        // name: 'unnammed',
-        deploy_status: 1,
-        running_status: 1,
-      };
-
-      authAxios.post("/plan/", plan_obj)
-        .then((response) => {
-          // console.log('axios res SAVE', response);
-          setPlanId(Number(response.data.id))
-          setSaveUpdate(false)
-          console.log("Plan successfully saved", response.data.id)
-        })
-        .catch((error) => {
-          console.log("Plan not saved", error.response.status)
-        })
-
-
-    } else if (reactFlowInstance) {
+    if (reactFlowInstance) {
       // update plan
       console.log("For update", planId);
       const flow = reactFlowInstance.toObject();
@@ -221,8 +224,8 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}>
-                {save_update ? "Save Plan" : "Update Plan"}
+              <button id='save_update' onClick={onSave}> Save Plan
+                {/* {save_update ? "Save Plan" : "Update Plan"} */}
               </button>
             </div>
           </ReactFlow>

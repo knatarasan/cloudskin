@@ -17,7 +17,7 @@ class PlanSerializer(serializers.Serializer):
     plan = serializers.JSONField()
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
-    aws_components = serializers.StringRelatedField(many=True)
+    aws_components = serializers.StringRelatedField(many=True,read_only=True)
 
     def create(self, validated_data):
         '''
