@@ -9,7 +9,9 @@ logger = logging.getLogger(__name__)
 # Create your models here.
 
 class AWSComponent(models.Model):
-
+    """
+    This is abstract base clas . Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes
+    """
     plan = models.ForeignKey(
         'plan', related_name='aws_components',on_delete=models.PROTECT  # When deleted, the ec2 instances created by the user should be terminated
     )
@@ -22,6 +24,9 @@ class AWSComponent(models.Model):
         abstract = True
 
 class EC2(AWSComponent):
+    """
+    Model inheritance. Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
+    """
     ec2_instance_id = models.TextField(null=True)
 
     class EC2Status(models.IntegerChoices):

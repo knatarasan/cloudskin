@@ -70,3 +70,54 @@ ARN for created user: arn:aws:iam::334431854769:user/resource-manager
   DB-->CC[CloudCanvas]
   DB-->IU[Create IAM User]
 ```
+
+
+### Plan 
+A plan holds other AWS components, which is created in canvas
+
+```mermaid
+    class Plan
+    AWSComponent : +String plan
+    AWSComponent : +String region
+    AWSComponent : +String securityGroup
+    AWSComponent : +String date_created_or_modified
+    AWSComponent : +String subnet        
+
+
+classC --* classD : Composition
+```
+
+
+```mermaid
+classDiagram
+    Plan --* AWSComponent
+    AWSComponent <|-- EC2
+    AWSComponent <|-- LB
+    class AWSComponent
+    AWSComponent : +String plan
+    AWSComponent : +String region
+    AWSComponent : +String securityGroup
+    AWSComponent : +String date_created_or_modified
+    AWSComponent : +String subnet        
+
+    class EC2
+    EC2 : +String ec2_instance_id
+    EC2 : +String ec2_status
+    EC2 : +String instance_type     
+    EC2 : +String image_id
+
+    class LB
+    LB : +String lb_instance_id
+    LB : +String lb_status
+    LB : +String lb_type     
+        
+```
+
+
+
+Composition is acheived by Foreign key
+#### Django model
+Ref: https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
+#### DRF
+Plan is composition of AWSComponents, this is achieved by  StringRelatedField. 
+Ref : https://www.django-rest-framework.org/api-guide/relations/#stringrelatedfield

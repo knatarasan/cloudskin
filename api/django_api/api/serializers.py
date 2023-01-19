@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class PlanSerializer(serializers.Serializer):
+    """
+    Plan is composition of AWSComponents, this is achieved by  StringRelatedField. Ref : https://www.django-rest-framework.org/api-guide/relations/#stringrelatedfield
+    """
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     plan = serializers.JSONField()
