@@ -25,6 +25,7 @@ import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
 import { authAxios } from "../auth/AuthServiceAxios";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import Input from "../editor/Input";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -46,8 +47,9 @@ const DnDFlow = () => {
   const [save_update, setSaveUpdate] = useState(true);
   // const [position, setPosition] = useState({ x: 0, y: 0 });
   // planIdRef.current = planId;
+  const [instanceType, setInstanceType] = useState("")
 
-
+  console.log("instancetype", instanceType)
   useEffect(() => {
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
@@ -170,6 +172,13 @@ const DnDFlow = () => {
       })
   };
 
+  const customSideBar = (event: any, node: any) => {
+    console.log('click node', node);
+    setInstanceType(node.data.api_object.instance_type);
+
+  }
+
+
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -225,13 +234,25 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeClick={customSideBar}
             fitView
           >
             <Controls />
             <div className="save__controls">
               <button id='save_update' onClick={onSave}> Save Plan
+
                 {/* {save_update ? "Save Plan" : "Update Plan"} */}
               </button>
+              <p>AWS Component Properties:</p>
+              <div id='node_props'>
+              <input type="text" placeholder="instance type" value={instanceType} onChange={(e) => setInstanceType(e.target.value)}></input><br />
+              <input type="text" placeholder="image id"></input><br />
+              <input type="text" placeholder="region"></input><br />
+              <input type="text" placeholder="security group"></input><br />
+              <input type="text" placeholder="subnet"></input><br />
+              </div>
+            </div>
+            <div>
             </div>
           </ReactFlow>
         </div>
