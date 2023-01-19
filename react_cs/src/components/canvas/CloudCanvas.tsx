@@ -121,23 +121,23 @@ const DnDFlow = () => {
 
 
 
-  const createAWSComponent = (comp: string): void => {
+  const createAWSComponent = async (comp: string) => {
     // console.log("AWS Comp create called ", comp, plan_id)
     const aws_component = {
       "plan": planIdRef.current
     }
 
-    authAxios.post("/ec2/", aws_component)
+    return await authAxios.post("/ec2/", aws_component)
       .then((response) => {
-        console.log("AWS Comp created", response.data.id)
-        return response.data.id
+        console.log("AWS Comp created", response.data)
+        return response.data
       })
       .catch((error) => {
         console.log("AWS Comp not created", error.response.status)
       })
   }
 
-  const createNewNode = (icon: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): Node<any> => {
+  const createNewNode = (icon: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
     console.log('Door steps of createNewNode')
     const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
     const position = reactFlowInstance?.project({
@@ -155,18 +155,19 @@ const DnDFlow = () => {
       // comp = <LoadBalancerIcon size={size} />;
       comp = "LB"
     }
-    
-    const ec2_id = createAWSComponent(comp)
-    console.log('ec2_id ', ec2_id);
 
-    return {
-      id: getId(),
-      position,
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      style: { border: "100px", width: "5%", background: color },
-      data: { label: comp },
-    };
+    createAWSComponent(comp)
+      .then((awsComp) => {
+        const new_node: Node<any> = {
+          id: getId(),
+          position,
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          style: { border: "100px", width: "5%", background: color },
+          data: { label: comp + awsComp.id.toString(), api_object: awsComp },
+        };
+        setNodes((nds) => nds.concat(new_node));
+      })
   };
 
 
@@ -177,7 +178,7 @@ const DnDFlow = () => {
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
       if (planCreatedRef.current) {
-        setNodes((nds) => nds.concat(createNewNode(data.nodeType, 25, "red", event)));
+        createNewNode(data.nodeType, 25, "red", event)
       } else {
         planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
@@ -197,8 +198,7 @@ const DnDFlow = () => {
             setSaveUpdate(false)
             console.log("plan created", planIdRef.current)
           }).then(() => {
-            const new_node = createNewNode(data.nodeType, 25, "red",event)
-            setNodes((nds) => nds.concat(  new_node ));
+            createNewNode(data.nodeType, 25, "red", event)
           })
           .catch((error) => {
             console.log("Plan not saved", error.response.status)
@@ -229,9 +229,9 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-                <button id='save_update' onClick={onSave}> Save Plan
-                  {/* {save_update ? "Save Plan" : "Update Plan"} */}
-                </button>
+              <button id='save_update' onClick={onSave}> Save Plan
+                {/* {save_update ? "Save Plan" : "Update Plan"} */}
+              </button>
             </div>
           </ReactFlow>
         </div>
