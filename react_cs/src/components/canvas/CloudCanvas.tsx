@@ -51,7 +51,6 @@ const DnDFlow = () => {
   useEffect(() => {
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
-        console.log('axios res useEffect', response);
         setPlanId(Number(plan_id_edit))
         if (Number(plan_id_edit)) {
           setSaveUpdate(false)
@@ -124,7 +123,6 @@ const DnDFlow = () => {
 
   const createAWSComponent = (comp: string): void => {
     // console.log("AWS Comp create called ", comp, plan_id)
-    console.log("AWS Comp create called ", comp, planIdRef)
     const aws_component = {
       "plan": planIdRef.current
     }
@@ -179,7 +177,6 @@ const DnDFlow = () => {
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
       if (planCreatedRef.current) {
-        console.log("onDrop when planId exisits  bef createNewNode", planId);
         setNodes((nds) => nds.concat(createNewNode(data.nodeType, 25, "red", event)));
       } else {
         planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
@@ -198,9 +195,10 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.id)
             setPlanId(new_plan_id)
             setSaveUpdate(false)
+            console.log("plan created", planIdRef.current)
           }).then(() => {
-            console.log("onDrop after post /plan bef createNewNode", planIdRef.current);
-            setNodes((nds) => nds.concat(createNewNode(data.nodeType, 25, "red", event)));
+            const new_node = createNewNode(data.nodeType, 25, "red",event)
+            setNodes((nds) => nds.concat(  new_node ));
           })
           .catch((error) => {
             console.log("Plan not saved", error.response.status)
