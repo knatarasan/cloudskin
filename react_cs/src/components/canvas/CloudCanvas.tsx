@@ -12,6 +12,7 @@ import ReactFlow, {
   Connection,
   ReactFlowInstance,
   OnConnect,
+  OnEdgesDelete,
   Position,
 
 } from "reactflow";
@@ -25,7 +26,6 @@ import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
 import { authAxios } from "../auth/AuthServiceAxios";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
-import Input from "../editor/Input";
 import CompPropSidebar from "./CompPropSidebar";
 
 let id = 0;
@@ -37,9 +37,8 @@ const DnDFlow = () => {
   // const [planId, setPlanId] = useState<number>(-1);
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   //https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
   const [clickedNode, setClickedNode] = useState({})
-  const planCreatedRef = useRef(false);                // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+  const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
-
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
@@ -59,7 +58,7 @@ const DnDFlow = () => {
         if (Number(plan_id_edit)) {
           setSaveUpdate(false)
         }
-        const flow = JSON.parse(response.data.plan)
+        const flow = response.data.plan
         if (flow) {
           const { x = 0, y = 0, zoom = 1 } = flow.viewport;
           setNodes(flow.nodes || []);
@@ -84,43 +83,34 @@ const DnDFlow = () => {
     (params: Edge | Connection): void => setEdges((eds) => {
 
       console.log('on connect param', params);
+      console.log('TODO add connectivity between ', params.source, ' to ', params.target)
+
       return addEdge(params, eds)
     }
     ),
     [setEdges]
   );
 
-  // This is used to clean json for ReactFlow
-  const getCircularReplacer = () => {
-    const seen = new WeakSet();
-    return (key: string, value: string) => {
-      if (typeof value === 'object' && value !== null) {
-        if (seen.has(value)) {
-          return;
-        }
-        seen.add(value);
-      }
-      return value;
-    };
-  };
+  const onEdgesDelete = useCallback<any>(
+    (params: Edge[]): void => {
+      console.log('Edges deleted',params)
+    }, []
+  );
+
 
   const onSave = () => {
 
     if (reactFlowInstance) {
       // update plan
-      const flow = reactFlowInstance.toObject();
-      const flow_obj = JSON.stringify(flow, getCircularReplacer())
-
-      const plan_obj = {
-        plan: flow_obj,
-        // name: 'unnammed',
+      const flow = reactFlowInstance.toObject();      
+      const plan_wrapper = {
+        plan: flow,
         deploy_status: 1,
         running_status: 1,
       };
 
-      authAxios.put("/plan/" + `${planId}`, plan_obj)
+      authAxios.put("/plan/" + `${planId}`, plan_wrapper)
         .then((response) => {
-          // console.log('axios res UPDATE', response);
           console.log("Plan successfully updated", response.data.id)
         })
         .catch((error) => {
@@ -134,8 +124,6 @@ const DnDFlow = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
-
-
 
   const createAWSComponent = async (comp: string) => {
     // console.log("AWS Comp create called ", comp, plan_id)
@@ -174,7 +162,7 @@ const DnDFlow = () => {
     createAWSComponent(comp)
       .then((awsComp) => {
         const new_node: Node<any> = {
-          id: getId(),
+          id: awsComp.id.toString(),
           position,
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
@@ -187,7 +175,6 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     setClickedNode(node.data)
-    console.log('node clicked ', node)
     return (
       <>
         <CompPropSidebar />
@@ -206,7 +193,7 @@ const DnDFlow = () => {
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
       if (planIdRef.current && planCreatedRef.current) {
-        console.log('To augment existing plan ',planIdRef)
+        console.log('To augment existing plan ', planIdRef)
         createNewNode(data.nodeType, 25, "red", event)
       } else {
         planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
@@ -214,7 +201,6 @@ const DnDFlow = () => {
         //create plan
         const plan_obj = {
           plan: {},
-          // name: 'unnammed',
           deploy_status: 1,
           running_status: 1,
         };
@@ -248,6 +234,7 @@ const DnDFlow = () => {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            onEdgesDelete={onEdgesDelete}
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}

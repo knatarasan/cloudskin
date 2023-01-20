@@ -42,16 +42,19 @@ class EC2(AWSComponent):
     """
     Model inheritance. Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
     """
+    aws_component = models.TextField(default='ec2')
     ec2_instance_id = models.TextField(null=True)
     ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
                                      default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
 
+
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
 
 class LB(AWSComponent):
+    aws_component = models.TextField(default='lb')
     lb_instance_id = models.TextField(null=True)
     lb_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
                                     default=AWSComponent.AWSCompStatus.PREPARED)
