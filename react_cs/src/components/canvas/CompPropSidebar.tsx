@@ -2,19 +2,17 @@ import { useState } from "react"
 import { authAxios } from "../auth/AuthServiceAxios";
 
 const CompPropSidebar = ({ node }: any) => {
-    const apiObject = node.api_object
+    const [apiObject, setApiObject] = useState(node.api_object)
     console.log('apiObject is ',apiObject);
-    const [instanceType, setInstanceType] = useState(apiObject)
-    console.log('instance is ',apiObject);
 
     const handleChange = (e: any) => {
-        instanceType[e.target.name] = e.target.value
+        apiObject[e.target.name] = e.target.value
     };
 
     const handleSubmit = (e: any) => {
-        const end_point = instanceType.aws_component;
-        console.log('update call',`/${end_point}/${instanceType.id}`);
-        authAxios.put(`/${end_point}/${instanceType.id}`, instanceType)
+        const end_point = apiObject.aws_component;
+        console.log('update call',`/${end_point}/${apiObject.id}`, apiObject);
+        authAxios.put(`/${end_point}/${apiObject.id}`, apiObject)
             .then((response) => {
                 console.log("AWS Comp updated", response.data.id)
                 return response.data

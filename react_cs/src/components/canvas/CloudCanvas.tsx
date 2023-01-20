@@ -174,12 +174,9 @@ const DnDFlow = () => {
   };
 
   const onNodeClick = (event: any, node: any) => {
+    setClickedNode({})
     setClickedNode(node.data)
-    return (
-      <>
-        <CompPropSidebar />
-      </>
-    )
+    console.log('clickedNode ',clickedNode)
   }
 
   const onPaneClick = (event: any) => {
