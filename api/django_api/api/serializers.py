@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 class AWSCompSerializer(serializers.ModelSerializer):
     class Meta:
         model = AWSComponent
-        fields = ['id', 'plan']
+        fields = ['id', 'plan', 'region', 'securityGroup', 'subnet', 'date_created_or_modified']
+
 
 class EC2Serializer(serializers.ModelSerializer):
     class Meta:
@@ -37,10 +38,9 @@ class PlanSerializer(serializers.Serializer):
     plan = serializers.JSONField()
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
-    # aws_components = AWSCompSerializer(many=True,read_only=True)
-    aws_components = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
+    aws_components = AWSCompSerializer(many=True,read_only=True)
+    # aws_components = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
     # aws_components = serializers.StringRelatedField(many=True, read_only=True)
-    # aws_components = EC2Serializer(many=True,read_only=True)
 
     def create(self, validated_data):
         '''

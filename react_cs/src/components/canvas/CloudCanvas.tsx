@@ -47,10 +47,11 @@ const DnDFlow = () => {
   // const [nodeData, setNodeData] = useState(null);
   // const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
-  // const [position, setPosition] = useState({ x: 0, y: 0 });
-  // planIdRef.current = planId;
+
 
   useEffect(() => {
+
+    // componentDidMount
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
         setPlanId(Number(plan_id_edit))
@@ -69,29 +70,41 @@ const DnDFlow = () => {
       .catch((error) => {
         console.log(plan_id_edit, ' is not right plan id to edit', error);
       })
+    // componentDidMount
+
+    // componentWillUnMount
+    return () => {
+      onSave() // BUG this save doesn't work since reactFlowInstance got lost before save function called
+    }
+    // componentWillUnMount
   }, [])
 
+
   const onConnect = useCallback<OnConnect>(
-    (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection): void => setEdges((eds) => {
+
+      console.log('on connect param', params);
+      return addEdge(params, eds)
+    }
+    ),
     [setEdges]
   );
 
+  // This is used to clean json for ReactFlow
+  const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key: string, value: string) => {
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return;
+        }
+        seen.add(value);
+      }
+      return value;
+    };
+  };
 
   const onSave = () => {
-
-    const getCircularReplacer = () => {
-      const seen = new WeakSet();
-      return (key: string, value: string) => {
-        if (typeof value === 'object' && value !== null) {
-          if (seen.has(value)) {
-            return;
-          }
-          seen.add(value);
-        }
-        return value;
-      };
-    };
-
 
     if (reactFlowInstance) {
       // update plan
@@ -114,6 +127,7 @@ const DnDFlow = () => {
           console.log("Plan not updated", error)
         })
     }
+
   }
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
@@ -173,7 +187,7 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     setClickedNode(node.data)
-    console.log('node clicked ',node)
+    console.log('node clicked ', node)
     return (
       <>
         <CompPropSidebar />
@@ -191,13 +205,13 @@ const DnDFlow = () => {
 
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
-      if (planCreatedRef.current) {
+      if (planIdRef.current && planCreatedRef.current) {
+        console.log('To augment existing plan ',planIdRef)
         createNewNode(data.nodeType, 25, "red", event)
       } else {
         planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
         //create plan
-        console.log("This is to create new plan", planId);
         const plan_obj = {
           plan: {},
           // name: 'unnammed',
@@ -220,7 +234,6 @@ const DnDFlow = () => {
         //create plan 
 
       }
-      console.log('nodes', nodes)
     },
     [reactFlowInstance]);
 
@@ -244,8 +257,9 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan</button>
-              <p>Plan id : {planId}</p>
+              <button id='save_update' onClick={onSave}> Save Plan</button>  click Save Plan before you leave (BUG )
+              <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
+
               {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}
             </div>
             <div>
