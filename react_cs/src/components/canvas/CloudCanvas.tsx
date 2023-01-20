@@ -54,6 +54,7 @@ const DnDFlow = () => {
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
         setPlanId(Number(plan_id_edit))
+        planCreatedRef.current = true;
         if (Number(plan_id_edit)) {
           setSaveUpdate(false)
         }
@@ -244,6 +245,7 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
               <button id='save_update' onClick={onSave}> Save Plan</button>
+              <p>Plan id : {planId}</p>
               {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}
             </div>
             <div>
