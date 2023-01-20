@@ -94,7 +94,6 @@ const DnDFlow = () => {
 
     if (reactFlowInstance) {
       // update plan
-      console.log("This is to update plan", planId);
       const flow = reactFlowInstance.toObject();
       const flow_obj = JSON.stringify(flow, getCircularReplacer())
 
@@ -129,7 +128,7 @@ const DnDFlow = () => {
       "plan": planIdRef.current
     }
 
-    return await authAxios.post("/ec2/", aws_component)
+    return await authAxios.post(`/${comp.toLowerCase()}/`, aws_component)
       .then((response) => {
         console.log("AWS Comp created", response.data)
         return response.data
@@ -140,7 +139,6 @@ const DnDFlow = () => {
   }
 
   const createNewNode = (icon: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
-    console.log('Door steps of createNewNode')
     const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
     const position = reactFlowInstance?.project({
       x: event.clientX - reactFlowBounds.left,
@@ -166,15 +164,15 @@ const DnDFlow = () => {
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           style: { border: "100px", width: "5%", background: color },
-          data: { label: comp + awsComp.id.toString(), api_object: awsComp },
+          data: { label: comp + '-' + awsComp.id.toString(), api_object: awsComp },
         };
         setNodes((nds) => nds.concat(new_node));
       })
   };
 
   const onNodeClick = (event: any, node: any) => {
-    setClickedNode(node.data.api_object)
-    console.log('Clicked', node)
+    setClickedNode(node.data)
+    console.log('node clicked ',node)
     return (
       <>
         <CompPropSidebar />
@@ -182,6 +180,9 @@ const DnDFlow = () => {
     )
   }
 
+  const onPaneClick = (event: any) => {
+    setClickedNode({})
+  }
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -237,12 +238,13 @@ const DnDFlow = () => {
             onDrop={onDrop}
             onDragOver={onDragOver}
             onNodeClick={onNodeClick}
+            onPaneClick={onPaneClick}
             fitView
           >
             <Controls />
             <div className="save__controls">
               <button id='save_update' onClick={onSave}> Save Plan</button>
-              { "id" in clickedNode ? <CompPropSidebar apiObject={clickedNode} /> : null }
+              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}
             </div>
             <div>
             </div>

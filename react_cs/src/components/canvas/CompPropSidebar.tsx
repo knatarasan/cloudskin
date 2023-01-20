@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { authAxios } from "../auth/AuthServiceAxios";
 
-const CompPropSidebar = ({ apiObject }: any) => {
+const CompPropSidebar = ({ node }: any) => {
+    const apiObject = node.api_object
     const [instanceType, setInstanceType] = useState(apiObject)
 
     const handleChange = (e: any) => {
@@ -21,13 +22,15 @@ const CompPropSidebar = ({ apiObject }: any) => {
 
     return (
         <>
-            <p>AWS Component Properties:</p>
             <div id='node_props'>
+                <p><b>Properties of {node.label}</b></p>
                 {Object.keys(apiObject).map((key) =>
-                    <><input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br /></>
+                    <>
+                    <label htmlFor={key}>{key}:</label>
+                    <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br /></>
                 )}
             </div>
-            <button type="submit" onClick={handleSubmit}>Save API Object</button>
+            <button type="submit" onClick={handleSubmit}>Save {node.label}</button>
         </>
     )
 }
