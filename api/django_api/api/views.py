@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
-from .models import Plan, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds, LB
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.throttling import UserRateThrottle
 from .permissions import PlanUserPermission  # , IsOwner
 from .serializers import UserSerializer, PlanSerializer, \
-    EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer
+    EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer, LBSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -147,6 +147,13 @@ class PlanDetail(APIView):
         plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class LBList(generics.ListCreateAPIView):
+    queryset = LB.objects.all()
+    serializer_class = LBSerializer
+
+class LBDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LB.objects.all()
+    serializer_class = LBSerializer
 
 class EC2List(APIView):
     """

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Plan, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds, AWSComponent, LB
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
@@ -9,6 +9,23 @@ from .services import EC2Service
 import logging
 
 logger = logging.getLogger(__name__)
+
+class AWSCompSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AWSComponent
+        fields = ['id', 'plan']
+
+class EC2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = EC2
+        fields = ['id', 'plan', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
+                  'securityGroup', 'subnet', 'date_created_or_modified']
+
+class LBSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LB
+        fields = ['id', 'plan', 'lb_instance_id', 'lb_status', 'lb_type', 'region',
+                  'securityGroup', 'subnet', 'date_created_or_modified']
 
 
 class PlanSerializer(serializers.Serializer):
@@ -20,7 +37,10 @@ class PlanSerializer(serializers.Serializer):
     plan = serializers.JSONField()
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
-    aws_components = serializers.StringRelatedField(many=True,read_only=True)
+    # aws_components = AWSCompSerializer(many=True,read_only=True)
+    aws_components = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
+    # aws_components = serializers.StringRelatedField(many=True, read_only=True)
+    # aws_components = EC2Serializer(many=True,read_only=True)
 
     def create(self, validated_data):
         '''
@@ -35,12 +55,6 @@ class PlanSerializer(serializers.Serializer):
         return instance
 
 
-class EC2Serializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = EC2
-        fields = ['id', 'plan', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
-                  'securityGroup', 'subnet', 'date_created_or_modified']
 
 
 class AwsCredsSerializer(serializers.Serializer):
