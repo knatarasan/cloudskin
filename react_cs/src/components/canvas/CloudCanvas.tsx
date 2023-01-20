@@ -26,6 +26,7 @@ import { api_host } from "../../env/global";
 import { authAxios } from "../auth/AuthServiceAxios";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 import Input from "../editor/Input";
+import CompPropSidebar from "./CompPropSidebar";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -35,6 +36,7 @@ const DnDFlow = () => {
   const { plan_id_edit } = useParams()
   // const [planId, setPlanId] = useState<number>(-1);
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   //https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  const [clickedNode, setClickedNode] = useState({})
   const planCreatedRef = useRef(false);                // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
 
@@ -47,9 +49,7 @@ const DnDFlow = () => {
   const [save_update, setSaveUpdate] = useState(true);
   // const [position, setPosition] = useState({ x: 0, y: 0 });
   // planIdRef.current = planId;
-  const [instanceType, setInstanceType] = useState("")
 
-  console.log("instancetype", instanceType)
   useEffect(() => {
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
@@ -172,12 +172,15 @@ const DnDFlow = () => {
       })
   };
 
-  const customSideBar = (event: any, node: any) => {
-    console.log('click node', node);
-    setInstanceType(node.data.api_object.instance_type);
-
+  const onNodeClick = (event: any, node: any) => {
+    setClickedNode(node.data.api_object)
+    console.log('Clicked', node)
+    return (
+      <>
+        <CompPropSidebar />
+      </>
+    )
   }
-
 
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
@@ -223,7 +226,6 @@ const DnDFlow = () => {
     <div className="dndflow">
       <ReactFlowProvider>
         <Sidebar />
-
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
@@ -234,23 +236,13 @@ const DnDFlow = () => {
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            onNodeClick={customSideBar}
+            onNodeClick={onNodeClick}
             fitView
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan
-
-                {/* {save_update ? "Save Plan" : "Update Plan"} */}
-              </button>
-              <p>AWS Component Properties:</p>
-              <div id='node_props'>
-              <input type="text" placeholder="instance type" value={instanceType} onChange={(e) => setInstanceType(e.target.value)}></input><br />
-              <input type="text" placeholder="image id"></input><br />
-              <input type="text" placeholder="region"></input><br />
-              <input type="text" placeholder="security group"></input><br />
-              <input type="text" placeholder="subnet"></input><br />
-              </div>
+              <button id='save_update' onClick={onSave}> Save Plan</button>
+              { "id" in clickedNode ? <CompPropSidebar apiObject={clickedNode} /> : null }
             </div>
             <div>
             </div>
