@@ -12,7 +12,6 @@ import ReactFlow, {
   Connection,
   ReactFlowInstance,
   OnConnect,
-  OnEdgesDelete,
   Position,
 
 } from "reactflow";
@@ -96,6 +95,23 @@ const DnDFlow = () => {
       console.log('Edges deleted',params)
     }, []
   );
+
+  const onNodeDelete = (nodes: any): void =>{
+    console.log('This node will be deleted ',nodes);
+
+    nodes.map((node: any) => {
+      const endpoint = node.data.api_object.aws_component;
+
+      authAxios.delete(`/${endpoint}/${node.data.api_object.id}`)
+      .then((response) => {
+        console.log("AWS component has been deleted")
+      })
+      .catch((error) => {
+        console.log("AWS component not deleted", error)
+      })
+    })
+
+  }
 
 
   const onSave = () => {
@@ -229,6 +245,7 @@ const DnDFlow = () => {
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
+            onNodesDelete={onNodeDelete}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onEdgesDelete={onEdgesDelete}

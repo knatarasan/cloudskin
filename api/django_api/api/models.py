@@ -10,19 +10,10 @@ logger = logging.getLogger(__name__)
 
 class AWSComponent(models.Model):
     """
-    This is abstract base clas . Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes
-
-    Following namespace issue is handled by
-
-        Error :     api.EC2.plan: (fields.E304) Reverse accessor 'Plan.aws_components' for 'api.EC2.plan' clashes with reverse accessor for 'api.LB.plan'.
-                    HINT: Add or change a related_name argument to the definition for 'api.EC2.plan' or 'api.LB.plan'.
-
-    https://stackoverflow.com/questions/2606194/django-error-message-add-a-related-name-argument-to-the-definition
+    This is a base clas which forms one-to-one with child . Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes
     """
     plan = models.ForeignKey(
         'plan', related_name='aws_components', on_delete=models.PROTECT
-        # 'plan', related_name = '%(app_label)s_%(class)s_related', on_delete = models.PROTECT
-        # When deleted, the ec2 instances created by the user should be terminated
     )
     region = models.TextField(default="us-west-1")
     securityGroup = models.TextField(default="NOT-SET")
@@ -48,7 +39,6 @@ class EC2(AWSComponent):
                                      default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
-
 
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
@@ -111,6 +101,9 @@ class Plan(models.Model):
     def save(self, *args, **kwargs):
         logger.info(f'val of deploy_stat {self.deploy_status}')
         super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ["id"]
 
 
 class AwsCreds(models.Model):

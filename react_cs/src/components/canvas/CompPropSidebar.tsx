@@ -3,7 +3,6 @@ import { authAxios } from "../auth/AuthServiceAxios";
 
 const CompPropSidebar = ({ node }: any) => {
     const [apiObject, setApiObject] = useState(node.api_object)
-    console.log('apiObject is ',apiObject);
 
     const handleChange = (e: any) => {
         apiObject[e.target.name] = e.target.value
