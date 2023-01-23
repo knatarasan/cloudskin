@@ -1,6 +1,7 @@
 ### User to deploy an EC2 instance
 - cloud_type : aws
 - iam policy (cx supplied)  
+- iam policy (cx supplied)  
 - aws iam user (this user uses above policy)
   - AWS_ACCESS_KEY_ID="PLACEHOLDER"
   - AWS_SECRET_ACCESS_KEY="PLACEHOLDER"

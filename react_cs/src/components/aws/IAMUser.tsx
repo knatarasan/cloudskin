@@ -34,7 +34,7 @@ const IAMUser = () => {
         '        "User": { \n' +
         '            "Path": "/", \n' +
         '            "UserName": "cx_user", \n' +
-        '            "UserId": "AIDAU3XNRECYRMBO5REZH", \n' +
+        '            "UserId": "AIDAU3XNRECYRMX00XXXX", \n' +
         '            "Arn": "arn:aws:iam::334431854769:user/cx_user", \n' +
         '            "CreateDate": "2023-01-16T18:22:47+00:00" \n' +
         '        } \n' +
@@ -45,8 +45,8 @@ const IAMUser = () => {
         '    { \n' +
         '       "Policy": { \n' +
         '            "PolicyName": "cx_policy", \n' +
-        '            "PolicyId": "ANPAU3XNRECYZ5QTGBGH3", \n' +
-        '            "Arn": "arn:aws:iam::334431854769:policy/cx_policy", \n' +
+        '            "PolicyId": "ANPAU3XNRECYZ5X00XXXX", \n' +
+        '            "Arn": "arn:aws:iam::334439999999:policy/cx_policy", \n' +
         '            "Path": "/",\n' +
         '            "DefaultVersionId": "v1",\n' +
         '            "AttachmentCount": 0,\n' +
@@ -88,7 +88,7 @@ const IAMUser = () => {
         '    ]\n' +
         '}'
 
-    const codeStringAttachPolicy = 'mac ~ % aws iam attach-user-policy --policy-arn arn:aws:iam::334431854769:policy/cx_policy --user-name cx_user'
+    const codeStringAttachPolicy = 'mac ~ % aws iam attach-user-policy --policy-arn arn:aws:iam::334439999999:policy/cx_policy --user-name cx_user'
 
     return (
         <>
@@ -187,10 +187,3 @@ const IAMUser = () => {
 
 export default IAMUser
 
-/*
-                                    Insert your AWS credentials here:<br />
-                                    <label>Access Key: </label>
-                                    <input type="text"></input><br />
-                                    <label>Secret Access Key: </label>
-                                    <input type="text"></input>
-*/
