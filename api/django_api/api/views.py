@@ -1,12 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
-from .models import Plan, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds, LB
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.throttling import UserRateThrottle
 from .permissions import PlanUserPermission  # , IsOwner
 from .serializers import UserSerializer, PlanSerializer, \
-    EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer
+    EC2Serializer, AwsCredsSerializer, CookieTokenRefreshSerializer, CSTokenObtainPairSerializer, LBSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
@@ -17,6 +17,7 @@ from rest_framework import status
 from django.http import Http404
 
 logger = logging.getLogger(__name__)
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -34,6 +35,7 @@ class CookieTokenObtainPairView(TokenObtainPairView):
     """ This takes care /token end point, and needed for httpOnly cookie to be set from Backend
     For further details refer cloudskin/doc/Authentication.md
     """
+
     def finalize_response(self, request, response, *args, **kwargs):
         """ This is called for endpoint /token | When a user logsIn first time
         Upon successful login, it returns access token on response, stores refresh token in httpOnly cookie
@@ -51,11 +53,12 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 response.data["refresh"],
                 max_age=cookie_max_age,
                 httponly=True,
-                samesite="Lax",             # Unless this value is "Lax" chrome won't set cookie from cross origin
+                samesite="Lax",  # Unless this value is "Lax" chrome won't set cookie from cross origin
                 secure=False,
             )
-            del response.data["refresh"]    # So final api response not going to have refresh token
+            del response.data["refresh"]  # So final api response not going to have refresh token
         return super().finalize_response(request, response, *args, **kwargs)
+
     serializer_class = CSTokenObtainPairSerializer
 
 
@@ -77,13 +80,14 @@ class CookieTokenRefreshView(TokenRefreshView):
                 response.data["refresh"],
                 max_age=cookie_max_age,
                 httponly=True,
-                samesite="Lax",                        # Unless this value is "Lax" chrome won't set cookie from cross origin
+                samesite="Lax",  # Unless this value is "Lax" chrome won't set cookie from cross origin
                 secure=False,
             )
             del response.data["refresh"]
         return super().finalize_response(request, response, *args, **kwargs)
 
     serializer_class = CookieTokenRefreshSerializer
+
 
 class PlanList(APIView):
     """
@@ -123,7 +127,7 @@ class PlanDetail(APIView):
         logger.info(f'Requested usertype is superuser ? {request.user.is_superuser}')
 
         # Only user who created the object can access an object
-        return get_object_or_404(Plan, pk=pk,owner=request.user)
+        return get_object_or_404(Plan, pk=pk, owner=request.user)
 
     def get(self, request, pk, format=None):
         plan = self.get_object(pk, request)
@@ -131,7 +135,7 @@ class PlanDetail(APIView):
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
-        plan = self.get_object(pk,request)
+        plan = self.get_object(pk, request)
         serializer = PlanSerializer(plan, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -139,10 +143,17 @@ class PlanDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
-        plan = self.get_object(pk,request)
+        plan = self.get_object(pk, request)
         plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class LBList(generics.ListCreateAPIView):
+    queryset = LB.objects.all()
+    serializer_class = LBSerializer
+
+class LBDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = LB.objects.all()
+    serializer_class = LBSerializer
 
 class EC2List(APIView):
     """
@@ -155,21 +166,21 @@ class EC2List(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        try:
-            ec2 = EC2Instance()
-            instance = ec2.create()
-        except:
-            logger.info('Instance not created ')
-            return
-        logger.info(f'serializer saved {instance}')
+        # try:
+        #     ec2 = EC2Instance()
+        #     instance = ec2.create()
+        # except:
+        #     logger.info('Instance not created ')
+        #     return
+        # logger.info(f'serializer saved {instance}')
+
 
         serializer = EC2Serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(owner=self.request.user, ec2_instance_id=instance)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         logger.info("Response 400 Bad request")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 class EC2Detail(APIView):
     """
@@ -197,7 +208,11 @@ class EC2Detail(APIView):
         ec2 = self.get_object(pk)
         serializer = EC2Serializer(ec2, data=request.data)
         if serializer.is_valid():
+            ec2_status = serializer.validated_data['ec2_status']
+            if ec2_status == 2:
+                logger.debug(f'TODO EC2 this instance would be created ')
             serializer.save()
+
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

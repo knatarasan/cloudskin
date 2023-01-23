@@ -1,6 +1,5 @@
-
 from rest_framework import serializers
-from .models import Plan, EC2, AwsCreds
+from .models import Plan, EC2, AwsCreds, AWSComponent, LB
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
@@ -11,12 +10,37 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+class AWSCompSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AWSComponent
+        fields = ['id', 'plan', 'region', 'security_group', 'subnet', 'date_created_or_modified']
+
+
+class EC2Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = EC2
+        fields = ['id', 'plan', 'aws_component','ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
+                  'security_group', 'subnet', 'date_created_or_modified']
+
+class LBSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LB
+        fields = ['id', 'plan', 'aws_component','lb_instance_id', 'lb_status', 'lb_type', 'region',
+                  'security_group', 'subnet', 'date_created_or_modified']
+
+
 class PlanSerializer(serializers.Serializer):
+    """
+    Plan is composition of AWSComponents, this is achieved by  StringRelatedField. Ref : https://www.django-rest-framework.org/api-guide/relations/#stringrelatedfield
+    """
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
     plan = serializers.JSONField()
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
+    aws_components = AWSCompSerializer(many=True,read_only=True)
+    # aws_components = serializers.PrimaryKeyRelatedField(many=True,read_only=True)
+    # aws_components = serializers.StringRelatedField(many=True, read_only=True)
 
     def create(self, validated_data):
         '''
@@ -31,29 +55,6 @@ class PlanSerializer(serializers.Serializer):
         return instance
 
 
-class EC2Serializer(serializers.Serializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
-    ec2_instance_id = serializers.CharField()
-    ec2_instance_health = serializers.SerializerMethodField()
-
-    def get_ec2_instance_health(self, obj):
-        service = EC2Service()
-        return service.get_health(obj.ec2_instance_id)
-
-    def create(self, validated_data):
-        '''
-        create and return a new `EC2` , given the validated data
-        '''
-        logger.info(f"validated data {validated_data}")
-        ec2 = EC2.objects.create(**validated_data)
-        logger.info("EC2 created")
-        return ec2
-
-    def update(self, instance, validated_data):
-        instance.ec2 = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
-        instance.save()
-        logger.info("EC2 updated")
-        return instance
 
 
 class AwsCredsSerializer(serializers.Serializer):
@@ -79,6 +80,7 @@ class AwsCredsSerializer(serializers.Serializer):
 
 class CSTokenObtainPairSerializer(TokenObtainPairSerializer):
     """ It's an inherited class to augment JWT payload """
+
     @classmethod
     def get_token(cls, user):
         """ This class method is overloaded to augment username and email into JWT token payload """

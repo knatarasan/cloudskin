@@ -2,7 +2,7 @@ Release 1
 ===========
     Objective : Customer deploys a PG in AWS very comfortably and manages
 
-#### website story board
+#### website story board  ** COMPLETED **
 	- Landing page
 		[logo, about, contact]
 		- [What we can offer]: 
@@ -21,6 +21,16 @@ Release 1
 				- Show status of plan
 				- Edit plan
 				- re-deploy
+### ui to back end flow
+
+- Plan :
+  - Composed of
+    - EC2 : 
+      - Front end image has its equivalent backend class
+      - Once dragged and dropped , an object is created in backend
+
+![img.png](img.png)
+
 ##### References
 1. [Authentication tutorial](https://medium.com/@sushil-kamble/django-rest-framework-react-authentication-workflow-2022-part-1-a21f22b3f358)
 2. [Enable swagger documentation for django restframework ](https://www.jasonmars.org/2020/04/22/add-swagger-to-django-rest-api-quickly-4-mins-without-hiccups/)

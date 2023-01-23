@@ -29,7 +29,6 @@ authAxios.interceptors.response.use(
     //extracting response and config objects
     const { response, config } = error;
     //checking if error is Aunothorized error
-    console.log('config is ',config)
     if (response.status === 401) {
         //if refresh token exists in httpOnly cookie  proceed
         try {

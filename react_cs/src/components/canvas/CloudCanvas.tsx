@@ -1,4 +1,6 @@
-import React, { useState, useRef, useCallback, useEffect, useContext } from "react";
+import React, { useRef, useCallback, useEffect, useContext } from "react";
+import useState from 'react-usestateref';
+
 import ReactFlow, {
   Node,
   Edge,
@@ -22,6 +24,8 @@ import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
 import { api_host } from "../../env/global";
 import { authAxios } from "../auth/AuthServiceAxios";
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
+import CompPropSidebar from "./CompPropSidebar";
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -29,201 +33,237 @@ const getId = () => `dndnode_${id++}`;
 const DnDFlow = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
-  // console.log("param id ", plan_id_edit)
-  const [planId, setPlanId] = useState<number | null>(null);
-
+  // const [planId, setPlanId] = useState<number>(-1);
+  const [planId, setPlanId, planIdRef] = useState<number>(-1);   //https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  const [clickedNode, setClickedNode] = useState({})
+  const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+  // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
-  const [nodeData, setNodeData] = useState(null);
-  const [health, setHealth] = useState("red");
+  // const [nodeData, setNodeData] = useState(null);
+  // const [health, setHealth] = useState("red");
   const [save_update, setSaveUpdate] = useState(true);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
 
 
   useEffect(() => {
-      authAxios.get("/plan/" + `${plan_id_edit}`)
-        .then((response) => {
-          console.log('axios res useEffect', response);
-          setPlanId(Number(plan_id_edit))
-          if (Number(plan_id_edit)) {
-            setSaveUpdate(false)
-          }
-          const flow = JSON.parse(response.data.plan)
-          if (flow) {
-            const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-            setNodes(flow.nodes || []);
-            setEdges(flow.edges || []);
-          }
-          console.log("Plan successfully retrieved", response.data.id)
-        })
-        .catch((error) => {
-          console.log(plan_id_edit, ' is not right plan id to edit', error);
-        })
+
+    // componentDidMount
+    authAxios.get("/plan/" + `${plan_id_edit}`)
+      .then((response) => {
+        setPlanId(Number(plan_id_edit))
+        planCreatedRef.current = true;
+        if (Number(plan_id_edit)) {
+          setSaveUpdate(false)
+        }
+        const flow = response.data.plan
+        if (flow) {
+          const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+          setNodes(flow.nodes || []);
+          setEdges(flow.edges || []);
+        }
+        console.log("Plan successfully retrieved", response.data.id)
+      })
+      .catch((error) => {
+        console.log(plan_id_edit, ' is not right plan id to edit', error);
+      })
+    // componentDidMount
+
+    // componentWillUnMount
+    return () => {
+      onSave() // BUG this save doesn't work since reactFlowInstance got lost before save function called
+    }
+    // componentWillUnMount
   }, [])
 
+
   const onConnect = useCallback<OnConnect>(
-    (params: Edge | Connection): void => setEdges((eds) => addEdge(params, eds)),
+    (params: Edge | Connection): void => setEdges((eds) => {
+
+      console.log('on connect param', params);
+      console.log('TODO add connectivity between ', params.source, ' to ', params.target)
+
+      return addEdge(params, eds)
+    }
+    ),
     [setEdges]
   );
 
+  const onEdgesDelete = useCallback<any>(
+    (params: Edge[]): void => {
+      console.log('Edges deleted',params)
+    }, []
+  );
+
+  const onNodeDelete = (nodes: any): void =>{
+    console.log('This node will be deleted ',nodes);
+
+    nodes.map((node: any) => {
+      const endpoint = node.data.api_object.aws_component;
+
+      authAxios.delete(`/${endpoint}/${node.data.api_object.id}`)
+      .then((response) => {
+        console.log("AWS component has been deleted")
+      })
+      .catch((error) => {
+        console.log("AWS component not deleted", error)
+      })
+    })
+
+  }
+
 
   const onSave = () => {
-    const getCircularReplacer = () => {
-      const seen = new WeakSet();
-      return (key: string, value: string) => {
-        if (typeof value === 'object' && value !== null) {
-          if (seen.has(value)) {
-            return;
-          }
-          seen.add(value);
-        }
-        return value;
-      };
-    };
 
-    console.log('BEFORE save or update ', planId, reactFlowInstance);
-
-    if (!planId && reactFlowInstance) {
-      console.log("For save", planId);
-      const flow = reactFlowInstance.toObject();
-      const flow_obj = JSON.stringify(flow, getCircularReplacer())
-      localStorage.setItem("flow-persist", flow_obj);
-
-      const plan_obj = {
-        plan: flow_obj,
-        // name: 'unnammed',
+    if (reactFlowInstance) {
+      // update plan
+      const flow = reactFlowInstance.toObject();      
+      const plan_wrapper = {
+        plan: flow,
         deploy_status: 1,
         running_status: 1,
       };
 
-      authAxios.post("/plan/", plan_obj)
+      authAxios.put("/plan/" + `${planId}`, plan_wrapper)
         .then((response) => {
-          // console.log('axios res SAVE', response);
-          setPlanId(Number(response.data.id))
-          setSaveUpdate(false)
-          console.log("Plan successfully saved", response.data.id)
-        })
-        .catch((error) => {
-          console.log("Plan not saved", error.response.status)
-        })
-
-
-    } else if (reactFlowInstance) {
-      // update plan
-      console.log("For update", planId);
-      const flow = reactFlowInstance.toObject();
-      const data = {
-        plan: JSON.stringify(flow),
-        deploy_status: 1,
-        running_status: 1
-      };
-
-      authAxios.put("/plan/" + `${planId}`, data)
-        .then((response) => {
-          // console.log('axios res UPDATE', response);
           console.log("Plan successfully updated", response.data.id)
         })
         .catch((error) => {
           console.log("Plan not updated", error)
         })
     }
+
   }
-
-
-  // const onCreate = (e) => {
-  //   createInstance().then((data) => {
-  //     console.log("ec2Data", data.ec2_instance_id);
-  //     nodeData.data["instance_id"] = data.ec2_instance_id;
-  //     setNodeData(nodeData);
-  //     setHealth("orange");
-  //     console.log("onCreateNode after nodedata change", nodeData);
-  //   });
-  // };
-
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  // const updateNode = () => {
-  //   const instance_id = nodeData.data["instance_id"];
-  //   console.log("instance_id", instance_id);
-  //   fetch(`http://127.0.0.1:8000/ec2/${instance_id}`)
-  //     .then((response) => response.json())
-  //     .then((response) => {
-  //       if (response["ec2_instance_health"].length >= 1) {
-  //         setHealth("green");
-  //       } else if (response["ec2_instance_health"] === []) {
-  //         setHealth("orange");
-  //       }
-  //     })
-  //     .then(console.log("health", health));
-  // };
+  const createAWSComponent = async (comp: string) => {
+    // console.log("AWS Comp create called ", comp, plan_id)
+    const aws_component = {
+      "plan": planIdRef.current
+    }
+
+    return await authAxios.post(`/${comp.toLowerCase()}/`, aws_component)
+      .then((response) => {
+        console.log("AWS Comp created", response.data)
+        return response.data
+      })
+      .catch((error) => {
+        console.log("AWS Comp not created", error.response.status)
+      })
+  }
+
+  const createNewNode = (icon: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
+    const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
+    const position = reactFlowInstance?.project({
+      x: event.clientX - reactFlowBounds.left,
+      y: event.clientY - reactFlowBounds.top,
+    }) || { x: 0, y: 0 }
+
+    let comp = "";
+
+
+    if (icon === "App") {
+      // comp = <EC2Icon size={size} />;
+      comp = "EC2"
+    } else if (icon === "LB") {
+      // comp = <LoadBalancerIcon size={size} />;
+      comp = "LB"
+    }
+
+    createAWSComponent(comp)
+      .then((awsComp) => {
+        const new_node: Node<any> = {
+          id: awsComp.id.toString(),
+          position,
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          style: { border: "100px", width: "5%", background: color },
+          data: { label: comp + '-' + awsComp.id.toString(), api_object: awsComp },
+        };
+        setNodes((nds) => nds.concat(new_node));
+      })
+  };
+
+  const onNodeClick = (event: any, node: any) => {
+    setClickedNode({})
+    setClickedNode(node.data)
+    console.log('clickedNode ',clickedNode)
+  }
+
+  const onPaneClick = (event: any) => {
+    setClickedNode({})
+  }
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
 
-      const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
-      const position = reactFlowInstance?.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      }) || { x: 0, y: 0 }
+      if (planIdRef.current && planCreatedRef.current) {
+        console.log('To augment existing plan ', planIdRef)
+        createNewNode(data.nodeType, 25, "red", event)
+      } else {
+        planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
-
-      const createNewNode = (icon: string, size: number, color: string): Node<any> => {
-        let comp = null;
-
-        if (icon === "App") {
-          // comp = <EC2Icon size={size} />;
-          comp = "EC2"
-        } else if (icon === "LB") {
-          // comp = <LoadBalancerIcon size={size} />;
-          comp = "LB"
-        }
-
-        return {
-          id: getId(),
-          position,
-          sourcePosition: Position.Right,
-          targetPosition: Position.Left,
-          style: { border: "100px", width: "5%", background: color },
-          data: { label: comp },
+        //create plan
+        const plan_obj = {
+          plan: {},
+          deploy_status: 1,
+          running_status: 1,
         };
-      };
 
-      setNodes((nds) => nds.concat(createNewNode(data.nodeType, 25, "red")));
+        authAxios.post("/plan/", plan_obj)
+          .then((response) => {
+            const new_plan_id = Number(response.data.id)
+            setPlanId(new_plan_id)
+            setSaveUpdate(false)
+            console.log("plan created", planIdRef.current)
+          }).then(() => {
+            createNewNode(data.nodeType, 25, "red", event)
+          })
+          .catch((error) => {
+            console.log("Plan not saved", error.response.status)
+          })
+        //create plan 
+
+      }
     },
-    [reactFlowInstance]
-  );
+    [reactFlowInstance]);
 
   return (
     <div className="dndflow">
       <ReactFlowProvider>
         <Sidebar />
-
         <div className="reactflow-wrapper" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
+            onNodesDelete={onNodeDelete}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            onEdgesDelete={onEdgesDelete}
             onInit={setReactFlowInstance}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeClick={onNodeClick}
+            onPaneClick={onPaneClick}
             fitView
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}>
-                {save_update ? "Save Plan" : "Update Plan"}
-              </button>
+              <button id='save_update' onClick={onSave}> Save Plan</button>  click Save Plan before you leave (BUG )
+              <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
+
+              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}
+            </div>
+            <div>
             </div>
           </ReactFlow>
         </div>

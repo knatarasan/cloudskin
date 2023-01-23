@@ -1,6 +1,7 @@
-import { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
 import { authAxios } from "../auth/AuthServiceAxios";
@@ -33,6 +34,18 @@ const Dashboard = () => {
       })
   }, [])
 
+  const deletePlan = (id: number) => {
+    console.log("id", id)
+    authAxios.delete(`/plan/${id}`)
+      .then((response) => {
+        setPlans(plans.filter((plan: any) => plan.id !== id))
+        console.log("Plan has been deleted")
+      })
+      .catch((error) => {
+        console.log("Plan not deleted", error)
+      })
+
+  }
 
   if (!authenticated) {
     console.log("not auth");
@@ -76,6 +89,8 @@ const Dashboard = () => {
                     <th>Plan Name</th>
                     <th>Deployed Status</th>
                     <th>Running Status</th>
+                    <th>Edit Plan</th>
+                    <th>Delete Plan</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -88,6 +103,13 @@ const Dashboard = () => {
                       <td>{plan.owner}</td>
                       <td>{plan.deploy_status}</td>
                       <td>{plan.running_status}</td>
+                      <td>
+                        <Link to={`/plan/${plan.id}`}><FaEdit /></Link>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      </td>
+                      <td>
+                        <button onClick={() => deletePlan(plan.id)}><FaTrashAlt /></button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,20 +1,83 @@
-from enum import Enum
-
+from datetime import datetime
+from django.utils.translation import gettext_lazy as _
 from django.db import models
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 # Create your models here.
 
-class EC2(models.Model):
-    owner = models.ForeignKey(
-        'auth.User', related_name='ec2', on_delete=models.CASCADE # When deleted, the ec2 instances created by the user should be terminated
+class AWSComponent(models.Model):
+    """
+    This is a base clas which forms one-to-one with child . Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes
+    """
+    plan = models.ForeignKey(
+        'plan', related_name='aws_components', on_delete=models.PROTECT
     )
+    region = models.TextField(default="us-west-1")
+    security_group = models.TextField(null=True)
+    subnet = models.TextField(null=True)
+    date_created_or_modified = models.DateTimeField(default=datetime.now)
+
+    class AWSCompStatus(models.IntegerChoices):
+        PREPARED = 1
+        STARTED = 2  # Create Instance
+        STOPPED = 3  # Stop Instance
+        DELETED = 4  # Delete Instance
+        RUNNING = 10
+        FAILED = -1
+
+
+class EC2(AWSComponent):
+    """
+    Model inheritance. Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
+    """
+    aws_component = models.TextField(default='ec2')
     ec2_instance_id = models.TextField(null=True)
+    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
+                                     default=AWSComponent.AWSCompStatus.PREPARED)
+    instance_type = models.TextField(default='t2.micro')
+    image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
+
+    def __str__(self):
+        return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
+
+class LB(AWSComponent):
+    aws_component = models.TextField(default='lb')
+    lb_instance_id = models.TextField(null=True)
+    lb_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
+                                    default=AWSComponent.AWSCompStatus.PREPARED)
+
+    class LBType(models.TextChoices):
+        ALB = 'ALB', _('alb')
+        NLB = 'NLB', _('nlb')
+        GLB = 'GLB', _('glb')
+
+    lb_type = models.TextField(default=LBType.ALB)
+
+    def __str__(self):
+        return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.lb_instance_id} type:{self.lb_type}  status:{self.lb_status}'
+
+
+#
+# cloud_type : aws
+# iam policy (cx supplied)
+# aws iam user (this user uses above policy)
+# AWS_ACCESS_KEY_ID="PLACEHOLDER"
+# AWS_SECRET_ACCESS_KEY="PLACEHOLDER"
+# [ AWS Account]
+# security_group : hisSecurityGroup
+# subnetId : hisSubnet
+# region_name=us-west-1
+# EC2 instance
+# ImageId=ami-0f5e8a042c8bfcd5e
+# Instance type (eg: t2.micro)
+# RAM
+# vCPU
+
 
 class Plan(models.Model):
-
     owner = models.ForeignKey(
         'auth.User', related_name='plan', on_delete=models.CASCADE
     )
@@ -24,6 +87,7 @@ class Plan(models.Model):
         PREPARED = 1
         DEPLOYED = 2
         FAILED = 0
+
     deploy_status = models.IntegerField(choices=DeployStatus.choices, null=True)
 
     class RunningStatus(models.IntegerChoices):
@@ -38,6 +102,9 @@ class Plan(models.Model):
         logger.info(f'val of deploy_stat {self.deploy_status}')
         super().save(*args, **kwargs)
 
+    class Meta:
+        ordering = ["id"]
+
 
 class AwsCreds(models.Model):
     owner = models.ForeignKey(
@@ -45,4 +112,3 @@ class AwsCreds(models.Model):
     )
     aws_access_key = models.TextField()
     aws_access_secret = models.TextField()
-
