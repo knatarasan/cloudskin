@@ -16,8 +16,8 @@ class AWSComponent(models.Model):
         'plan', related_name='aws_components', on_delete=models.PROTECT
     )
     region = models.TextField(default="us-west-1")
-    securityGroup = models.TextField(default="NOT-SET")
-    subnet = models.TextField(default="NOT-SET")
+    security_group = models.TextField(null=True)
+    subnet = models.TextField(null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
 
     class AWSCompStatus(models.IntegerChoices):
