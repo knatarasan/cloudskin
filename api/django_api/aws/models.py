@@ -1,19 +1,18 @@
 from datetime import datetime
-from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 import logging
+from plan.models import Plan
 
 logger = logging.getLogger(__name__)
 
-
-# Create your models here.
 
 class AWSComponent(models.Model):
     """
     This is a base clas which forms one-to-one with child . Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes
     """
     plan = models.ForeignKey(
-        'plan', related_name='aws_components', on_delete=models.PROTECT
+        Plan, related_name='aws_components', on_delete=models.PROTECT
     )
     region = models.TextField(default="us-west-1")
     security_group = models.TextField(null=True)
@@ -42,6 +41,7 @@ class EC2(AWSComponent):
 
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
+
 
 class LB(AWSComponent):
     aws_component = models.TextField(default='lb')
@@ -75,35 +75,6 @@ class LB(AWSComponent):
 # Instance type (eg: t2.micro)
 # RAM
 # vCPU
-
-
-class Plan(models.Model):
-    owner = models.ForeignKey(
-        'auth.User', related_name='plan', on_delete=models.CASCADE
-    )
-    plan = models.JSONField()
-
-    class DeployStatus(models.IntegerChoices):
-        PREPARED = 1
-        DEPLOYED = 2
-        FAILED = 0
-
-    deploy_status = models.IntegerField(choices=DeployStatus.choices, null=True)
-
-    class RunningStatus(models.IntegerChoices):
-        STARTED = 1
-        RUNNING = 2
-        STOPPED = 3
-        FAILED = 0
-
-    running_status = models.IntegerField(choices=RunningStatus.choices, null=True)
-
-    def save(self, *args, **kwargs):
-        logger.info(f'val of deploy_stat {self.deploy_status}')
-        super().save(*args, **kwargs)
-
-    class Meta:
-        ordering = ["id"]
 
 
 class AwsCreds(models.Model):

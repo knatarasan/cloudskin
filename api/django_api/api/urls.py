@@ -22,19 +22,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', views.api_root),
-    path('plan/', views.PlanList.as_view(), name='plan-list'),
-    path('plan/<int:pk>', views.PlanDetail.as_view(), name='plan-detail'),
-    path('ec2/', views.EC2List.as_view(), name='ec2-list'),
-    path('ec2/<str:pk>', views.EC2Detail.as_view(), name='ec2-detail'),
-    path('lb/', views.LBList.as_view(), name='lb-list'),
-    path('lb/<str:pk>', views.LBDetail.as_view(), name='lb-detail'),
-    path('aws_creds/', views.AwsCredsList.as_view(), name='aws-creds-list'),
-    path('aws_creds/<int:pk>', views.AwsCredsDetail.as_view(), name='aws-creds-detail'),
-    path('user/', views.UserList.as_view(), name='user-list'),
-    path('user/<int:pk>', views.UserDetail.as_view(), name='user-detail'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path("token/", views.CookieTokenObtainPairView.as_view(), name="jwt_token_obtain_pair"),
-    path("token/refresh/", views.CookieTokenRefreshView.as_view(), name="jwt_token_refresh"),
 
 
     # For swagger documentation
