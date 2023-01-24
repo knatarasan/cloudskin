@@ -32,7 +32,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_extensions',
     'drf_yasg',
-    'api'
+    'api',
+    'authtoken',
+    'user',
+    'aws',
+    'plan',
 ]
 
 REST_FRAMEWORK = {
