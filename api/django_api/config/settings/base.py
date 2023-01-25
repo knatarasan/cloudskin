@@ -2,11 +2,16 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
+
+if not os.path.isfile('.env'):
+    print('".env" file is missing , make sure .env file in the path where  manage.py')
+    exit(0)
 
 # OS environment variables take precedence over variables from .env
 env.read_env(env.str("CS_ENV_PATH", ".env"))  # type: ignore
@@ -37,6 +42,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_yasg",
     "api",
+    "authtoken",
+    "aws",
+    "plan",
+    "user",
 ]
 
 REST_FRAMEWORK = {
@@ -94,7 +103,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://192.168.0.14:3000",
 ]
 
-CORS_ALLOW_CREDENTIALS = True  #  Without this  httpOnly cookie can't be set from Backend
+# Without this  httpOnly cookie can't be set from Backend
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "config.urls"
 
@@ -119,7 +129,8 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
-    "default": env.db_url("CS_DATABASE_URL"),  # URL Format - "postgres://<USERNAME>:<PASSWORD>@<HOST>:<PORT_NUMBER>/<DATABASE>"
+    # URL Format - "postgres://<USERNAME>:<PASSWORD>@<HOST>:<PORT_NUMBER>/<DATABASE>"
+    "default": env.db_url("CS_DATABASE_URL"),
 }
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
