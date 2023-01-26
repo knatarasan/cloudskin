@@ -1,5 +1,7 @@
-import React, { useRef, useCallback, useEffect, useContext } from "react";
+import React, { useRef, useCallback, useEffect, useContext, useState as useStateVan } from "react";
+// import useState from 'react-usestateref';
 import useState from 'react-usestateref';
+
 
 import ReactFlow, {
   Node,
@@ -33,18 +35,42 @@ const getId = () => `dndnode_${id++}`;
 const DnDFlow = () => {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
-  // const [planId, setPlanId] = useState<number>(-1);
-  const [planId, setPlanId, planIdRef] = useState<number>(-1);   //https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
-  const [clickedNode, setClickedNode] = useState({})
+
+  const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
+
+  const [clickedNode, setClickedNode] = useStateVan({})
   const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance>()
-  // const [nodeData, setNodeData] = useState(null);
-  // const [health, setHealth] = useState("red");
-  const [save_update, setSaveUpdate] = useState(true);
+
+  const [save_update, setSaveUpdate] = useStateVan(true);
+
+
+  const onSave = () => {
+    console.log("in onSave", reactFlowInstance, reactFlowInstanceRef, planIdRef.current)
+    if (reactFlowInstanceRef) {
+
+      // update plan
+      const flow = reactFlowInstanceRef.current?.toObject();
+      const plan_wrapper = {
+        plan: flow,
+        deploy_status: 1,
+        running_status: 1,
+      };
+
+      authAxios.put("/plan/" + `${planIdRef.current}`, plan_wrapper)
+        .then((response) => {
+          console.log("Plan successfully updated", response.data.id)
+        })
+        .catch((error) => {
+          console.log("Plan not updated", error)
+        })
+    }
+
+  }
 
 
   useEffect(() => {
@@ -63,6 +89,8 @@ const DnDFlow = () => {
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
         }
+
+
         console.log("Plan successfully retrieved", response.data.id)
       })
       .catch((error) => {
@@ -72,7 +100,9 @@ const DnDFlow = () => {
 
     // componentWillUnMount
     return () => {
+      console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
       onSave() // BUG this save doesn't work since reactFlowInstance got lost before save function called
+
     }
     // componentWillUnMount
   }, [])
@@ -92,49 +122,27 @@ const DnDFlow = () => {
 
   const onEdgesDelete = useCallback<any>(
     (params: Edge[]): void => {
-      console.log('Edges deleted',params)
+      console.log('Edges deleted', params)
     }, []
   );
 
-  const onNodeDelete = (nodes: any): void =>{
-    console.log('This node will be deleted ',nodes);
+  const onNodeDelete = (nodes: any): void => {
+    console.log('This node will be deleted ', nodes);
 
     nodes.map((node: any) => {
       const endpoint = node.data.api_object.aws_component;
 
       authAxios.delete(`/${endpoint}/${node.data.api_object.id}`)
-      .then((response) => {
-        console.log("AWS component has been deleted")
-      })
-      .catch((error) => {
-        console.log("AWS component not deleted", error)
-      })
+        .then((response) => {
+          console.log("AWS component has been deleted")
+        })
+        .catch((error) => {
+          console.log("AWS component not deleted", error)
+        })
     })
 
   }
 
-
-  const onSave = () => {
-
-    if (reactFlowInstance) {
-      // update plan
-      const flow = reactFlowInstance.toObject();      
-      const plan_wrapper = {
-        plan: flow,
-        deploy_status: 1,
-        running_status: 1,
-      };
-
-      authAxios.put("/plan/" + `${planId}`, plan_wrapper)
-        .then((response) => {
-          console.log("Plan successfully updated", response.data.id)
-        })
-        .catch((error) => {
-          console.log("Plan not updated", error)
-        })
-    }
-
-  }
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -192,7 +200,7 @@ const DnDFlow = () => {
   const onNodeClick = (event: any, node: any) => {
     setClickedNode({})
     setClickedNode(node.data)
-    console.log('clickedNode ',clickedNode)
+    console.log('clickedNode ', clickedNode)
   }
 
   const onPaneClick = (event: any) => {
