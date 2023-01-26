@@ -1,5 +1,10 @@
 import { useState } from "react"
 import { authAxios } from "../auth/AuthServiceAxios";
+import Card from 'react-bootstrap/Card';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 const CompPropSidebar = ({ node }: any) => {
     const [apiObject, setApiObject] = useState(node.api_object)
@@ -10,7 +15,7 @@ const CompPropSidebar = ({ node }: any) => {
 
     const handleSubmit = (e: any) => {
         const end_point = apiObject.aws_component;
-        console.log('update call',`/${end_point}/${apiObject.id}`, apiObject);
+        console.log('update call', `/${end_point}/${apiObject.id}`, apiObject);
         authAxios.put(`/${end_point}/${apiObject.id}`, apiObject)
             .then((response) => {
                 console.log("AWS Comp updated", response.data.id)
@@ -23,15 +28,29 @@ const CompPropSidebar = ({ node }: any) => {
 
     return (
         <>
-            <div id='node_props'>
-                <p><b>Properties of {node.label}</b></p>
-                {Object.keys(apiObject).map((key) =>
-                    <>
-                    <label htmlFor={key}>{key}:</label>
-                    <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br /></>
-                )}
-            </div>
-            <button type="submit" onClick={handleSubmit}>Save {node.label}</button>
+            <Card id="node_props" style={{ width: '18rem' }}>
+                <Card.Body>
+                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of {node.label}</strong></Card.Subtitle><br />
+                    {Object.keys(apiObject).map((key) =>
+                        <>
+                            <Card.Text>
+                                <Container>
+                                    <Row>
+                                        <Col sm={5}>
+                                            <label htmlFor={key}>{key}:</label>
+                                        </Col>
+                                        <Col sm={7}>
+                                            <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br />
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            </Card.Text>
+                        </>
+                    )}
+                    <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save {node.label}</Button>
+                </Card.Body>
+            </Card>
+
         </>
     )
 }

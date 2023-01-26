@@ -37,6 +37,7 @@ const DnDFlow = () => {
   const { plan_id_edit } = useParams()
 
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  const [plan, setPlan, planRef] = useState<any>({});
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
 
   const [clickedNode, setClickedNode] = useStateVan({})
@@ -72,13 +73,13 @@ const DnDFlow = () => {
 
   }
 
-
   useEffect(() => {
 
     // componentDidMount
     authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
         setPlanId(Number(plan_id_edit))
+        setPlan(response.data)
         planCreatedRef.current = true;
         if (Number(plan_id_edit)) {
           setSaveUpdate(false)
@@ -143,6 +144,20 @@ const DnDFlow = () => {
 
   }
 
+  const deployPlan = () => {
+    const plan_clone = structuredClone(planRef.current)
+    plan_clone.deploy_status = 2
+    console.log('plan_clone', plan_clone)
+    authAxios.put("/plan/" + `${planIdRef.current}`, plan_clone)
+      .then((response) => {
+        console.log("Plan deployment activated", response.data)
+        setPlan(response.data)
+        // plan.deploy_status = 2
+      })
+      .catch((error) => {
+        console.log("Plan deployment activation failed", error)
+      })
+  }
 
   const onDragOver = useCallback<React.DragEventHandler<HTMLDivElement>>((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -230,6 +245,7 @@ const DnDFlow = () => {
           .then((response) => {
             const new_plan_id = Number(response.data.id)
             setPlanId(new_plan_id)
+            setPlan(response.data)
             setSaveUpdate(false)
             console.log("plan created", planIdRef.current)
           }).then(() => {
@@ -266,7 +282,9 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan</button>  click Save Plan before you leave (BUG )
+              <button id='save_update' onClick={onSave}> Save Plan</button>
+              <button onClick={deployPlan}>Deploy Plan</button>
+              <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
 
               {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}

@@ -26,6 +26,11 @@ class PlanSerializer(serializers.Serializer):
         return plan
 
     def update(self, instance, validated_data):
+        # instance.owner = validated_data.get('owner', instance.owner)
         instance.plan = validated_data.get('plan', instance.plan)
+        instance.deploy_status = validated_data.get('deploy_status', instance.deploy_status)
+        instance.running_status = validated_data.get('running_status', instance.running_status)
+        # instance.aws_components = validated_data.get('aws_components', instance.aws_components)
+        logger.debug(f'validated_data {instance}')
         instance.save()
         return instance
