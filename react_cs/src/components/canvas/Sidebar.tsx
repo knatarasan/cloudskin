@@ -21,7 +21,7 @@ const ComponentsBar = () => {
       <div id='App'
         className="dndnode input"
         onDragStart={(event) => {
-          return onDragStart(event, "App");
+          return onDragStart(event, "ec2");
         }}
         draggable
       >
@@ -29,7 +29,7 @@ const ComponentsBar = () => {
       </div>
       <div id='LB'
         className="dndnode"
-        onDragStart={(event) => onDragStart(event, "LB")}
+        onDragStart={(event) => onDragStart(event, "lb")}
         draggable
       >
         <LoadBalancerIcon />

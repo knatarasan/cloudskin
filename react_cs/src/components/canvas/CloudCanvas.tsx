@@ -164,13 +164,13 @@ const DnDFlow = () => {
     event.dataTransfer.dropEffect = "move";
   }, []);
 
-  const createAWSComponent = async (comp: string) => {
+  const createAWSComponent = async (name: string) => {
     // console.log("AWS Comp create called ", comp, plan_id)
     const aws_component = {
       "plan": planIdRef.current
     }
-
-    return await authAxios.post(`/${comp.toLowerCase()}/`, aws_component)
+  
+    return await authAxios.post(`/${name}/`, aws_component)
       .then((response) => {
         console.log("AWS Comp created", response.data)
         return response.data
@@ -180,25 +180,25 @@ const DnDFlow = () => {
       })
   }
 
-  const createNewNode = (icon: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
+  const createNewNode = (name: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
     const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
     const position = reactFlowInstance?.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     }) || { x: 0, y: 0 }
 
-    let comp = "";
+    let comp: any = null;
 
 
-    if (icon === "App") {
-      // comp = <EC2Icon size={size} />;
-      comp = "EC2"
-    } else if (icon === "LB") {
-      // comp = <LoadBalancerIcon size={size} />;
-      comp = "LB"
+    if (name === "App") {
+      comp = <EC2Icon size={size} />;
+      // comp = "EC2"
+    } else if (name === "LB") {
+      comp = <LoadBalancerIcon size={size} />;
+      // comp = "LB"
     }
 
-    createAWSComponent(comp)
+    createAWSComponent(name)
       .then((awsComp) => {
         const new_node: Node<any> = {
           id: awsComp.id.toString(),
@@ -206,7 +206,9 @@ const DnDFlow = () => {
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           style: { border: "100px", width: "5%", background: color },
-          data: { label: comp + '-' + awsComp.id.toString(), api_object: awsComp },
+          // data: { label: comp, api_object: awsComp },
+          data: { label: comp },
+
         };
         setNodes((nds) => nds.concat(new_node));
       })
