@@ -154,3 +154,17 @@ PG
   - deploys the plan
     - new deployment : if there is no deployment for this plan
     - re-deploy : if there is a deployment for this plan
+
+
+#### Securing Keys
+
+https://arctype.com/blog/transparent-data-encryption/
+https://towardsaws.com/hack-aws-ec2-catch-aws-account-15517ffe5450
+https://www.lepide.com/blog/the-15-most-common-types-of-cyber-attacks/
+https://systemweakness.com/how-to-get-started-hacking-django-applications-f407564df9c7
+
+
+#### Start up support
+
+https://cloud.google.com/startup
+https://aws.amazon.com/activate/
