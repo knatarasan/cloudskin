@@ -12,3 +12,4 @@ Markdown==3.4.1
 psycopg2==2.9.5
 rsa
 locust
+django-model-utils

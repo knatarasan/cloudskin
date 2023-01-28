@@ -8,7 +8,7 @@ class Plan(models.Model):
     owner = models.ForeignKey(
         'auth.User', related_name='plan', on_delete=models.CASCADE
     )
-    plan = models.JSONField()
+    plan = models.JSONField(null=True)
 
     class DeployStatus(models.IntegerChoices):
         PREPARED = 1

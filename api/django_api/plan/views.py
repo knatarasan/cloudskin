@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import PlanSerializer
 from django.shortcuts import get_object_or_404
+from .services import PlanDeployment
 
 from .permissions import PlanUserPermission
 import logging
@@ -63,6 +64,8 @@ class PlanDetail(APIView):
             deploy_status = serializer.validated_data['deploy_status']
             if deploy_status == 2:
                 logger.debug(f'TODO PLAN deployment activated')
+                planDeployment = PlanDeployment(request, plan)
+                planDeployment.get_cloud_objects()
 
             serializer.save(owner=self.request.user)
             return Response(serializer.data)

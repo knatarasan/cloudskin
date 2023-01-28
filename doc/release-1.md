@@ -156,6 +156,28 @@ PG
     - re-deploy : if there is a deployment for this plan
 
 
+
+##### Deploy cycle
+
+1. Create plan
+2. Add components
+3. Configure components
+4. Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
+   - 
+5. After success full deployment front end updated
+6. Monitoring get triggered for components
+- "Deploy Plan " : button disabled when there is no deployment
+
+Monitoring : 
+- Gray empty circle not deployed 
+- Orange : deploying (opitonal)
+- Green : running
+- red : Have some issues ( eg: SG not configured )
+    
+
+
+
+
 #### Securing Keys
 
 https://arctype.com/blog/transparent-data-encryption/

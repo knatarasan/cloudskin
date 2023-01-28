@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 import logging
 from plan.models import Plan
 import rsa
+from model_utils.managers import InheritanceManager
+from .services import EC2Service
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +21,7 @@ class AWSComponent(models.Model):
     security_group = models.TextField(null=True)
     subnet = models.TextField(null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
+    objects = InheritanceManager()
 
     class AWSCompStatus(models.IntegerChoices):
         PREPARED = 1
@@ -27,6 +30,9 @@ class AWSComponent(models.Model):
         DELETED = 4  # Delete Instance
         RUNNING = 10
         FAILED = -1
+
+    def __str__(self):
+        return f"ID {self.id} PLAN {self.plan}"
 
 
 class EC2(AWSComponent):
@@ -39,6 +45,12 @@ class EC2(AWSComponent):
                                      default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
+
+    def deploy(self, user):
+        logger.debug(f'This will deploy {self.id}')
+        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=user).aws_access_key
+        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=user).aws_access_secret
+        service = EC2Service(ec2_model=self, user=user, AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY)
 
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
@@ -56,6 +68,9 @@ class LB(AWSComponent):
         GLB = 'GLB', _('glb')
 
     lb_type = models.TextField(default=LBType.ALB)
+
+    def deploy(self):
+        logger.debug(f'This will deploy {self.id}')
 
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.lb_instance_id} type:{self.lb_type}  status:{self.lb_status}'
@@ -121,4 +136,3 @@ class AwsCreds(models.Model):
     #     self.aws_access_key = rsa.encrypt(self.aws_access_key)
     #     self.aws_access_secret = rsa.encrypt(self.aws_access_secret)
     #     super(AwsCreds, self).save(*args, **kwargs)
-

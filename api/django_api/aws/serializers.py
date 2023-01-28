@@ -9,7 +9,6 @@ class AWSCompSerializer(serializers.ModelSerializer):
         model = AWSComponent
         fields = ['id', 'plan', 'region', 'security_group', 'subnet', 'date_created_or_modified']
 
-
 class EC2Serializer(serializers.ModelSerializer):
     class Meta:
         model = EC2

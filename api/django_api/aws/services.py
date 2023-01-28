@@ -1,16 +1,18 @@
 import boto3
-from .models import AwsCreds
+# from .models import AwsCreds
 import logging
 from django.conf import settings
-import time
+
 logger = logging.getLogger(__name__)
 
 
 class EC2Service:
-    def __init__(self):
-        self.AWS_ACCESS_KEY_ID = AwsCreds.objects.get(pk=1).aws_access_key
-        self.AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(pk=1).aws_access_secret
+    def __init__(self, ec2_model, user, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY):
+        self.AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID
+        self.AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY
         self.ec2 = None
+        self.ec2_model = ec2_model
+        logger.debug(f"Model {ec2_model} aws_key {self.AWS_ACCESS_KEY_ID}")
 
     def create(self):
         logger.info(f"DEVELOPMENT MODE=={settings.DEVELOPMENT_MODE}")
@@ -26,12 +28,18 @@ class EC2Service:
                     aws_secret_access_key=self.AWS_SECRET_ACCESS_KEY,
                     region_name="us-west-1"
                 )
+
                 instances = self.ec2.create_instances(
-                    ImageId="ami-0f5e8a042c8bfcd5e",
+                    ImageId=self.ec2_model.image_id,
                     MinCount=1,
                     MaxCount=1,
-                    InstanceType="t2.micro",
+                    InstanceType=self.ec2_model.instance_type,
                     KeyName="InstanceKeyPair",
+                    # ImageId="ami-0f5e8a042c8bfcd5e",
+                    # MinCount=1,
+                    # MaxCount=1,
+                    # InstanceType="t2.micro",
+                    # KeyName="InstanceKeyPair",
                     # SecurityGroupIds=['sg-0f2b88c10abf752e3'],
                     # SubnetId='subnet-0a6da46fb837b5a32'
                 )

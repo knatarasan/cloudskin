@@ -30,7 +30,7 @@ const CompPropSidebar = ({ node }: any) => {
         <>
             <Card id="node_props" style={{ width: '18rem' }}>
                 <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of {node.label}</strong></Card.Subtitle><br />
+                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.api_object.aws_component}</i></strong></Card.Subtitle><br />
                     {Object.keys(apiObject).map((key) =>
                         <>
                             <Card.Text>
@@ -47,7 +47,7 @@ const CompPropSidebar = ({ node }: any) => {
                             </Card.Text>
                         </>
                     )}
-                    <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save {node.label}</Button>
+                    <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save</Button>
                 </Card.Body>
             </Card>
 

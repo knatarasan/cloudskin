@@ -4,7 +4,7 @@ from .models import EC2, AwsCreds, LB
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from .services import EC2Service
 import logging
 
 logger = logging.getLogger(__name__)
@@ -71,6 +71,7 @@ class EC2Detail(APIView):
         if serializer.is_valid():
             ec2_status = serializer.validated_data['ec2_status']
             if ec2_status == 2:
+
                 logger.debug(f'TODO EC2 this instance would be created ')
             serializer.save()
 

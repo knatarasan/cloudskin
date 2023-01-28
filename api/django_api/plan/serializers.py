@@ -13,7 +13,7 @@ class PlanSerializer(serializers.Serializer):
     """
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source='owner.username')
-    plan = serializers.JSONField()
+    plan = serializers.JSONField(required=False)
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
     aws_components = AWSCompSerializer(many=True, read_only=True)
