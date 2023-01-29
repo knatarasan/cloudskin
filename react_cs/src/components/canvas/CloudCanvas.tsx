@@ -243,7 +243,7 @@ const DnDFlow = () => {
           style: { border: "100px", width: "5%" },
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
-          data: { label: comp, api_object: awsComp },
+          data: { label: comp + awsComp.id.toString(), api_object: awsComp },
         };
         console.log('new_node ', new_node)
         setNodes((nds) => nds.concat(new_node));
@@ -320,7 +320,7 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan</button>
+              <button id='save_update' onClick={onSave}> Save Plan</button>(This button is only for testing)<br/>
               <button onClick={deployPlan}>Deploy Plan</button>
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>

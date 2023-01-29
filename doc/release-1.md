@@ -166,7 +166,12 @@ PG
   - [X]  Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
     - [ ] Traverse through plan components and call deployment
     - [X] EC2 deployment completed
-    - [ ] O PG deployment WIP
+      - [ ] Augment ec2_status with text based status
+      - [ ] monitor EC2 health
+      - [ ] Terminate instance
+    - [ ] PG deployment
+    - [ ] Deploy PG 
+    - [ ] Monitor PG
   - [ ]  After succesfull deployment front end updated
   - [ ]  Monitoring get triggered for components
   - [ ]  "Deploy Plan " : button disabled when there is no deployment

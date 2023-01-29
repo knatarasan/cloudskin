@@ -28,10 +28,14 @@ class EC2(AWSComponent):
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
         if settings.AWS_TEST_MODE:
-            logger.info("This is AWS_TEST_MODE , no instance is spun. To change this, update AWS_TEST_MODE in settings.base")
-            return "i-simulated-id"
+            logger.info(f" AWS_TEST_MODE is {settings.AWS_TEST_MODE} no real instance spun, but a simulated instnace. To change this, update AWS_TEST_MODE in settings.base")
+            self.ec2_instance_id ='i-simulated-id'
+            self.save()
+            return 'i-simulated-id'
+
         else:
-            logger.info(f"IN PRODUCTION MODE: INSTNACE WILL BE SPUN")
+            logger.info(f"AWS_TEST_MODE is {settings.AWS_TEST_MODE}: INSTNACE WILL BE SPUN")
+
             try:
                 ec2 = boto3.resource(
                     'ec2',
@@ -50,11 +54,9 @@ class EC2(AWSComponent):
                     SecurityGroupIds=[self.security_group],
                     SubnetId=self.subnet
                 )
-                logger.info(f"Instance created, Instance id: {instances[0].instance_id}")
                 self.ec2_instance_id = instances[0].instance_id
                 self.save()
                 return instances[0].instance_id
-
 
             except Exception as e:
                 logger.error(f"Instance not created, check ERROR {e}")
