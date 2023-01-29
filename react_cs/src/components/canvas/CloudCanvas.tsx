@@ -31,6 +31,12 @@ import CompPropSidebar from "./CompPropSidebar";
 // import { serialize, deserialize } from "react-serialize";
 // import ec2icon  from './Arch_Amazon-EC2_32.png'
 import AWSComponent from "../aws/AWSComponent";
+import AWSCompNode from "./AWSCompNode";
+
+const nodeTypes = {
+  awsCompNode: AWSCompNode,
+};
+
 
 let id = 0;
 const getId = () => `dndnode_${id++}`;
@@ -55,15 +61,15 @@ const DnDFlow = () => {
   const loadIcons = () => {
     console.log('At loadIcons')
     setNodes((prevNodes: any) => {
-      console.log('prevNodes ',prevNodes)
+      console.log('prevNodes ', prevNodes)
 
 
-      return prevNodes.map((node:any) => {
+      return prevNodes.map((node: any) => {
         node.data.label = 'weirdoe'
       })
     })
 
-    console.log('NODES ',reactFlowInstanceRef.current?.toObject())
+    console.log('NODES ', reactFlowInstanceRef.current?.toObject())
   }
 
 
@@ -236,6 +242,8 @@ const DnDFlow = () => {
       .then((awsComp) => {
         const new_node: Node<any> = {
           id: awsComp.id.toString(),
+          type: 'awsCompNode',
+          // data: {  },
           position,
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
@@ -243,7 +251,7 @@ const DnDFlow = () => {
           style: { border: "100px", width: "5%" },
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
-          data: { label: comp + awsComp.id.toString(), api_object: awsComp },
+          data: { label: awsComp.id.toString(), api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
         setNodes((nds) => nds.concat(new_node));
@@ -268,7 +276,7 @@ const DnDFlow = () => {
 
       if (planIdRef.current && planCreatedRef.current) {
         console.log('To augment existing plan ', planIdRef)
-        createNewNode(data.nodeType, 25, "red", event)
+        createNewNode(data.odeType, 25, "red", event)
       } else {
         planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
@@ -316,6 +324,7 @@ const DnDFlow = () => {
             onDragOver={onDragOver}
             onNodeClick={onNodeClick}
             onPaneClick={onPaneClick}
+            nodeTypes={nodeTypes}
             fitView
           >
             <Controls />
