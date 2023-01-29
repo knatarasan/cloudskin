@@ -159,20 +159,23 @@ PG
 
 ##### Deploy cycle
 
-1. Create plan
-2. Add components
-3. Configure components
-4. Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
-   - 
-5. After success full deployment front end updated
-6. Monitoring get triggered for components
-- "Deploy Plan " : button disabled when there is no deployment
+- [ ] Plan level deployment
+  - [X] Create plan
+  - [X]  Add components
+  - [X]  Configure components
+  - [X]  Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
+    - [ ] Traverse through plan components and call deployment
+    - [X] EC2 deployment completed
+    - [ ] O PG deployment WIP
+  - [ ]  After succesfull deployment front end updated
+  - [ ]  Monitoring get triggered for components
+  - [ ]  "Deploy Plan " : button disabled when there is no deployment
 
-Monitoring : 
-- Gray empty circle not deployed 
-- Orange : deploying (opitonal)
-- Green : running
-- red : Have some issues ( eg: SG not configured )
+- [ ] Monitoring : 
+  - [ ]  Gray empty circle not deployed 
+  - [ ]  Orange : deploying (opitonal)
+  - [ ]  Green : running
+  - [ ]  red : Have some issues ( eg: SG not configured )
     
 
 

@@ -32,7 +32,7 @@ https://knatarasan:<token>@github.com/knatarasan/cloudskin.git
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
 
-echo 'DEVELOPMENT_MODE=False' > django_api/.env
+echo 'AWS_TEST_MODE=False' > django_api/.env
 mkdir cloudskin/api/log
 
 # How to uninstall postgres

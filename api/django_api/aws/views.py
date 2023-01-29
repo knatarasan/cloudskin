@@ -1,10 +1,10 @@
 from rest_framework import generics
 from .serializers import EC2Serializer, AwsCredsSerializer, LBSerializer
-from .models import EC2, AwsCreds, LB
+from .models.EC2 import EC2
+from .models.AWSComponent import AwsCreds, LB
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .services import EC2Service
 import logging
 
 logger = logging.getLogger(__name__)

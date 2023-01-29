@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import AWSComponent, EC2, LB, AwsCreds
+from .models.AWSComponent import AWSComponent, AwsCreds, LB
+from .models.EC2 import EC2
 import logging
 
 logger = logging.getLogger(__name__)

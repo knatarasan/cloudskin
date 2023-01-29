@@ -1,7 +1,6 @@
 from .base import *  # noqa
 from .base import env
 
-DEVELOPMENT_MODE = env.bool("DEVELOPMENT_MODE", False)  # type: ignore
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env(

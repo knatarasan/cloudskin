@@ -3,7 +3,7 @@ from rest_framework.request import Request
 from django.contrib.auth.models import User
 import logging
 # from aws.models import EC2
-from aws.models import AWSComponent
+from aws.models.models import AWSComponent
 
 logger = logging.getLogger(__name__)
 

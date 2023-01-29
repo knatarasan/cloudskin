@@ -202,3 +202,5 @@ GRAPH_MODELS = {
     "all_applications": True,
     "graph_models": True,
 }
+
+AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)

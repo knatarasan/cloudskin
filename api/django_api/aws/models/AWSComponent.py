@@ -5,7 +5,6 @@ import logging
 from plan.models import Plan
 import rsa
 from model_utils.managers import InheritanceManager
-from .services import EC2Service
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +17,8 @@ class AWSComponent(models.Model):
         Plan, related_name='aws_components', on_delete=models.PROTECT
     )
     region = models.TextField(default="us-west-1")
-    security_group = models.TextField(null=True)
-    subnet = models.TextField(null=True)
+    security_group = models.TextField(default='sg-0f2b88c10abf752e3', null=True)
+    subnet = models.TextField(default='subnet-0a6da46fb837b5a32', null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
     objects = InheritanceManager()
 
@@ -33,27 +32,6 @@ class AWSComponent(models.Model):
 
     def __str__(self):
         return f"ID {self.id} PLAN {self.plan}"
-
-
-class EC2(AWSComponent):
-    """
-    Model inheritance. Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
-    """
-    aws_component = models.TextField(default='ec2')
-    ec2_instance_id = models.TextField(null=True)
-    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
-                                     default=AWSComponent.AWSCompStatus.PREPARED)
-    instance_type = models.TextField(default='t2.micro')
-    image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
-
-    def deploy(self, user):
-        logger.debug(f'This will deploy {self.id}')
-        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=user).aws_access_key
-        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=user).aws_access_secret
-        service = EC2Service(ec2_model=self, user=user, AWS_ACCESS_KEY_ID=AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY=AWS_SECRET_ACCESS_KEY)
-
-    def __str__(self):
-        return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
 
 
 class LB(AWSComponent):
