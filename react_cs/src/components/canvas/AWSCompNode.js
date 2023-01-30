@@ -14,7 +14,7 @@ import {
 
 export default memo(({ data, isConnectable }) => {
   const pg_data = {};
-  const ec2_data = { id: data.label };
+  const ec2_data = { label: data.label };
 
   if (data.attachable === "pg") {
     console.log("TODO call axios Deploy PG now");
@@ -36,56 +36,12 @@ export default memo(({ data, isConnectable }) => {
         onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={isConnectable}
       />
-
-      <Container>
+      <div style={{ display: "flex", flexDirection: "column"}}>
         {"attachable" in data && data["attachable"] === "pg" ? (
-          <Row>
-            <Col>
-              <PGNodeFrag data={pg_data} />
-            </Col>
-            <Col></Col>
-          </Row>
+          <PGNodeFrag data={pg_data} />
         ) : null}
-
-        <Row>
-          <Col>
-            <EC2NodeFrag data={ec2_data} />
-          </Col>
-        </Row>
-        <Row>
-          <Col align="top" className="align-self-start">
-            <div
-              style={{
-                fontSize: 8,
-                color: "#0000ff",
-                textAlign: "center",
-                paddingTop: "0px",
-                backgroundColor: "yellow",
-              }}
-            >
-              aws comp id: {data.id}
-            </div>
-          </Col>
-        </Row>
-      </Container>
-
-      {/* <Container>
-        {"attachable" in data && data["attachable"] === "pg" ? (
-          <Row>
-            <Col>
-              <PGNodeFrag data={pg_data} />
-            </Col>
-            <Col></Col>
-          </Row>
-        ) : null}
-
-        <Row>
-          <Col>
-            <EC2NodeFrag data={ec2_data} />
-          </Col>
-        </Row>
-      </Container> */}
-
+        <EC2NodeFrag data={ec2_data} />
+      </div>
       <Handle
         type="source"
         position="right"

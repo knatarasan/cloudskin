@@ -9,6 +9,7 @@ import React from "react";
 import JsonEditor from "./components/editor/JsonEditor";
 import vmschema from "./components/editor/schema/virtualMachine.json";
 import vmdata from "./components/editor/schema/virtualMachine-data.json";
+import IconTester from "./components/canvas/IconTester";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
       <Route path="plan/:plan_id_edit" element={<DnDFlow />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="test" element={<JsonEditor schema={vmschema} data={vmdata} />} />
+      <Route path="iconTester" element={<IconTester schema={{}} data={{}} />} />
       <Route path="iamuser" element={<IAMUser />} />
     </Routes>
   );

@@ -213,7 +213,7 @@ const DnDFlow = () => {
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           // style: { border: "100px", width: "5%", background: color },
-          style: {  height:"50px", width: "100px", background: "violet"},
+          style: {  height:"50px", width: "50px"},
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
           data: { label: awsComp.id.toString(), attachable: '', api_object: awsComp, color: 'red' },
