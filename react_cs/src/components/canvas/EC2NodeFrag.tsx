@@ -3,14 +3,12 @@ const EC2NodeFrag = ({ data }: any) => {
     const EC2Clicked = () => {
         console.log('Only EC2 is clicke')
     }
-
+    
     return (
         <>
-            <div onClick={EC2Clicked}>
+            <div onClick={EC2Clicked} style={{ display: 'flex', backgroundColor: 'green' }}>
                 <svg
-                    className="w-6 h-6"
-                    height="40"
-                    width="40"
+                    width="60" height="50"
                     xmlns="http://www.w3.org/2000/svg"
                 >
                     <defs>
@@ -36,7 +34,10 @@ const EC2NodeFrag = ({ data }: any) => {
                         ></path>
                     </g>
                 </svg>
-
+                <svg  width="40" height="50" style={{ backgroundColor: 'lightblue' }} viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="4" cy="0" r="4" fill="red" stroke="red" />
+                </svg>
+                
             </div>
 
         </>
