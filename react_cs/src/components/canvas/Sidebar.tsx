@@ -7,9 +7,9 @@ import { Link } from "react-router-dom";
 
 
 const ComponentsBar = () => {
-  const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: string) => {
+  const onDragStart = (event: React.DragEvent<HTMLDivElement>, node: string,nodeType:string) => {
     const id = nanoid()
-    const dataString = JSON.stringify({ id, nodeType })
+    const dataString = JSON.stringify({ id, node,nodeType })
     event.dataTransfer.setData("application/reactflow", dataString);
     event.dataTransfer.effectAllowed = "move";
   };
@@ -21,7 +21,7 @@ const ComponentsBar = () => {
       <div id='App'
         className="dndnode input"
         onDragStart={(event) => {
-          return onDragStart(event, "ec2");
+          return onDragStart(event, "ec2","base");
         }}
         draggable
       >
@@ -29,14 +29,14 @@ const ComponentsBar = () => {
       </div>
       <div id='LB'
         className="dndnode"
-        onDragStart={(event) => onDragStart(event, "lb")}
+        onDragStart={(event) => onDragStart(event, "lb","base")}
         draggable
       >
         <LoadBalancerIcon />
       </div>
       <div id='PG'
         className="dndnode"
-        onDragStart={(event) => onDragStart(event, "pg")}
+        onDragStart={(event) => onDragStart(event, "pg","attachable")}
         draggable
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" height="25" width="25">
