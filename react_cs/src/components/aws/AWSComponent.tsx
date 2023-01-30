@@ -24,4 +24,4 @@ const AWSComponent = ({ comp }) => {
 
 }
 
-export default AWSComponent
+// export default AWSComponent
