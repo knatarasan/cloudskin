@@ -166,10 +166,11 @@ PG
   - [X]  Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
     - [ ] Traverse through plan components and call deployment
     - [X] EC2 deployment completed
+      - [ ] Once EC2 created UI has to be updated with instance id
       - [ ] Augment ec2_status with text based status
       - [ ] monitor EC2 health
       - [ ] Terminate instance
-    - [ ] PG deployment
+    - [O] PG deployment
     - [ ] Deploy PG 
     - [ ] Monitor PG
   - [ ]  After succesfull deployment front end updated

@@ -204,3 +204,6 @@ GRAPH_MODELS = {
 }
 
 AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)
+
+RSA_PUBLIC_KEY = '/Users/kannappannatarasan/.ssh/rsa_public_key.pem'
+RSA_PRIVATE_KEY = '/Users/kannappannatarasan/.ssh/rsa_private_key.pem'

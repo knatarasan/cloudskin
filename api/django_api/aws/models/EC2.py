@@ -1,4 +1,5 @@
-from .AWSComponent import AWSComponent, AwsCreds
+from .AWSComponent import AWSComponent
+from .AwsCreds import AwsCreds
 import boto3
 from django.db import models
 from django.conf import settings
@@ -17,6 +18,7 @@ class EC2(AWSComponent):
                                      default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
+    instance_key_pair = models.TextField(default="cloudskin_key")
 
     def deploy(self, user):
         logger.debug(f'This will deploy {self.id}')
@@ -50,7 +52,7 @@ class EC2(AWSComponent):
                     MinCount=1,
                     MaxCount=1,
                     InstanceType=self.instance_type,
-                    KeyName="InstanceKeyPair",
+                    KeyName=self.instance_key_pair,
                     SecurityGroupIds=[self.security_group],
                     SubnetId=self.subnet
                 )

@@ -1,7 +1,8 @@
 from rest_framework import generics
 from .serializers import EC2Serializer, AwsCredsSerializer, LBSerializer
 from .models.EC2 import EC2
-from .models.AWSComponent import AwsCreds, LB
+from .models.AWSComponent import LB
+from .models.AwsCreds import AwsCreds
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status

@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 import logging
 from plan.models import Plan
-import rsa
+
 from model_utils.managers import InheritanceManager
 
 logger = logging.getLogger(__name__)
@@ -69,48 +69,3 @@ class LB(AWSComponent):
 # Instance type (eg: t2.micro)
 # RAM
 # vCPU
-
-class RSA:
-    def __init__(self):
-        # generate public and private keys with
-        # rsa.newkeys method,this method accepts
-        # key length as its parameter
-        # key length should be atleast 16
-
-        self.publicKey, self.privateKey = rsa.newkeys(512)
-
-    def encrypt(self, accessKeys):
-        # rsa.encrypt method is used to encrypt
-        # string with public key string should be
-        # encode to byte string before encryption
-        # with encode method
-        encMessage = rsa.encrypt(accessKeys.encode(),
-                                 self.publicKey)
-
-        return encMessage
-
-    def decrypt(self, encMessage):
-        # the encrypted message can be decrypted
-        # with ras.decrypt method and private key
-        # decrypt method returns encoded byte string,
-        # use decode method to convert it to string
-        # public key cannot be used for decryption
-        decMessage = rsa.decrypt(encMessage, self.privateKey).decode()
-
-        print("decrypted string: ", decMessage)
-        return decMessage
-
-
-class AwsCreds(models.Model):
-    owner = models.ForeignKey(
-        'auth.User', related_name='aws_creds', on_delete=models.CASCADE
-    )
-    aws_access_key = models.TextField()
-    aws_access_secret = models.TextField()
-
-    # TODO to implement encrypt and decrypt aws_access_key and aws_access_secert
-    # def save(self, *args, **kwargs):
-    #     rsa = RSA()
-    #     self.aws_access_key = rsa.encrypt(self.aws_access_key)
-    #     self.aws_access_secret = rsa.encrypt(self.aws_access_secret)
-    #     super(AwsCreds, self).save(*args, **kwargs)
