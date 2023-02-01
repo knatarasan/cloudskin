@@ -160,16 +160,24 @@ PG
 ##### Deploy cycle
 
 - [ ] Plan level deployment
+  - [ ] user -> create plan -> Add EC2 -> deploy EC2 from right bar -> Terminate EC2 from right bar
+  - [ ] user -> Addes PG on EC2 -> configure PG -> Deploy PG -> Remove PG
+
   - [X] Create plan
   - [X]  Add components
   - [X]  Configure components
   - [X]  Click "Deploy Plan" -> Deploy triggered in backend  [Indiator for deployment]
     - [ ] Traverse through plan components and call deployment
     - [X] EC2 deployment completed
+      - [X] EC2 creation API calls updated to command based 
       - [ ] Once EC2 created UI has to be updated with instance id
-      - [ ] Augment ec2_status with text based status
+      - [ ] Augment ec2_status with text based status 
       - [ ] monitor EC2 health
       - [ ] Terminate instance
+        - [ ] If EC2 Icon can be deleted : only when underlying EC2 is terminated
+      - [ ] [what happens if deployment fails]
+      - [ ] [what happens if deployment is in progress]
+
     - [O] PG deployment
     - [ ] Deploy PG 
     - [ ] Monitor PG
@@ -177,6 +185,10 @@ PG
   - [ ]  Monitoring get triggered for components
   - [ ]  "Deploy Plan " : button disabled when there is no deployment
 
+
+
+- [ ] Take over an existing VPC
+  - [ ] Graph all the components
 - [ ] Monitoring : 
   - [ ]  Gray empty circle not deployed 
   - [ ]  Orange : deploying (opitonal)

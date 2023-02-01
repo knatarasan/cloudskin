@@ -14,19 +14,18 @@ class EC2(AWSComponent):
     """
     aws_component = models.TextField(default='ec2')
     ec2_instance_id = models.TextField(null=True)
-    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
-                                     default=AWSComponent.AWSCompStatus.PREPARED)
+    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
     instance_key_pair = models.TextField(default="cloudskin_key")
 
-    def deploy(self, user):
-        logger.debug(f'This will deploy {self.id}')
-        return self.create(user)
 
-    def create(self, user):
-        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=user).aws_access_key
-        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=user).aws_access_secret
+    def create_aws_instance(self):
+        # Retrive plan since plan has owner
+        plan = self.plan
+        logger.debug(f"Plan {plan} owner {plan.owner} ")
+        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=plan.owner).aws_access_key
+        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=plan.owner).aws_access_secret
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
         if settings.AWS_TEST_MODE:

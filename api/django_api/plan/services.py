@@ -20,7 +20,7 @@ class PlanDeployment:
         for comp in aws_components:
             generic_comp = AWSComponent.objects.get_subclass(id=comp.id) # ref: https://django-model-utils.readthedocs.io/en/latest/managers.html
             logger.debug(f'generic_comp {generic_comp.aws_component}')
-            generic_comp.deploy(user=self.user)
+            generic_comp.create_aws_instance()
 
         logger.debug(f'aws_componenets {aws_components}')
         self.cloud_objects = {

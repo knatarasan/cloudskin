@@ -44,16 +44,17 @@ class RSA:
 
         return encMessage
 
-    def decrypt(self, encMessage):
+    def decrypt(self, encMessage:str ):
         # the encrypted message can be decrypted
         # with ras.decrypt method and private key
         # decrypt method returns encoded byte string,
         # use decode method to convert it to string
         # public key cannot be used for decryption
-        decMessage = rsa.decrypt(encMessage, self.privateKey).decode()
-
-        print("decrypted string: ", decMessage)
+        encMessageBytes:bytes = bytes(encMessage, 'utf-8')
+        decMessage = rsa.decrypt(encMessageBytes, self.privateKey).decode()
         return decMessage
+
+
 
 
 class AwsCreds(models.Model):
@@ -69,21 +70,23 @@ class AwsCreds(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     # TODO to implement encrypt and decrypt aws_access_key and aws_access_secert
-    def save(self, *args, **kwargs):
-        rsa = RSA()
-        logger.debug(f'while Saving:  {self}')
-        self.aws_access_key = rsa.encrypt(self.aws_access_key)
-        self.aws_access_secret = rsa.encrypt(self.aws_access_secret)
-        self.aws_private_key_pair_pem = rsa.encrypt(self.aws_private_key_pair_pem)
-        super(AwsCreds, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     rsa = RSA()
+    #     logger.debug(f'while Saving:  {self}')
+    #     self.aws_access_key = rsa.encrypt(self.aws_access_key)
+    #     self.aws_access_secret = rsa.encrypt(self.aws_access_secret)
+    #     self.aws_private_key_pair_pem = rsa.encrypt(self.aws_private_key_pair_pem)
+    #     super().save(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
-        rsa = RSA()
-        self.aws_access_key = rsa.decrypt(self.aws_access_key)
-        self.aws_access_secret = rsa.decrypt(self.aws_access_secret)
-        self.aws_private_key_pair_pem = rsa.decrypt(self.aws_private_key_pair_pem)
-        logger.debug(f'after decrypted :  {self}')
-        super(AwsCreds, self).get(*args, **kwargs)
+    # get doesn't override the get method of the model
 
-    def __str__(self):
-        return f'owner: {self.owner} iam {self.aws_iam_user} access_key {self.aws_access_key} access_secret {self.aws_access_secret}'
+    # def get(self, *args, **kwargs):
+    #     rsa = RSA()
+    #     self.aws_access_key = rsa.decrypt(self.aws_access_key)
+    #     self.aws_access_secret = rsa.decrypt(self.aws_access_secret)
+    #     self.aws_private_key_pair_pem = rsa.decrypt(self.aws_private_key_pair_pem)
+    #     logger.debug(f'after decrypted :  {self}')
+    #     super(AwsCreds, self).get(*args, **kwargs)
+    #
+    # def __str__(self):
+    #     return f'owner: {self.owner} iam {self.aws_iam_user} access_key {self.aws_access_key} access_secret {self.aws_access_secret}'

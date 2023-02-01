@@ -86,7 +86,7 @@ const IconTester = ({ schema, data }: IconTesterProps): ReactElement => {
                 </div>
             </div>
 
-        
+    
 
         </>
     )

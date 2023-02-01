@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from .serializers import EC2Serializer, AwsCredsSerializer, LBSerializer
 from .models.EC2 import EC2
 from .models.AWSComponent import LB
@@ -6,83 +6,36 @@ from .models.AwsCreds import AwsCreds
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import action
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 class LBList(generics.ListCreateAPIView):
     queryset = LB.objects.all()
     serializer_class = LBSerializer
+
 
 class LBDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LB.objects.all()
     serializer_class = LBSerializer
 
-class EC2List(APIView):
+
+class EC2ViewSet(viewsets.ModelViewSet):
     """
-    List all ec2 instances, or create a new ec2 instance.
+    API endpoint that allows ec2 instances to be viewed or edited.
     """
+    queryset = EC2.objects.all()
+    serializer_class = EC2Serializer
 
-    def get(self, request, format=None):
-        ec2s = EC2.objects.all()
-        serializer = EC2Serializer(ec2s, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, format=None):
-        # try:
-        #     ec2 = EC2Instance()
-        #     instance = ec2.create()
-        # except:
-        #     logger.info('Instance not created ')
-        #     return
-        # logger.info(f'serializer saved {instance}')
-
-
-        serializer = EC2Serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        logger.info("Response 400 Bad request")
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class EC2Detail(APIView):
-    """
-    Retrieve, update or delete a ec2 instance.
-    """
-
-    def get_object(self, pk):
-
-        try:
-            ec2 = EC2.objects.get(ec2_instance_id=pk)
-            return ec2
-        except EC2.DoesNotExist:
-            ec2 = EC2.objects.get(pk=pk)
-            return ec2
-
-        logger.info("Some error with the get")
-        raise Http404
-
-    def get(self, request, pk, format=None):
-        ec2 = self.get_object(pk)
-        serializer = EC2Serializer(ec2)
-        return Response(serializer.data)
-
-    def put(self, request, pk, format=None):
-        ec2 = self.get_object(pk)
-        serializer = EC2Serializer(ec2, data=request.data)
-        if serializer.is_valid():
-            ec2_status = serializer.validated_data['ec2_status']
-            if ec2_status == 2:
-
-                logger.debug(f'TODO EC2 this instance would be created ')
-            serializer.save()
-
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk, format=None):
-        ec2 = self.get_object(pk)
-        ec2.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    @action(detail=True, methods=['post'])  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
+    def create_instance(self, request, pk=None):
+        logger.debug(' at start of create_instance  ')
+        ec2 = EC2.objects.get(pk=pk)
+        logger.debug(f'ec2 is {ec2}')
+        ec2.create()
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class AwsCredsList(APIView):
