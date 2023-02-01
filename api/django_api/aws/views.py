@@ -1,8 +1,9 @@
 from rest_framework import generics, viewsets
-from .serializers import EC2Serializer, AwsCredsSerializer, LBSerializer
+from .serializers import EC2Serializer, AwsCredsSerializer, InstalledServiceSerializer, LBSerializer
 from .models.EC2 import EC2
 from .models.AWSComponent import LB
 from .models.AwsCreds import AwsCreds
+from .models.InstalledService import InstalledService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -21,6 +22,17 @@ class LBDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LB.objects.all()
     serializer_class = LBSerializer
 
+class InstalledServiceViewSet(viewsets.ModelViewSet):
+    queryset = InstalledService.objects.all()
+    serializer_class = InstalledServiceSerializer
+
+    @action(detail=True, methods=['post'])
+    def install_service(self, request, pk=None):
+        installed_service = InstalledService.objects.get(pk=pk)
+        logger.debug(f'installed_service is {installed_service}')
+        installed_service.install_service()
+        serializer = InstalledServiceSerializer(installed_service)
+        return Response(serializer.data , status=status.HTTP_201_CREATED)
 
 class EC2ViewSet(viewsets.ModelViewSet):
     """
@@ -42,7 +54,9 @@ class EC2ViewSet(viewsets.ModelViewSet):
         ec2 = EC2.objects.get(pk=pk)
         ec2.update_instance_details()
         serializer = EC2Serializer(ec2)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        # 201 since , if there is any update in instance , ec2 object will be updated
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
+
 
 
 class AwsCredsList(APIView):

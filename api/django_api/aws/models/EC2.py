@@ -23,7 +23,6 @@ class EC2(AWSComponent):
     host_name = models.TextField(null=True)
 
 
-
     def create_aws_instance(self):
         # Retrive plan since plan has owner
         logger.debug(f"Plan {self.plan} owner {self.plan.owner} ")

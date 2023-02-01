@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models.AWSComponent import AWSComponent, LB
 from .models.AwsCreds import AwsCreds
+from .models.InstalledService import InstalledService
 
 from .models.EC2 import EC2
 import logging
@@ -13,12 +14,15 @@ class AWSCompSerializer(serializers.ModelSerializer):
         model = AWSComponent
         fields = ['id', 'plan', 'region', 'security_group', 'subnet', 'date_created_or_modified']
 
+class InstalledServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstalledService
+        fields = '__all__'
+
 
 class EC2Serializer(serializers.ModelSerializer):
     class Meta:
         model = EC2
-        # fields = ['id', 'plan', 'aws_component', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
-        #           'security_group', 'subnet', 'date_created_or_modified']
         fields = '__all__'
 
 
@@ -32,7 +36,8 @@ class LBSerializer(serializers.ModelSerializer):
 class AwsCredsSerializer(serializers.ModelSerializer):
     class Meta:
         model = AwsCreds
-        fields = ['id', 'aws_iam_user', 'aws_access_key', 'aws_access_secret','aws_private_key_pair_pem_name', 'aws_private_key_pair_pem', 'date_created', 'date_modified']
+        fields = ['id', 'aws_iam_user', 'aws_access_key', 'aws_access_secret', 'aws_private_key_pair_pem_name',
+                  'aws_private_key_pair_pem', 'date_created', 'date_modified']
 
 # class AwsCredsSerializer(serializers.Serializer):
 #     owner = serializers.ReadOnlyField(source='owner.username')

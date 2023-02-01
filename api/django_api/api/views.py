@@ -17,6 +17,7 @@ def api_root(request, format=None):
         'refresh': reverse('jwt_token_refresh', request=request, format=format),
         'plan': reverse('plan-list', request=request, format=format),
         'ec2': reverse('ec2-list', request=request, format=format),
+        'install_service': reverse('installed-service-list', request=request, format=format),
         'aws_creds': reverse('aws-creds-list', request=request, format=format)
     })
 
