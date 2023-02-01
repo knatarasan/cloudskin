@@ -17,8 +17,9 @@ class AWSCompSerializer(serializers.ModelSerializer):
 class EC2Serializer(serializers.ModelSerializer):
     class Meta:
         model = EC2
-        fields = ['id', 'plan', 'aws_component', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
-                  'security_group', 'subnet', 'date_created_or_modified']
+        # fields = ['id', 'plan', 'aws_component', 'ec2_instance_id', 'ec2_status', 'instance_type', 'image_id', 'region',
+        #           'security_group', 'subnet', 'date_created_or_modified']
+        fields = '__all__'
 
 
 class LBSerializer(serializers.ModelSerializer):

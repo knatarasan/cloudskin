@@ -34,8 +34,15 @@ class EC2ViewSet(viewsets.ModelViewSet):
         logger.debug(' at start of create_instance  ')
         ec2 = EC2.objects.get(pk=pk)
         logger.debug(f'ec2 is {ec2}')
-        ec2.create()
+        ec2.create_aws_instance()
         return Response(status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'])
+    def update_instance_details(self, request, pk=None):
+        ec2 = EC2.objects.get(pk=pk)
+        ec2.update_instance_details()
+        serializer = EC2Serializer(ec2)
+        return Response(serializer.data,status=status.HTTP_200_OK)
 
 
 class AwsCredsList(APIView):

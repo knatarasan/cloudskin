@@ -213,7 +213,7 @@ const DnDFlow = () => {
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           // style: { border: "100px", width: "5%", background: color },
-          style: {  height:"50px", width: "50px"},
+          style: { height: "50px", width: "50px" },
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
           data: { label: awsComp.id.toString(), attachable: '', api_object: awsComp, color: 'red' },
@@ -320,6 +320,41 @@ const DnDFlow = () => {
     },
     [reactFlowInstance]);
 
+  const refreshComp = (awsCompId: any) => {
+    console.log('refreshComp called')
+
+    authAxios.get("/ec2/" + `${awsCompId}`+"/update_instance_details")
+      .then((response) => {
+        const updated_node_api_object = response.data
+
+        setNodes((nds) =>
+          nds.map((node) => {
+            if (node.id === awsCompId.toString()) {
+              node.data.api_object = updated_node_api_object;
+            }
+            setClickedNode(node.data)
+            return node;
+          })
+        );
+        const flow = reactFlowInstanceRef.current.toObject();
+        const plan_wrapper = {
+          plan: flow,
+          deploy_status: 1,
+          running_status: 1,
+        };
+        setPlan(plan_wrapper)
+        
+
+      })
+      .then(() => {
+        console.log("Plan successfully refreshed", planRef.current)
+      })
+      .catch((error) => {
+        console.log('Plan refresh failed ', error);
+      })
+
+  }
+
   return (
     <div className="dndflow">
       <ReactFlowProvider>
@@ -348,7 +383,7 @@ const DnDFlow = () => {
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
 
-              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} /> : null}
+              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} refreshComp={refreshComp} /> : null}
             </div>
             <div>
             </div>

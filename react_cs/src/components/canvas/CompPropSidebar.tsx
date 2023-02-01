@@ -6,12 +6,19 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-const CompPropSidebar = ({ node }: any) => {
+const CompPropSidebar = ({ node , refreshComp }: any) => {
     const [apiObject, setApiObject] = useState(node.api_object)
 
     const handleChange = (e: any) => {
         apiObject[e.target.name] = e.target.value
     };
+
+    const onDeploy = (e: any) => {
+
+    }
+    const onRefresh = (e: any) => {
+        refreshComp(apiObject.id)
+    }
 
     const handleSubmit = (e: any) => {
         const end_point = apiObject.aws_component;
@@ -48,6 +55,8 @@ const CompPropSidebar = ({ node }: any) => {
                         </>
                     )}
                     <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save</Button>
+                    <Button variant="outline-success" type="submit" onClick={onDeploy}>Deploy(YTD)</Button>
+                    <Button variant="outline-success" type="submit" onClick={onRefresh}>Refresh</Button>
                 </Card.Body>
             </Card>
 
