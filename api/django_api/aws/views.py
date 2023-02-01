@@ -1,9 +1,10 @@
 from rest_framework import generics, viewsets
-from .serializers import EC2Serializer, AwsCredsSerializer, InstalledServiceSerializer, LBSerializer
+from .serializers import EC2Serializer, AwsCredsSerializer, InstalledServiceSerializer, InstallableServiceSerializer , LBSerializer
 from .models.EC2 import EC2
 from .models.AWSComponent import LB
 from .models.AwsCreds import AwsCreds
 from .models.InstalledService import InstalledService
+from .models.InstallableService import InstallableService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -22,6 +23,12 @@ class LBDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = LB.objects.all()
     serializer_class = LBSerializer
 
+
+class InstallableServiceViewSet(viewsets.ModelViewSet):
+    queryset = InstallableService.objects.all()
+    serializer_class = InstallableServiceSerializer
+
+
 class InstalledServiceViewSet(viewsets.ModelViewSet):
     queryset = InstalledService.objects.all()
     serializer_class = InstalledServiceSerializer
@@ -29,10 +36,17 @@ class InstalledServiceViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'])
     def install_service(self, request, pk=None):
         installed_service = InstalledService.objects.get(pk=pk)
-        logger.debug(f'installed_service is {installed_service}')
         installed_service.install_service()
         serializer = InstalledServiceSerializer(installed_service)
-        return Response(serializer.data , status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['post'])
+    def uninstall_service(self, request, pk=None):
+        installed_service = InstalledService.objects.get(pk=pk)
+        installed_service.uninstall_service()
+        serializer = InstalledServiceSerializer(installed_service)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class EC2ViewSet(viewsets.ModelViewSet):
     """
@@ -41,7 +55,8 @@ class EC2ViewSet(viewsets.ModelViewSet):
     queryset = EC2.objects.all()
     serializer_class = EC2Serializer
 
-    @action(detail=True, methods=['post'])  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
+    @action(detail=True, methods=[
+        'post'])  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
     def create_instance(self, request, pk=None):
         logger.debug(' at start of create_instance  ')
         ec2 = EC2.objects.get(pk=pk)
@@ -55,8 +70,7 @@ class EC2ViewSet(viewsets.ModelViewSet):
         ec2.update_instance_details()
         serializer = EC2Serializer(ec2)
         # 201 since , if there is any update in instance , ec2 object will be updated
-        return Response(serializer.data,status=status.HTTP_201_CREATED)
-
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class AwsCredsList(APIView):

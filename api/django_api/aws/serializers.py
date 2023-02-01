@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models.AWSComponent import AWSComponent, LB
 from .models.AwsCreds import AwsCreds
 from .models.InstalledService import InstalledService
+from .models.InstallableService import InstallableService
 
 from .models.EC2 import EC2
 import logging
@@ -13,6 +14,13 @@ class AWSCompSerializer(serializers.ModelSerializer):
     class Meta:
         model = AWSComponent
         fields = ['id', 'plan', 'region', 'security_group', 'subnet', 'date_created_or_modified']
+
+
+class InstallableServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InstallableService
+        fields = '__all__'
+
 
 class InstalledServiceSerializer(serializers.ModelSerializer):
     class Meta:

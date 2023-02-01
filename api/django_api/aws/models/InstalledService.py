@@ -17,21 +17,19 @@ class InstalledService(models.Model):
     service = models.TextField(null=True,default='postgres')
     service_version = models.TextField(null=True,default='12.5')
     service_port = models.IntegerField(null=True,default=5432)
-    service_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,default=AWSComponent.AWSCompStatus.PREPARED )
-    ec2 = models.ForeignKey(EC2, related_name='install_service', on_delete=models.CASCADE)
+    service_status = models.IntegerField(null=True,choices=AWSComponent.AWSCompStatus.choices,default=AWSComponent.AWSCompStatus.PREPARED )
+    ec2 = models.ForeignKey(EC2, related_name='installed_service', on_delete=models.CASCADE)
+    installable_service = models.ForeignKey('InstallableService', related_name='installed_service', on_delete=models.CASCADE)
     service_url = models.TextField(null=True)
-    service_install_command = models.JSONField(null=True)
-    service_uninstall_command = models.JSONField(null=True)
     service_error = models.TextField(null=True)
     install_log = models.TextField(null=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
-    def install_service(self):
+    def get_ssh(self):
         # retrives the private key from the database
         # TODO enable decrypt on  private key here
         private_key_str = AwsCreds.objects.get(owner=self.ec2.plan.owner).aws_private_key_pair_pem
-        logger.debug(f"private key {private_key_str}")
         private_key_io_stream = StringIO(private_key_str)
         private_key = paramiko.RSAKey.from_private_key(private_key_io_stream)
 
@@ -41,25 +39,23 @@ class InstalledService(models.Model):
 
         #TODO admin user can come from the database
         ssh.connect(hostname=self.ec2.host_name, port=22, username='ec2-user',pkey=private_key)
+        return ssh
+
+    def install_service(self):
 
         # Run commands to install PostgreSQL on the EC2 instance
-        # stdin, stdout, stderr = ssh.exec_command('sudo yum update')
-        # stdin, stdout, stderr = ssh.exec_command('sudo yum install -y postgresql-server')
-        # stdin, stdout, stderr = ssh.exec_command('sudo /usr/bin/postgresql-setup initdb')
-        # stdin, stdout, stderr = ssh.exec_command('sudo systemctl start postgresql')
-        # stdin, stdout, stderr = ssh.exec_command('sudo systemctl enable postgresql')
-
         error = []
         stdouts = []
-        for command in self.service_install_command:
-            logger.debug(f"Running command {command}")
-            stdin, stdout, stderr = ssh.exec_command(command)
-            # TODO Scan stderr for error
-            if stderr.read():
-                error.append('command :'+command+' err: '+str(stderr.read()))
-            else:
-                stdouts.append(stdout.read())
 
+        with self.get_ssh() as ssh:
+            for command in self.installable_service.service_install_command:
+                logger.debug(f"Running command {command}")
+                stdin, stdout, stderr = ssh.exec_command(command)
+                # TODO Scan stderr for error
+                if stderr.read():
+                    error.append('command :'+command+' err: '+str(stderr.read()))
+                else:
+                    stdouts.append(stdout.read())
 
         self.service_error = str(error)
         self.install_log = str(stdouts)
@@ -67,15 +63,33 @@ class InstalledService(models.Model):
         self.service_url = self.ec2.host_name + ':' + str(self.service_port)
         self.service_status = AWSComponent.AWSCompStatus.RUNNING
         self.save()
-        # stdin, stdout, stderr = ssh.exec_command('sudo yum remove -y vim')
 
-        # Close the connection
-        stdin.close()
-        ssh.close()
+
+    def uninstall_service(self):
+        # Run commands to uninstall a service from EC2 instance
+        error = []
+        stdouts = []
+
+        with self.get_ssh() as ssh:
+            for command in self.installable_service.service_uninstall_command:
+                logger.debug(f"Running command {command}")
+                stdin, stdout, stderr = ssh.exec_command(command)
+                # TODO Scan stderr for error
+                if stderr.read():
+                    error.append('command :'+command+' err: '+str(stderr.read()))
+                else:
+                    stdouts.append(stdout.read())
+
+        self.service_error = str(error)
+        self.install_log = str(stdouts)
+
+        self.service_url = self.ec2.host_name + ':' + str(self.service_port)
+        self.service_status = AWSComponent.AWSCompStatus.PREPARED
+        self.save()
+
 
     def __str__(self):
         return f"{self.service} {self.service_version} {self.service_port} {self.service_url} {self.service_status} {self.ec2}"
-
 
 
     class Meta:
