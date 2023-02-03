@@ -25,13 +25,56 @@ class InstallableServiceSerializer(serializers.ModelSerializer):
 class InstalledServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = InstalledService
-        fields = '__all__'
+        fields = ['id', 'service', 'service_version', 'service_port', 'service_status', 'ec2', 'installable_service',
+                  'service_url', 'service_error', 'install_log', 'date_created', 'date_modified']
+
+# class EC2Serializer(serializers.Serializer):
+#     id = serializers.ReadOnlyField()
+#     plan = serializers.ReadOnlyField(source='plan.id')
+#     aws_component = serializers.ReadOnlyField(source='aws_component.id')
+#     region = serializers.ReadOnlyField(source='aws_component.region')
+#     security_group = serializers.ReadOnlyField(source='aws_component.security_group')
+#     subnet = serializers.ReadOnlyField(source='aws_component.subnet')
+#     date_created_or_modified = serializers.ReadOnlyField(source='aws_component.date_created_or_modified')
+#     ec2_instance_id = serializers.CharField(max_length=100)
+#     ec2_status = serializers.CharField(max_length=100)
+#     instance_type = serializers.CharField(max_length=100)
+#     image_id = serializers.CharField(max_length=100)
+#     instance_key_pair = serializers.CharField(max_length=100)
+#     public_ip = serializers.CharField(max_length=100)
+#     private_ip = serializers.CharField(max_length=100)
+#     host_name = serializers.CharField(max_length=100)
+#     installed_services = InstalledServiceSerializer(many=True, read_only=True)
+#
+#     def create(self, validated_data):
+#         '''
+#         create and return a new `Plan` , given the validated data
+#         '''
+#         ec2 = EC2.objects.create(**validated_data)
+#         return ec2
+#
+#     def update(self, instance, validated_data):
+#         instance.ec2_instance_id = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
+#         instance.ec2_status = validated_data.get('ec2_status', instance.ec2_status)
+#         instance.instance_type = validated_data.get('instance_type', instance.instance_type)
+#         instance.image_id = validated_data.get('image_id', instance.image_id)
+#         instance.instance_key_pair = validated_data.get('instance_key_pair', instance.instance_key_pair)
+#         instance.public_ip = validated_data.get('public_ip', instance.public_ip)
+#         instance.private_ip = validated_data.get('private_ip', instance.private_ip)
+#         instance.host_name = validated_data.get('host_name', instance.host_name)
+#         logger.debug(f'validated_data {instance}')
+#         instance.save()
+#         return instance
 
 
 class EC2Serializer(serializers.ModelSerializer):
+    installed_services = InstalledServiceSerializer(many=True, read_only=True)
+
     class Meta:
         model = EC2
-        fields = '__all__'
+        fields = ['id', 'plan', 'aws_component', 'region', 'security_group','subnet','date_created_or_modified', 'ec2_instance_id', 'ec2_status', 'instance_type',
+                  'image_id','instance_key_pair','public_ip','private_ip','host_name', 'installed_services']
+
 
 
 class LBSerializer(serializers.ModelSerializer):

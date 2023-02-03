@@ -29,6 +29,7 @@ class AWSComponent(models.Model):
         DELETED = 4  # Delete Instance
         RUNNING = 10
         FAILED = -1
+        TERMINATED = -2
 
     def __str__(self):
         return f"ID {self.id} PLAN {self.plan}"

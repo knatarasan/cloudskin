@@ -29,6 +29,7 @@ import { authAxios } from "../auth/AuthServiceAxios";
 import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 import CompPropSidebar from "./CompPropSidebar";
 import AWSCompNode from "./AWSCompNode";
+import { GiConsoleController } from "react-icons/gi";
 
 const nodeTypes = {
   awsCompNode: AWSCompNode,
@@ -216,14 +217,16 @@ const DnDFlow = () => {
           style: { height: "50px", width: "50px" },
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
-          data: { label: awsComp.id.toString(), attachable: '', api_object: awsComp, color: 'red' },
+          data: { label: awsComp.id.toString(), attachable: '',attachables:[], api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
         setNodes((nds) => nds.concat(new_node));
       })
   };
 
+
   const onNodeClick = (event: any, node: any) => {
+    console.log('onNodeClick ', node)  
     setClickedNode({})
     setClickedNode(node.data)
     // console.log('clickedNode ', clickedNode)
@@ -270,9 +273,14 @@ const DnDFlow = () => {
             if (node.id === targetNode.id) {
               // it's important that you create a new object here
               // in order to notify react flow about the change
+
+              const attached ={
+                attachable: 'pg',
+                attachables:[{id:1, name:'pg'}]
+              }
               node.data = {
                 ...node.data,
-                attachable: 'pg'
+                ...attached
               };
             }
             return node;
@@ -283,6 +291,7 @@ const DnDFlow = () => {
           1. Trigger Holder to accept attachable
           2. Make a backend call to deploy attachable
         */
+        console.log('attachable dropped ',targetNode)
         return
       }
       // dropped node is attachable type 

@@ -1,7 +1,8 @@
 
-const PGNodeFrag = ({ data }: any) => {
+const PGNodeFrag = ({ data , onDependentNodeClick }: any) => {
     const PGClicked = () => {
         console.log('Only PG is clicke')
+        onDependentNodeClick('PG')
     }
     return (
         <>

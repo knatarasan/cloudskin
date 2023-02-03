@@ -205,6 +205,7 @@ https://arctype.com/blog/transparent-data-encryption/
 https://towardsaws.com/hack-aws-ec2-catch-aws-account-15517ffe5450
 https://www.lepide.com/blog/the-15-most-common-types-of-cyber-attacks/
 https://systemweakness.com/how-to-get-started-hacking-django-applications-f407564df9c7
+- [how to hack OS process](https://medium.com/@holdengrissett/linux-101-how-to-hack-your-process-memory-2514a3d0778d)
 
 
 #### Start up support

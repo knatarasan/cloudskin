@@ -6,19 +6,48 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-const CompPropSidebar = ({ node , refreshComp }: any) => {
+const CompPropSidebar = ({ node, refreshComp }: any) => {
+
     const [apiObject, setApiObject] = useState(node.api_object)
 
     const handleChange = (e: any) => {
         apiObject[e.target.name] = e.target.value
     };
 
-    const onDeploy = (e: any) => {
+    const createInstance = (e: any) => {
+
 
     }
     const onRefresh = (e: any) => {
         refreshComp(apiObject.id)
     }
+    const installAttachable = (e: any) => {
+        console.log('install ', node.attachables[0].name)
+
+        authAxios.put("/ec2/" + `${node.api_object.id}` + "/install_service", {})
+            .then((response) => {
+                console.log("PG created", response)
+            })
+    }
+
+    const unInstallAttachable = (e: any) => {
+        console.log('uninstall ', node.attachables[0].name)
+
+        authAxios.put(`/ec2/${node.api_object.id}/uninstall_service`, {})
+            .then((response) => {
+                console.log("PG unInstalled", response)
+            })
+    }
+
+    const onTerminate = (e: any) => {
+        console.log("AWS instance will be terminated", apiObject.id);
+        authAxios.put(`/ec2/${apiObject.id}/terminate_instance`, {})
+            .then((response) => {
+                console.log("AWS instance terminated", response)
+            })
+    }
+
+
 
     const handleSubmit = (e: any) => {
         const end_point = apiObject.aws_component;
@@ -47,7 +76,7 @@ const CompPropSidebar = ({ node , refreshComp }: any) => {
                                             <label htmlFor={key}>{key}:</label>
                                         </Col>
                                         <Col sm={7}>
-                                            <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br />
+                                            <input type="text" name={key} value={apiObject[key]} onChange={handleChange}></input><br />
                                         </Col>
                                     </Row>
                                 </Container>
@@ -55,10 +84,39 @@ const CompPropSidebar = ({ node , refreshComp }: any) => {
                         </>
                     )}
                     <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save</Button>
-                    <Button variant="outline-success" type="submit" onClick={onDeploy}>Deploy(YTD)</Button>
+                    <Button variant="outline-success" type="submit" onClick={createInstance}>Deploy</Button>
                     <Button variant="outline-success" type="submit" onClick={onRefresh}>Refresh</Button>
+                    <Button variant="outline-success" type="submit" onClick={onTerminate}>Terminate</Button>
                 </Card.Body>
             </Card>
+
+
+            {node.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
+                <Card.Body>
+                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.attachables[0].name}</i></strong></Card.Subtitle><br />
+                    {node.attachables.map((attachable) =>
+                        <>
+                            <Card.Text>
+                                <Container>
+                                    <Row>
+                                        <Col sm={5}>
+                                            <label htmlFor={attachable.id}>{attachable.id}:</label>
+                                        </Col>
+                                        <Col sm={7}>
+                                            <input type="text" name={attachable.name} placeholder={attachable.name} onChange={handleChange}></input><br />
+                                        </Col>
+                                    </Row>
+                                </Container>
+                            </Card.Text>
+                        </>
+                    )}
+
+                    <Button variant="outline-success" type="submit" onClick={installAttachable}>Install</Button>
+                    <Button variant="outline-success" type="submit" onClick={unInstallAttachable}>Uninstall</Button>
+                </Card.Body>
+            </Card>
+                : null}
+
 
         </>
     )

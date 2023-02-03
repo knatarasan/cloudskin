@@ -56,12 +56,18 @@ class EC2ViewSet(viewsets.ModelViewSet):
     serializer_class = EC2Serializer
 
     @action(detail=True, methods=[
-        'post'])  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
+        'put'])  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
     def create_instance(self, request, pk=None):
         logger.debug(' at start of create_instance  ')
         ec2 = EC2.objects.get(pk=pk)
         logger.debug(f'ec2 is {ec2}')
         ec2.create_aws_instance()
+        return Response(status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['put'])
+    def terminate_instance(self, request, pk=None):
+        ec2 = EC2.objects.get(pk=pk)
+        ec2.terminate_aws_instance()
         return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'])
@@ -72,10 +78,28 @@ class EC2ViewSet(viewsets.ModelViewSet):
         # 201 since , if there is any update in instance , ec2 object will be updated
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, methods=['put'])
+    def install_service(self, request, pk=None):
+        logger.debug(f' at start of install_service  request {request}')
+        ec2 = EC2.objects.get(pk=pk)
+        ec2.install_service('postgresql')
+        serializer = EC2Serializer(ec2)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['put'])
+    def uninstall_service(self, request, pk=None):
+        logger.debug(f' at start of uninstall_service  request{request}',)
+        ec2 = EC2.objects.get(pk=pk)
+        ec2.uninstall_service('postgresql')
+        serializer = EC2Serializer(ec2)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class AwsCredsList(APIView):
     def get(self, request, format=None):
-        creds = AwsCreds.objects.all()
+        creds = AwsCreds.objects.all(
+
+
+        )
         serializer = AwsCredsSerializer(creds, many=True)
         return Response(serializer.data)
 
