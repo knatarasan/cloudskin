@@ -68,12 +68,13 @@ class InstalledServiceSerializer(serializers.ModelSerializer):
 
 
 class EC2Serializer(serializers.ModelSerializer):
-    installed_services = InstalledServiceSerializer(many=True, read_only=True)
+    # make sure to add related_name in model as installed_service
+    installed_service = InstalledServiceSerializer(many=True, read_only=True)
 
     class Meta:
         model = EC2
         fields = ['id', 'plan', 'aws_component', 'region', 'security_group','subnet','date_created_or_modified', 'ec2_instance_id', 'ec2_status', 'instance_type',
-                  'image_id','instance_key_pair','public_ip','private_ip','host_name', 'installed_services']
+                  'image_id','instance_key_pair','public_ip','private_ip','host_name', 'installed_service']
 
 
 

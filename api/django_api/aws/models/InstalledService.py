@@ -20,8 +20,12 @@ class InstalledService(models.Model):
     service_status = models.IntegerField(null=True, choices=AWSComponent.AWSCompStatus.choices,
                                          default=AWSComponent.AWSCompStatus.PREPARED)
     ec2 = models.ForeignKey('aws.EC2', related_name='installed_service', on_delete=models.CASCADE)
+    # An issue(#45) created
+    # Following has to be converted to OnetoOneField since sice a InstalledService is tied
+    # with single InstallableService as non identifying relation
     installable_service = models.ForeignKey('InstallableService', related_name='installed_service',
                                             on_delete=models.CASCADE)
+
     service_url = models.TextField(null=True)
     service_error = models.TextField(null=True)
     install_log = models.TextField(null=True)
