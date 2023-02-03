@@ -196,8 +196,46 @@ PG
   - [ ]  red : Have some issues ( eg: SG not configured )
     
 
+  
+### Tasks for release 1
+
+- CloudCanvas code -restruct
+  - Include store for all the components 
+
+    - UI Changes
+      - EC2 and installed services : Icon has to be enhanced
+
+    - RightSideBar : when PG clicked, should edit only PG
+      - Enhanced JSON editor
+
+    - Monitoring
+      - After deployment update componentwise status on near by square
+  
+- No save button anywere
+- PG
+  - PG best practice configs 
+  - After PG is dropped SG ports has to be opened, if PG is accessed outside of EC2.
+
+- EC2
+  - Key pair creation
+  - Listing all instance types from AWS --> DB
+  - Listing all AMI from AWS --> DB
+  - Region selection AWS --> DB
+  - Listing storage configs
+  - Security group creation and configuration - Changes based on installed services and APP
+    - For eg: If PG is installed then port 5432 has to be opened
+
+- Deploy Plan
+  - Show IAM user creation page, if ACCESS_KEY and SECRET_KEY is not provided
+  - Deploy dependancy
 
 
+- Landing page requirements
+  - Logo
+  - Company name
+  - Landing page theme : White background Thin Orange lines
+
+    
 
 #### Securing Keys
 
