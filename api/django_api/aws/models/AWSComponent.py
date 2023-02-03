@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 import logging
 from plan.models import Plan
 
+from model_utils.managers import InheritanceManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -15,9 +17,10 @@ class AWSComponent(models.Model):
         Plan, related_name='aws_components', on_delete=models.PROTECT
     )
     region = models.TextField(default="us-west-1")
-    security_group = models.TextField(null=True)
-    subnet = models.TextField(null=True)
+    security_group = models.TextField(default='sg-0f2b88c10abf752e3', null=True)
+    subnet = models.TextField(default='subnet-0a6da46fb837b5a32', null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
+    objects = InheritanceManager()
 
     class AWSCompStatus(models.IntegerChoices):
         PREPARED = 1
@@ -26,21 +29,10 @@ class AWSComponent(models.Model):
         DELETED = 4  # Delete Instance
         RUNNING = 10
         FAILED = -1
-
-
-class EC2(AWSComponent):
-    """
-    Model inheritance. Ref : https://docs.djangoproject.com/en/4.1/topics/db/models/#model-inheritance
-    """
-    aws_component = models.TextField(default='ec2')
-    ec2_instance_id = models.TextField(null=True)
-    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
-                                     default=AWSComponent.AWSCompStatus.PREPARED)
-    instance_type = models.TextField(default='t2.micro')
-    image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
+        TERMINATED = -2
 
     def __str__(self):
-        return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
+        return f"ID {self.id} PLAN {self.plan}"
 
 
 class LB(AWSComponent):
@@ -55,6 +47,9 @@ class LB(AWSComponent):
         GLB = 'GLB', _('glb')
 
     lb_type = models.TextField(default=LBType.ALB)
+
+    def deploy(self):
+        logger.debug(f'This will deploy {self.id}')
 
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.lb_instance_id} type:{self.lb_type}  status:{self.lb_status}'
@@ -75,11 +70,3 @@ class LB(AWSComponent):
 # Instance type (eg: t2.micro)
 # RAM
 # vCPU
-
-
-class AwsCreds(models.Model):
-    owner = models.ForeignKey(
-        'auth.User', related_name='aws_creds', on_delete=models.CASCADE
-    )
-    aws_access_key = models.TextField()
-    aws_access_secret = models.TextField()

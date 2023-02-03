@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import PlanSerializer
 from django.shortcuts import get_object_or_404
+from .services import PlanDeployment
 
 from .permissions import PlanUserPermission
 import logging
@@ -60,8 +61,15 @@ class PlanDetail(APIView):
         plan = self.get_object(pk, request)
         serializer = PlanSerializer(plan, data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            deploy_status = serializer.validated_data['deploy_status']
+            if deploy_status == 2:
+                logger.debug(f'TODO PLAN deployment activated')
+                planDeployment = PlanDeployment(request, plan)
+                planDeployment.get_cloud_objects()
+
+            serializer.save(owner=self.request.user)
             return Response(serializer.data)
+        logger.debug(f'inside 401 {serializer.errors}')
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):

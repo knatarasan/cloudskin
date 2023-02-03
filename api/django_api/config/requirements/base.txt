@@ -10,3 +10,6 @@ djangorestframework-simplejwt==5.2.2
 drf_yasg
 Markdown==3.4.1
 psycopg2==2.9.5
+rsa
+locust
+django-model-utils

@@ -1,7 +1,7 @@
 from .base import *  # noqa
 from .base import env
 
-DEVELOPMENT_MODE = env.bool("DEVELOPMENT_MODE", False)  # type: ignore
+AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)  # type: ignore
 
 
 # GENERAL
