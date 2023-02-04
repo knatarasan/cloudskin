@@ -4,37 +4,44 @@ import { Button, Form, Container, Row, Col, } from "react-bootstrap";
 import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
 import jwt_decode from "jwt-decode";
-
-import AuthService from "../../services/auth.service";
+import { authAxios } from "./AuthServiceAxios";
 
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
+  type User = {
+    email: string,
+    exp: number,
+    iat: number,
+    jti: string,
+    token_type: string,
+    user_id: number,
+    username: string
+  }
 
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    AuthService.login(username, password).then(
-      () => {
+    authAxios.post("/token/", { username: username, password: password })
+      .then((response: { status: number; data: { access: any }; }) => {
+        console.log('response from axios ', response)
+
+        const accessToken = response.data.access
+        localStorage.setItem("accessToken", accessToken);
+        // TODO : After successful login accessToken can be stored in React Context
+        
+        const decoded_token: User = jwt_decode(accessToken)
+        setCurrentUser({ username: username, email: decoded_token.email, tokenAccess: accessToken, loggedIn: true });
         navigate("/dashboard");
-      },
-      (error) => {
-        const errMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        // navigate("/login");
-        setMessage(errMessage);
-      }
-    );
-
+      })
+      .catch(e => {
+        console.log('Check your request ', e, e.response.status)
+        navigate("/login");
+      });
 
   };
 
@@ -73,14 +80,6 @@ const Login = () => {
               <Button variant="primary" type="submit">
                 Submit
               </Button>
-
-              {message && (
-                <div className="form-group">
-                  <div className="alert alert-danger" role="alert">
-                    {message}
-                  </div>
-                </div>
-              )}
             </Form>
           </Col>
         </Row>

@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useEffect, useContext, useState as useStateVan } from "react";
 // import useState from 'react-usestateref';
 import useState from 'react-usestateref';
-import api from "../../services/api";
+
 
 import ReactFlow, {
   Node,
@@ -12,16 +12,24 @@ import ReactFlow, {
   useEdgesState,
   Controls,
   Connection,
+  ReactFlowInstance,
   OnConnect,
   Position,
 
 } from "reactflow";
 import "reactflow/dist/style.css";
 import Sidebar from "./Sidebar";
+import LoadBalancerIcon from "react-aws-icons/dist/aws/compute/LoadBalancer";
+import EC2Icon from "react-aws-icons/dist/aws/logo/EC2";
 import "./CloudCanvas.css";
+import { UserContext } from "../../context/Context";
 import { useParams } from 'react-router-dom';
+import { api_host } from "../../env/global";
+import { authAxios } from "../auth/AuthServiceAxios";
+import { ThemeConsumer } from "react-bootstrap/esm/ThemeProvider";
 import CompPropSidebar from "./CompPropSidebar";
 import AWSCompNode from "./AWSCompNode";
+import { GiConsoleController } from "react-icons/gi";
 
 const nodeTypes = {
   awsCompNode: AWSCompNode,
@@ -29,8 +37,10 @@ const nodeTypes = {
 
 
 let id = 0;
+const getId = () => `dndnode_${id++}`;
 
 const DnDFlow = () => {
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const { plan_id_edit } = useParams()
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
   const [plan, setPlan, planRef] = useState<any>({});
@@ -68,8 +78,7 @@ const DnDFlow = () => {
         running_status: 1,
       };
 
-
-      api.put("/plan/" + `${planIdRef.current}`, plan_wrapper)
+      authAxios.put("/plan/" + `${planIdRef.current}`, plan_wrapper)
         .then((response) => {
           console.log("Plan successfully updated", response.data.id)
         })
@@ -83,7 +92,7 @@ const DnDFlow = () => {
   useEffect(() => {
 
     // componentDidMount
-    api.get("/plan/" + `${plan_id_edit}`)
+    authAxios.get("/plan/" + `${plan_id_edit}`)
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
@@ -140,7 +149,7 @@ const DnDFlow = () => {
     nodes.map((node: any) => {
       const endpoint = node.data.api_object.aws_component;
 
-      api.delete(`/${endpoint}/${node.data.api_object.id}`)
+      authAxios.delete(`/${endpoint}/${node.data.api_object.id}`)
         // .then((response) => {
         //   // console.log("AWS component has been deleted")
         // })
@@ -155,7 +164,7 @@ const DnDFlow = () => {
     const plan_clone = structuredClone(planRef.current)
     plan_clone.deploy_status = 2
     console.log('plan_clone', plan_clone)
-    api.put("/plan/" + `${planIdRef.current}`, plan_clone)
+    authAxios.put("/plan/" + `${planIdRef.current}`, plan_clone)
       .then((response) => {
         console.log("Plan deployment activated", response.data)
         setPlan(response.data)
@@ -177,7 +186,7 @@ const DnDFlow = () => {
       "plan": planIdRef.current
     }
 
-    return await api.post(`/${name}/`, aws_component)
+    return await authAxios.post(`/${name}/`, aws_component)
       .then((response) => {
         // console.log("AWS Comp created", response.data)
         return response.data
@@ -208,7 +217,7 @@ const DnDFlow = () => {
           style: { height: "50px", width: "50px" },
 
           // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
-          data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
+          data: { label: awsComp.id.toString(), attachable: '',attachables:[], api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
         setNodes((nds) => nds.concat(new_node));
@@ -217,7 +226,7 @@ const DnDFlow = () => {
 
 
   const onNodeClick = (event: any, node: any) => {
-    console.log('onNodeClick ', node)
+    console.log('onNodeClick ', node)  
     setClickedNode({})
     setClickedNode(node.data)
     // console.log('clickedNode ', clickedNode)
@@ -230,6 +239,7 @@ const DnDFlow = () => {
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
+
 
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
@@ -264,9 +274,9 @@ const DnDFlow = () => {
               // it's important that you create a new object here
               // in order to notify react flow about the change
 
-              const attached = {
+              const attached ={
                 attachable: 'pg',
-                attachables: [{ id: 1, name: 'pg' }]
+                attachables:[{id:1, name:'pg'}]
               }
               node.data = {
                 ...node.data,
@@ -281,7 +291,7 @@ const DnDFlow = () => {
           1. Trigger Holder to accept attachable
           2. Make a backend call to deploy attachable
         */
-        console.log('attachable dropped ', targetNode)
+        console.log('attachable dropped ',targetNode)
         return
       }
       // dropped node is attachable type 
@@ -300,7 +310,7 @@ const DnDFlow = () => {
           running_status: 1,
         };
 
-        api.post("/plan/", plan_obj)
+        authAxios.post("/plan/", plan_obj)
           .then((response) => {
             const new_plan_id = Number(response.data.id)
             setPlanId(new_plan_id)
@@ -322,7 +332,7 @@ const DnDFlow = () => {
   const refreshComp = (awsCompId: any) => {
     console.log('refreshComp called')
 
-    api.get("/ec2/" + `${awsCompId}` + "/update_instance_details")
+    authAxios.get("/ec2/" + `${awsCompId}`+"/update_instance_details")
       .then((response) => {
         const updated_node_api_object = response.data
 
@@ -342,7 +352,7 @@ const DnDFlow = () => {
           running_status: 1,
         };
         setPlan(plan_wrapper)
-
+        
 
       })
       .then(() => {

@@ -1,17 +1,15 @@
-import os
 from datetime import timedelta
 from pathlib import Path
 
 import environ
-
-from .simple_jwt import *
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 
-if not os.path.isfile(".env"):
+if not os.path.isfile('.env'):
     print('".env" file is missing , make sure .env file in the path where  manage.py')
     exit(0)
 
@@ -32,25 +30,62 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-
-DJANGO_APPS = [
+INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django.forms",
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+    "drf_yasg",
+    "api",
+    "authtoken",
+    "aws",
+    "plan",
+    "user",
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # 'rest_framework.authentication.BasicAuthentication',
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated'
+    # ]
+    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle"],
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "60/min"},
+}
 
-THIRD_PARTY_APPS = ["corsheaders", "drf_yasg", "rest_framework", "rest_framework_simplejwt", "dj_rest_auth"]
-
-LOCAL_APPS = ["apps.plan", "apps.aws", "apps.user"]
-
-# https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=20),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "ALGORITHM": "HS256",
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "JWK_URL": None,
+    "LEEWAY": 0,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+}
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -139,40 +174,10 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-REST_FRAMEWORK = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
-    ),
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle"],
-    "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "60/min"},
-}
-
-# dj-rest-auth
-# ------------------------------------------------------------------------------
-REST_AUTH_TOKEN_MODEL = None  # Disables token authentication
-REST_SESSION_LOGIN = False  # Disables session login
-
-REST_USE_JWT = True
-# JWT_AUTH_COOKIE = "token"
-JWT_AUTH_REFRESH_COOKIE = "refresh-token"
-JWT_AUTH_SECURE = False  # If True, cookies will be sent only with https scheme
-JWT_AUTH_HTTPONLY = True  # Client Side javascript cannot access the cookie
-
-OLD_PASSWORD_FIELD_ENABLED = True  # Verifies old password on password change endpoint
-
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "standard": {
-            "format": "{asctime} {levelname} : {filename} line - {lineno:d} : {module} : {message}",
-            "style": "{",
-        },
         "verbose": {
             "format": "{levelname} {asctime} {module} {funcName} {lineno} {process:d} {thread:d} :: {message}",
             "style": "{",
@@ -184,14 +189,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"},
-        "file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/app.log",
-            "maxBytes": 5 * 1024 * 1024,  # 5 MB
-            "backupCount": 10,
-            "formatter": "standard",
-        },
-        # "file": {"level": "INFO", "class": "logging.FileHandler", "formatter": "verbose", "filename": "../log/app.log"},
+        "file": {"level": "INFO", "class": "logging.FileHandler", "formatter": "verbose", "filename": "../log/app.log"},
     },
     "loggers": {
         "": {"level": "DEBUG", "handlers": ["console", "file"]},
@@ -207,5 +205,5 @@ GRAPH_MODELS = {
 
 AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)
 
-RSA_PUBLIC_KEY = "/Users/kannappannatarasan/.ssh/rsa_public_key.pem"
-RSA_PRIVATE_KEY = "/Users/kannappannatarasan/.ssh/rsa_private_key.pem"
+RSA_PUBLIC_KEY = '/Users/kannappannatarasan/.ssh/rsa_public_key.pem'
+RSA_PRIVATE_KEY = '/Users/kannappannatarasan/.ssh/rsa_private_key.pem'
