@@ -4,7 +4,7 @@ import logo from "../../static/images/logo3.png";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import React, { useState } from "react";
-import { authAxios } from "../auth/AuthServiceAxios";
+import api from "../../services/api";
 
 const IAMUser = () => {
     const [aws_key, setAWSKey] = useState("");
@@ -13,7 +13,7 @@ const IAMUser = () => {
     const login = (e: React.SyntheticEvent): void => {
         e.preventDefault();
 
-        authAxios.post("/aws_creds/", { aws_key: aws_key, aws_secret: aws_secret })
+        api.post("/aws_creds/", { aws_key: aws_key, aws_secret: aws_secret })
             .then((response: { status: number; data: { access: any }; }) => {
                 console.log('response from axios ', response)
 

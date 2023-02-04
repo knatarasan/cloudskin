@@ -4,7 +4,7 @@ import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
-import { authAxios } from "../auth/AuthServiceAxios";
+import PlanService from '../../services/plan.service'
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -28,17 +28,17 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    authAxios.get("/plan/")
+    PlanService.getUserPlans()
       .then((response: any): void => {
         setPlans(response.data)
       })
   }, [])
 
-  const deletePlan = (id: number) => {
+  const deletePlan = (id: string) => {
     console.log("id", id)
-    authAxios.delete(`/plan/${id}`)
+    PlanService.deletePlan(id)
       .then((response) => {
-        setPlans(plans.filter((plan: any) => plan.id !== id))
+        setPlans(plans.filter((plan: any) => plan.plan_id !== id))
         console.log("Plan has been deleted")
       })
       .catch((error) => {
@@ -97,18 +97,18 @@ const Dashboard = () => {
                   {/* {console.log('plans here',plans)} */}
                   {plans?.map((plan: any) => (
 
-                    <tr id={plan.id}>
+                    <tr id={plan.plan_id}>
                       <td>
-                        <Link to={`/plan/${plan.id}`}>{plan.id}</Link></td>
+                        <Link to={`/plan/${plan.plan_id}`}>{plan.plan_id}</Link></td>
                       <td>{plan.owner}</td>
                       <td>{plan.deploy_status}</td>
                       <td>{plan.running_status}</td>
                       <td>
-                        <Link to={`/plan/${plan.id}`}><FaEdit /></Link>
+                        <Link to={`/plan/${plan.plan_id}`}><FaEdit /></Link>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                       </td>
                       <td>
-                        <button onClick={() => deletePlan(plan.id)}><FaTrashAlt /></button>
+                        <button onClick={() => deletePlan(plan.plan_id)}><FaTrashAlt /></button>
                       </td>
                     </tr>
                   ))}
