@@ -1,10 +1,10 @@
 import { useState } from "react"
-import { authAxios } from "../auth/AuthServiceAxios";
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import api from "../../services/api";
 
 const CompPropSidebar = ({ node, refreshComp }: any) => {
 
@@ -24,7 +24,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
     const installAttachable = (e: any) => {
         console.log('install ', node.attachables[0].name)
 
-        authAxios.put("/ec2/" + `${node.api_object.id}` + "/install_service", {})
+        api.put("/ec2/" + `${node.api_object.id}` + "/install_service", {})
             .then((response) => {
                 console.log("PG created", response)
             })
@@ -33,7 +33,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
     const unInstallAttachable = (e: any) => {
         console.log('uninstall ', node.attachables[0].name)
 
-        authAxios.put(`/ec2/${node.api_object.id}/uninstall_service`, {})
+        api.put(`/ec2/${node.api_object.id}/uninstall_service`, {})
             .then((response) => {
                 console.log("PG unInstalled", response)
             })
@@ -41,7 +41,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
 
     const onTerminate = (e: any) => {
         console.log("AWS instance will be terminated", apiObject.id);
-        authAxios.put(`/ec2/${apiObject.id}/terminate_instance`, {})
+        api.put(`/ec2/${apiObject.id}/terminate_instance`, {})
             .then((response) => {
                 console.log("AWS instance terminated", response)
             })
@@ -52,7 +52,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
     const handleSubmit = (e: any) => {
         const end_point = apiObject.aws_component;
         console.log('update call', `/${end_point}/${apiObject.id}`, apiObject);
-        authAxios.put(`/${end_point}/${apiObject.id}`, apiObject)
+        api.put(`/${end_point}/${apiObject.id}`, apiObject)
             .then((response) => {
                 console.log("AWS Comp updated", response.data.id)
                 return response.data

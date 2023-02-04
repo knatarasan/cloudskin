@@ -1,15 +1,17 @@
 # base.txt
 
 boto3==1.26.54
+dj-rest-auth==2.2.7
 Django==4.1.5
 django-cors-headers==3.13.0
 django-environ==0.9.0
 django-filter==22.1
+django-model-utils==4.3.1
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
-drf_yasg
+drf-yasg==1.21.4
 Markdown==3.4.1
+paramiko==3.0.0
 psycopg2==2.9.5
-rsa
-locust
-django-model-utils
+rsa==4.9
+locust==2.14.2
