@@ -1,9 +1,9 @@
 import os
-from datetime import timedelta
 from pathlib import Path
 
 import environ
 
+from .logger import *
 from .simple_jwt import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -151,8 +151,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {"anon": "100/day", "user": "60/min"},
 }
 
-# dj-rest-auth
-# ------------------------------------------------------------------------------
+#################### dj-rest-auth start ####################
 REST_AUTH_TOKEN_MODEL = None  # Disables token authentication
 REST_SESSION_LOGIN = False  # Disables session login
 
@@ -163,42 +162,12 @@ JWT_AUTH_SECURE = False  # If True, cookies will be sent only with https scheme
 JWT_AUTH_HTTPONLY = True  # Client Side javascript cannot access the cookie
 
 OLD_PASSWORD_FIELD_ENABLED = True  # Verifies old password on password change endpoint
+#################### dj-rest-auth end ####################
 
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "standard": {
-            "format": "{asctime} {levelname} : {filename} line - {lineno:d} : {module} : {message}",
-            "style": "{",
-        },
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {funcName} {lineno} {process:d} {thread:d} :: {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
-    "handlers": {
-        "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"},
-        "file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/app.log",
-            "maxBytes": 5 * 1024 * 1024,  # 5 MB
-            "backupCount": 10,
-            "formatter": "standard",
-        },
-        # "file": {"level": "INFO", "class": "logging.FileHandler", "formatter": "verbose", "filename": "../log/app.log"},
-    },
-    "loggers": {
-        "": {"level": "DEBUG", "handlers": ["console", "file"]},
-        "django": {"level": "INFO", "handlers": ["console", "file"]},
-        "django.request": {"level": "INFO", "handlers": ["console", "file"]},
-    },
-}
+#################### swagger start ####################
+SWAGGER_SETTINGS = {"SECURITY_DEFINITIONS": {"Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}}}
+#################### swagger end ####################
 
 GRAPH_MODELS = {
     "all_applications": True,
