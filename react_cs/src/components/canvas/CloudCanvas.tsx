@@ -71,7 +71,7 @@ const DnDFlow = () => {
 
       api.put("/plan/" + `${planIdRef.current}`, plan_wrapper)
         .then((response) => {
-          console.log("Plan successfully updated", response.data.id)
+          console.log("Plan successfully updated", response.data.plan_id)
         })
         .catch((error) => {
           console.log("Plan not updated", error)
@@ -99,7 +99,7 @@ const DnDFlow = () => {
         }
 
 
-        console.log("Plan successfully retrieved", response.data.id)
+        console.log("Plan successfully retrieved", response.data.plan_id)
       })
       .catch((error) => {
         console.log(plan_id_edit, ' is not right plan id to edit', error);
@@ -302,7 +302,7 @@ const DnDFlow = () => {
 
         api.post("/plan/", plan_obj)
           .then((response) => {
-            const new_plan_id = Number(response.data.id)
+            const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
             setSaveUpdate(false)
