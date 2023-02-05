@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Container, Row, Col, } from "react-bootstrap";
 import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
-import jwt_decode from "jwt-decode";
 
 import AuthService from "../../services/auth.service";
 
@@ -13,30 +12,36 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const { currentUser, setCurrentUser } = useContext(UserContext);
+
+  type User = {
+    pk: number,
+    username: string,
+    email: string,
+    first_name: string,
+    last_name: string
+  }
 
 
   const login = (e: React.SyntheticEvent): void => {
     e.preventDefault();
 
-    AuthService.login(username, password).then(
-      () => {
+    AuthService.login(username, password)
+      .then((response: { access_token: string; user: User }) => {
+        console.log('response from axios ', response)
+
+        console.log(response);
+        // TODO : After successful login accessToken can be stored in React Context
+        setCurrentUser({ username: response.user.username, email: response.user.email, loggedIn: true });
         navigate("/dashboard");
-      },
-      (error) => {
-        const errMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        // navigate("/login");
-        setMessage(errMessage);
-      }
-    );
-
+      })
+      .catch(e => {
+        console.log('Check your request ', e, e.response.status)
+        navigate("/login");
+      });
 
   };
+
 
   return (
     <div>

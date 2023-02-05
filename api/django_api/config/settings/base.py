@@ -44,7 +44,14 @@ DJANGO_APPS = [
 ]
 
 
-THIRD_PARTY_APPS = ["corsheaders", "drf_yasg", "rest_framework", "rest_framework_simplejwt", "dj_rest_auth"]
+THIRD_PARTY_APPS = [
+    "corsheaders",
+    "drf_yasg",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
+    "dj_rest_auth",
+]
 
 LOCAL_APPS = ["apps.plan", "apps.aws", "apps.user"]
 

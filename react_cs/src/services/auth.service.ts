@@ -29,6 +29,15 @@ const login = (username: string, password: string) => {
 
 const logout = () => {
     TokenService.removeUser();
+    // Related Open issue - Will resolve it at some point.
+    // https://github.com/iMerica/dj-rest-auth/issues/261
+    return api.post("/auth/logout/")
+        .then((response) => {
+            console.log(response)
+            return response.data;
+        }).catch((error) => {
+            console.log(error);
+        });
 };
 
 const getCurrentUser = () => {
