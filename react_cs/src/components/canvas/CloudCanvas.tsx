@@ -69,7 +69,7 @@ const DnDFlow = () => {
       };
 
 
-      api.put("/plan/" + `${planIdRef.current}`, plan_wrapper)
+      api.put(`/plan/${planIdRef.current}/`, plan_wrapper)
         .then((response) => {
           console.log("Plan successfully updated", response.data.plan_id)
         })
@@ -83,7 +83,7 @@ const DnDFlow = () => {
   useEffect(() => {
 
     // componentDidMount
-    api.get("/plan/" + `${plan_id_edit}`)
+    api.get(`/plan/${plan_id_edit}/`)
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
@@ -97,7 +97,6 @@ const DnDFlow = () => {
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
         }
-
 
         console.log("Plan successfully retrieved", response.data.plan_id)
       })
@@ -155,7 +154,7 @@ const DnDFlow = () => {
     const plan_clone = structuredClone(planRef.current)
     plan_clone.deploy_status = 2
     console.log('plan_clone', plan_clone)
-    api.put("/plan/" + `${planIdRef.current}`, plan_clone)
+    api.put(`/plan/${planIdRef.current}/`, plan_clone)
       .then((response) => {
         console.log("Plan deployment activated", response.data)
         setPlan(response.data)
