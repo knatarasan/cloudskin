@@ -20,7 +20,6 @@ const App = () => {
       <Route path="register" element={<Register />} />
       <Route path="plan/:plan_id_edit" element={<DnDFlow />} />
       <Route path="dashboard" element={<Dashboard />} />
-      <Route path="test" element={<JsonEditor schema={vmschema} data={vmdata} />} />
       <Route path="iconTester" element={<IconTester schema={{}} data={{}} />} />
       <Route path="iamuser" element={<IAMUser />} />
     </Routes>
