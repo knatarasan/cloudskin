@@ -26,3 +26,4 @@
 1. [Handling Axios errors](https://stackabuse.com/handling-errors-with-axios/)
 
 [Coole icons](https://fontawesome.com/)
+[aws icons](https://awsicons.dev/)
