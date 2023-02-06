@@ -6,9 +6,6 @@ import Dashboard from "./components/dashboard/Dashboard";
 import IAMUser from "./components/aws/IAMUser";
 import { Routes, Route } from "react-router-dom";
 import React from "react";
-import JsonEditor from "./components/editor/JsonEditor";
-import vmschema from "./components/editor/schema/virtualMachine.json";
-import vmdata from "./components/editor/schema/virtualMachine-data.json";
 import IconTester from "./components/canvas/IconTester";
 
 const App = () => {

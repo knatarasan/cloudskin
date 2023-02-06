@@ -321,7 +321,7 @@ const DnDFlow = () => {
   const refreshComp = (awsCompId: any) => {
     console.log('refreshComp called')
 
-    api.get("/ec2/" + `${awsCompId}` + "/update_instance_details")
+    api.get(`/ec2/${awsCompId}/update_instance_details`)
       .then((response) => {
         const updated_node_api_object = response.data
 
