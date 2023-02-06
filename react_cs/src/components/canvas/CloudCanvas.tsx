@@ -17,7 +17,7 @@ import ReactFlow, {
 
 } from "reactflow";
 import "reactflow/dist/style.css";
-import Sidebar from "./Sidebar";
+import Sidebar from "../panels/Sidebar";
 import "./CloudCanvas.css";
 import { useParams } from 'react-router-dom';
 import CompPropSidebar from "./CompPropSidebar";
@@ -31,6 +31,7 @@ const nodeTypes = {
 let id = 0;
 
 const DnDFlow = () => {
+  const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
   const { plan_id_edit } = useParams()
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
   const [plan, setPlan, planRef] = useState<any>({});
@@ -313,7 +314,6 @@ const DnDFlow = () => {
             console.log("Plan not saved", error.response.status)
           })
         //create plan 
-
       }
     },
     [reactFlowInstance]);
@@ -361,14 +361,15 @@ const DnDFlow = () => {
           <ReactFlow
             nodes={nodes}
             edges={edges}
+            deleteKeyCode={deleteKeyCodes}
+            onInit={setReactFlowInstance}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            onConnect={onConnect}
             onNodesChange={onNodesChange}
             onNodesDelete={onNodeDelete}
             onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
             onEdgesDelete={onEdgesDelete}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
             onNodeClick={onNodeClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
