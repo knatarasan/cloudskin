@@ -5,6 +5,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import logo from "../../static/images/logo3.png";
 import { UserContext } from "../../context/Context";
 import PlanService from '../../services/plan.service'
+import AuthService from "../../services/auth.service";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -16,12 +17,13 @@ const Dashboard = () => {
     setAuthenticated({
       username: '',
       email: '',
-      tokenAccess: '',
+      // tokenAccess: '',
       loggedIn: false
     });
     setCurrentUser(undefined);
 
-    localStorage.removeItem("accessToken");
+    // localStorage.removeItem("accessToken");
+    AuthService.logout();
 
     console.log("handleLogout context is set to false", currentUser);
     navigate("/");

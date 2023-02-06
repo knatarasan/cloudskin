@@ -4,7 +4,7 @@ import { createContext, useState } from "react";
 type User = {
   username: string, // eg'admin',
   email: string,
-  tokenAccess: string,
+  // tokenAccess: string,
   loggedIn: boolean
 }
 
@@ -15,12 +15,12 @@ export type UserContent = {
 
 export const UserContext = createContext<UserContent>({
   currentUser: {
-    username: '', 
+    username: '',
     email: '',
-    tokenAccess: '',
+    // tokenAccess: '',
     loggedIn: false
   },
-  setCurrentUser: () => null, 
+  setCurrentUser: () => null,
 });
 
 UserContext.displayName = 'UserContext'
