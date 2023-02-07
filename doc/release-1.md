@@ -228,7 +228,7 @@ PG
         - `EC2_Metadata` is a SCD2 type table 
           - processing logic: 
 
-##### Existing data in EC2_Metadata          
+##### Existing data in `EC2_Metadata`          
 sno| ec2_type | region    | price     | effective_date | end_date|
 ----------|----------|-----------|-----------|----------|-----------|
 1| t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 31/12/9999 23:59:59|
@@ -238,7 +238,7 @@ sno| ec2_type | region    | price                                    | today_dat
 ----------|----------|-----------|------------------------------------------|---------------------|
 1| t2-micro | us-west-1 | <span style="color:red">0.002 USD</span> | 05/05/2021 12:00:00 | 
 
-##### After processing :  EC2_Metadata
+##### After processing :  `EC2_Metadata`
 
 sno| ec2_type | region    | price     | effective_date | end_date|
 ----------|----------|-----------|-----------|----------|-----------|
