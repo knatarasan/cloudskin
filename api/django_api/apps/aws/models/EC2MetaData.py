@@ -30,6 +30,7 @@ class EC2MetaData(models.Model):
     region_code = models.CharField(max_length=100, null=True)
     price_currency = models.CharField(max_length=3, null=True)
     price = models.FloatField(null=True)
+    details = models.JSONField(null=True)
 
     class Meta:
         """
