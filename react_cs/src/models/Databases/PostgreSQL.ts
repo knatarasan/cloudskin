@@ -1,10 +1,12 @@
 
 import { SiPostgresql } from 'react-icons/si';
+import { NodeSchema, NodeType } from '../NodeTypes';
 
-import { ComponentSchema, ComponentType } from "../ComponentDefs";
-
-export const PostgreSQL: ComponentSchema = {
-    componentType: ComponentType.Attachable,
+export const PostgreSQL: NodeSchema = {
+    schemaId: 'pg',
     name: 'PostgreSQL',
+    category: 'Database',
+    nodeType: NodeType.Process,
     icon: SiPostgresql,
+    definition: "PG definition"
 }

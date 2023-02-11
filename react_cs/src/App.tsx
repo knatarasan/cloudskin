@@ -7,15 +7,16 @@ import IAMUser from "./components/aws/IAMUser";
 import { Routes, Route } from "react-router-dom";
 import React from "react";
 import IconTester from "./components/canvas/IconTester";
+import { Main } from "./main";
 
 const App = () => {
   return (
-    // <DnDFlow />
     <Routes>
       <Route index element={<Home />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="plan/:plan_id_edit" element={<DnDFlow />} />
+      <Route path="new_plan/:planNo?" element={<Main />} />
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="iconTester" element={<IconTester schema={{}} data={{}} />} />
       <Route path="iamuser" element={<IAMUser />} />

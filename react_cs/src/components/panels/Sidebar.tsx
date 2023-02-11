@@ -23,7 +23,7 @@ const ComponentsBar = () => {
             (
               <div key={key}
                 className="icon"
-                onDragStart={(event) => onDragStart(event, item.name, item.componentType)}
+                onDragStart={(event) => onDragStart(event, item.schemaId, 'base')}
                 draggable
               >
                 <item.icon size={35} />
@@ -38,7 +38,7 @@ const ComponentsBar = () => {
             (
               <div key={key}
                 className="icon"
-                onDragStart={(event) => onDragStart(event, item.name, item.componentType)}
+                onDragStart={(event) => onDragStart(event, item.schemaId, 'attachable')}
                 draggable
               >
                 <item.icon size={35} />
