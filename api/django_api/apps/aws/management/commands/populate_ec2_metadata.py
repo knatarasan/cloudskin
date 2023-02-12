@@ -37,66 +37,46 @@ class Command(BaseCommand):
         client = boto3.client("pricing", region_name="us-east-1")
 
         FLT = (
-            '[{{"Field": "instanceType", "Value": "{t}", "Type": "TERM_MATCH"}},'
-            '{{"Field": "termType", "Value": "OnDemand", "Type": "TERM_MATCH"}},'
+            '[{{"Field": "termType", "Value": "OnDemand", "Type": "TERM_MATCH"}},'
             '{{"Field": "location", "Value": "{r}", "Type": "TERM_MATCH"}}]'
         )
+
+        # FLT = (
+        #     '[{{"Field": "instanceType", "Value": "{t}", "Type": "TERM_MATCH"}},'
+        #     '{{"Field": "termType", "Value": "OnDemand", "Type": "TERM_MATCH"}},'
+        #     '{{"Field": "location", "Value": "{r}", "Type": "TERM_MATCH"}}]'
+        # )
         region = self.get_region_name("us-west-1")
-        instance = "t2.micro"
+        # instance = "t2.micro"
 
-        f = FLT.format(r=region, t=instance)
-        data = client.get_products(ServiceCode="AmazonEC2", Filters=json.loads(f))
+        f = FLT.format(r=region)
+        # f = FLT.format(r=region, t=instance)
+        paginator = client.get_paginator("get_products")
+        page_iterator = paginator.paginate(ServiceCode="AmazonEC2", Filters=json.loads(f))
 
-        for p in data["PriceList"]:
-            instance_detail: dict = self.get_instance_details(p)
-            logger.debug(f"instance_detail : {instance_detail}")
-            if len(instance_detail) == 0:
-                logger.debug(f"This is skipped since instance_detail : {instance_detail}")
-                continue
+        for page in page_iterator:
+            for p in page["PriceList"]:
+                instance_detail: dict = self.get_instance_details(p)
+                logger.debug(f"instance_detail : {instance_detail}")
+                if len(instance_detail) == 0:
+                    logger.debug(f"This is skipped since instance_detail : {instance_detail}")
+                    continue
 
-            ec2metadata = None
-            try:
-                # TODO convert this to update_or_create
-                ec2metadata = EC2MetaData.objects.create(
-                    instance_type=instance_detail["instance_type"],
-                    region_code=instance_detail["region_code"],
-                    price=instance_detail["price"],
-                    price_currency=instance_detail["price_currency"],
-                    details=json.loads(p),
-                )
-                ec2metadata.save()
-                logger.debug(f"ec2metadata : {ec2metadata}")
+                ec2metadata = None
+                try:
+                    # TODO convert this to update_or_create
+                    ec2metadata = EC2MetaData.objects.create(
+                        instance_type=instance_detail["instance_type"],
+                        region_code=instance_detail["region_code"],
+                        price=instance_detail["price"],
+                        price_currency=instance_detail["price_currency"],
+                        details=json.loads(p),
+                    )
+                    ec2metadata.save()
+                    logger.debug(f"ec2metadata : {ec2metadata}")
 
-            except Exception as e:
-                logger.debug(f"Table not loaded {ec2metadata}  error {e}")
-
-        # # Paginated
-        # paginator = client.get_paginator("get_products")
-        # page_iterator = paginator.paginate(ServiceCode="AmazonEC2")
-
-        # for page in page_iterator:
-        #     for p in page["PriceList"]:
-        #         instance_detail: dict = self.get_instance_details(p)
-        #         logger.debug(f"instance_detail : {instance_detail}")
-        #         if len(instance_detail) == 0:
-        #             logger.debug(f"This is skipped since instance_detail : {instance_detail}")
-        #             continue
-
-        #         ec2metadata = None
-        #         try:
-        #             # TODO convert this to update_or_create
-        #             ec2metadata = EC2MetaData.objects.create(
-        #                 instance_type=instance_detail["instance_type"],
-        #                 region_code=instance_detail["region_code"],
-        #                 price=instance_detail["price"],
-        #                 price_currency=instance_detail["price_currency"],
-        #                 details=json.loads(p),
-        #             )
-        #             ec2metadata.save()
-        #             logger.debug(f"ec2metadata : {ec2metadata}")
-
-        #         except Exception as e:
-        #             logger.debug(f"Table not loaded {ec2metadata}  error {e}")
+                except Exception as e:
+                    logger.debug(f"Table not loaded {ec2metadata}  error {e}")
         # # Paginated
 
     def get_instance_details(self, p):
