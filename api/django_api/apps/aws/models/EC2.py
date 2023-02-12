@@ -17,7 +17,8 @@ class EC2(AWSComponent):
     """
     aws_component = models.TextField(default='ec2')
     ec2_instance_id = models.TextField(null=True)
-    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,default=AWSComponent.AWSCompStatus.PREPARED)
+    ec2_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices,
+                                     default=AWSComponent.AWSCompStatus.PREPARED)
     instance_type = models.TextField(default='t2.micro')
     image_id = models.TextField(default='ami-0f5e8a042c8bfcd5e')
     instance_key_pair = models.TextField(default="cloudskin_key")
@@ -33,8 +34,9 @@ class EC2(AWSComponent):
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
         if settings.AWS_TEST_MODE:
-            logger.info(f" AWS_TEST_MODE is {settings.AWS_TEST_MODE} no real instance spun, but a simulated instnace. To change this, update AWS_TEST_MODE in settings.base")
-            self.ec2_instance_id ='i-simulated-id'
+            logger.info(
+                f" AWS_TEST_MODE is {settings.AWS_TEST_MODE} no real instance spun, but a simulated instnace. To change this, update AWS_TEST_MODE in settings.base")
+            self.ec2_instance_id = 'i-simulated-id'
             self.save()
             return 'i-simulated-id'
 
@@ -48,7 +50,8 @@ class EC2(AWSComponent):
                     aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
                     region_name=self.region
                 )
-                logger.info(f"Image id {self.image_id} Instance type {self.instance_type} security group {self.security_group} subnet {self.subnet} ")
+                logger.info(
+                    f"Image id {self.image_id} Instance type {self.instance_type} security group {self.security_group} subnet {self.subnet} ")
 
                 instances = ec2.create_instances(
                     ImageId=self.image_id,
@@ -113,9 +116,9 @@ class EC2(AWSComponent):
         installed_service.delete()
         logger.info(f"Uninstalled service {service_name} on {self.host_name} ")
         return installed_service
+
     def __str__(self):
         return f'id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}'
-
 
     def terminate_aws_instance(self):
         AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=self.plan.owner).aws_access_key
