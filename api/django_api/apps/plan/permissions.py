@@ -13,7 +13,7 @@ class PlanUserPermission(permissions.BasePermission):
             return True
 
     def has_object_permission(self, request, view, obj):
-        # logger.info(f' requst.user { request.user} and obj.owner : {obj.owner}')
+        # TODO - Need to remove the superuser check. Instead we should use impersonation that has better control
         if request.user.is_superuser:
             return True
 
