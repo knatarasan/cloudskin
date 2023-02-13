@@ -1,55 +1,101 @@
 import { create } from 'zustand'
-import { DataNode } from '../models';
-import { Edge } from 'reactflow';
+import { CustomNode } from '../models/NodeTypes';
+import { applyEdgeChanges, applyNodeChanges, Edge, EdgeChange, NodeChange, OnEdgesChange, OnNodesChange } from 'reactflow';
 
-interface NodeState {
-    nodes: DataNode[];
+
+// define types for state values and actions separately
+type State = {
+    nodes: CustomNode[];
     edges: Edge[];
-
-    addNode: (new_node: DataNode) => void;
-    removeNodeById: (node_id: string) => void;
-    removeNodes: (nodes: DataNode[]) => void;
-    updateNodeDataValue: (node_id: string, data_value: any) => void;
 }
 
-export const useNodeStore = create<NodeState>()((set, get) => ({
-    // initial state
-    nodes: [],
+type Actions = {
+    addNode: (new_node: CustomNode) => void;
+    removeNodeById: (node_id: string) => void;
+    removeNodes: (nodes: CustomNode[]) => void;
+    updateNodeDataValue: (node_id: string, data_value: any) => void;
+
+    onNodesChange: OnNodesChange;
+    onEdgesChange: OnEdgesChange;
+
+    resetNodes: (nodes: CustomNode[]) => void;
+    resetEdges: (edges: Edge[]) => void;
+}
+
+// define the initial state
+const initialState: State = {
+    nodes: [
+        // { id: '1', type: 'container', data: { id: '1', schemaId: 'ec2', label: 'EC2-1', properties: '' }, position: { x: 5, y: 5 } },
+        // { id: '2', type: 'process', data: { id: '2', schemaId: 'pg', label: 'PostgreSQL', properties: '' }, position: { x: 5, y: 100 } },
+    ],
     edges: [],
+}
+
+export const useNodeStore = create<State & Actions>()((set, get) => ({
+    ...initialState,
 
     // methods for manipulating nodes
-    addNode: (new_node: DataNode) => {
+    addNode: (newNode: CustomNode) => {
         set({
-            nodes: get().nodes.concat(new_node),
+            nodes: get().nodes.concat(newNode),
         });
     },
 
-    removeNodeById: (node_id: string) => {
+    removeNodeById: (nodeId: string) => {
         set({
-            nodes: get().nodes.filter(n => n.id === node_id)
+            nodes: get().nodes.filter(n => n.id !== nodeId)
         });
     },
 
-    removeNodes: (del_nodes: DataNode[]) => {
+    removeNodes: (nodes: CustomNode[]) => {
         set({
-            nodes: get().nodes.filter(n => !del_nodes.some(dn => dn.id === n.id))
+            nodes: get().nodes.filter(n => !nodes.some(dn => dn.id === n.id))
         });
     },
 
-    updateNodeDataValue: (node_id: string, data_value: any) => {
+    updateNodeDataValue: (nodeId: string, data_value: any) => {
         set({
             nodes: get().nodes.map((node) => {
-                if (node.id === node_id) {
+                if (node.id === nodeId) {
                     return {
                         ...node,
-                        data: {
-                            ...node.data,
-                            value: data_value
-                        }
+                        // data: {
+                        //     ...node.data,
+                        //     value: data_value
+                        // }
                     };
                 }
                 return node;
             })
         });
     },
+
+    onNodesChange: (changes: NodeChange[]) => {
+        set({
+            nodes: applyNodeChanges(changes, get().nodes),
+        });
+    },
+
+    onEdgesChange: (changes: EdgeChange[]) => {
+        set({
+            edges: applyEdgeChanges(changes, get().edges),
+        });
+    },
+
+    resetNodes: (nodes: CustomNode[]) => {
+        set({
+            nodes: nodes,
+        });
+    },
+
+    resetEdges: (edges: Edge[]) => {
+        set({
+            edges: edges,
+        });
+    },
+
 }))
+
+
+// export const useNodes = () => useNodeStore((state) => state.nodes)
+// export const useEdges = () => useNodeStore((state) => state.edges)
