@@ -18,11 +18,15 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
         api.put(`/ec2/${apiObject.id}/create_instance`, {})
             .then((response) => {
                 console.log("AWS instance created", response)
-            })
-        refreshComp(apiObject.id)            
+                /*
+                    Can you create zutand store here and update the node object
+                    instead of folowing refreshComp() method
+                */
+                refreshComp(apiObject.id);
+            })                    
         // Once created it has to update master plan object
     }
-    const onRefresh = (e: any) => {
+    const refreshInstance = (e: any) => {
         refreshComp(apiObject.id)
     }
     const installAttachable = (e: any) => {
@@ -43,11 +47,16 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
             })
     }
 
-    const onTerminate = (e: any) => {
+    const terminateInstance = (e: any) => {
         console.log("AWS instance will be terminated", apiObject.id);
         api.put(`/ec2/${apiObject.id}/terminate_instance`, {})
             .then((response) => {
-                console.log("AWS instance terminated", response)
+                console.log("AWS instance terminated", response);
+                /*
+                    Can you create zutand store here and update the node object
+                    instead of folowing refreshComp() method
+                */
+                refreshComp(apiObject.id);
             })
     }
 
@@ -89,8 +98,8 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     )}
                     <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save</Button>
                     <Button variant="outline-success" type="submit" onClick={createInstance}>Deploy</Button>
-                    <Button variant="outline-success" type="submit" onClick={onRefresh}>Refresh</Button>
-                    <Button variant="outline-success" type="submit" onClick={onTerminate}>Terminate</Button>
+                    <Button variant="outline-success" type="submit" onClick={refreshInstance}>Refresh</Button>
+                    <Button variant="outline-success" type="submit" onClick={terminateInstance}>Terminate</Button>
                 </Card.Body>
             </Card>
 

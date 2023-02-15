@@ -343,12 +343,13 @@ const DnDFlow = () => {
     */
     console.log('refreshComp called')
 
-    api.get("/ec2/" + `${awsCompId}` + "/update_instance_details")
+    api.get(`/ec2/${awsCompId}/update_instance_details`)
       .then((response) => {
         const updated_node_api_object = response.data
 
         setNodes((nds) =>
           nds.map((node) => {
+            console.log('node.id ', node.id, 'awsCompId ', awsCompId)
             if (node.id === awsCompId.toString()) {
               node.data.api_object = updated_node_api_object;
             }

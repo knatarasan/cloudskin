@@ -84,15 +84,21 @@ class EC2ViewSet(viewsets.ModelViewSet):
     def terminate_instance(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
         ec2.terminate_aws_instance()
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = EC2Serializer(ec2)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["get"])
     def update_instance_details(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
-        ec2.update_instance_details()
-        serializer = EC2Serializer(ec2)
-        # 201 since , if there is any update in instance , ec2 object will be updated
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if ec2.ec2_instance_id:
+            ec2.update_instance_details()
+            serializer = EC2Serializer(ec2)
+            # 201 since , if there is any update in instance , ec2 object will be updated
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.debug("No instance for this ec2 object ")
+            serializer = EC2Serializer(ec2)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["put"])
     def install_service(self, request, pk=None):
