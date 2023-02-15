@@ -30,21 +30,24 @@ const nodeTypes = {
 
 let id = 0;
 
-const DnDFlow = () => {
-  const { plan_id_edit } = useParams()
+const DnDFlow = () => {  
+  // Opening existing plan
+  const { plan_id_edit } = useParams()   
+  // to Refer PlanId
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
   // const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
+  
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
-
   const [clickedNode, setClickedNode] = useStateVan({})
-  const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+  // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-  const [save_update, setSaveUpdate] = useStateVan(true);
+  
 
 
   const onSave = () => {
@@ -87,9 +90,9 @@ const DnDFlow = () => {
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
-        planCreatedRef.current = true;
+        // planCreatedRef.current = true;
         if (Number(plan_id_edit)) {
-          setSaveUpdate(false)
+          // setSaveUpdate(false)
         }
         const flow = response.data.plan
         if (flow) {
@@ -284,13 +287,12 @@ const DnDFlow = () => {
         return
       }
       // dropped node is attachable type 
-
-
-      if (planIdRef.current && planCreatedRef.current) {
+      
+      if (planIdRef.current!=-1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
-        planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+        // planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
         //create plan
         const plan_obj = {
@@ -304,7 +306,7 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
-            setSaveUpdate(false)
+            // setSaveUpdate(false)
             console.log("plan created", planIdRef.current)
           }).then(() => {
             createNewNode(data.node, 25, "red", event)
@@ -319,6 +321,11 @@ const DnDFlow = () => {
     [reactFlowInstance]);
 
   const refreshComp = (awsCompId: any) => {
+
+    /*
+    Use zustland to store plan and update it
+    ********** GO FROM HERE ***********
+    */ 
     console.log('refreshComp called')
 
     api.get("/ec2/" + `${awsCompId}` + "/update_instance_details")
@@ -376,10 +383,10 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan</button>(This button is only for testing)<br />
+              {/* <button id='save_update' onClick={onSave}> Save Plan</button>(This button is only for testing)<br /> */}
               <button onClick={deployPlan}>Deploy Plan</button>
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
-              <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
+              <p>Plan id : {planId} </p>
 
               {"label" in clickedNode ? <CompPropSidebar node={clickedNode} refreshComp={refreshComp} /> : null}
             </div>

@@ -15,8 +15,12 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
     };
 
     const createInstance = (e: any) => {
-
-
+        api.put(`/ec2/${apiObject.id}/create_instance`, {})
+            .then((response) => {
+                console.log("AWS instance created", response)
+            })
+        refreshComp(apiObject.id)            
+        // Once created it has to update master plan object
     }
     const onRefresh = (e: any) => {
         refreshComp(apiObject.id)
@@ -76,7 +80,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                                             <label htmlFor={key}>{key}:</label>
                                         </Col>
                                         <Col sm={7}>
-                                            <input type="text" name={key} value={apiObject[key]} onChange={handleChange}></input><br />
+                                            <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br />
                                         </Col>
                                     </Row>
                                 </Container>
