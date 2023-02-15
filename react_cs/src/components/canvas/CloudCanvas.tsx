@@ -1,6 +1,11 @@
-import React, { useRef, useCallback, useEffect, useContext, useState as useStateVan } from "react";
-// import useState from 'react-usestateref';
+import React, { useRef, useCallback, useEffect, useState as useStateVan } from "react";
 import useState from 'react-usestateref';
+import { useParams, useNavigate } from 'react-router-dom';
+
+import Sidebar from "./Sidebar";
+import CompPropSidebar from "./CompPropSidebar";
+import AWSCompNode from "./AWSCompNode";
+import PlanService from "../../services/plan.service";
 import api from "../../services/api";
 
 import ReactFlow, {
@@ -14,14 +19,12 @@ import ReactFlow, {
   Connection,
   OnConnect,
   Position,
-
 } from "reactflow";
-import "reactflow/dist/style.css";
-import Sidebar from "./Sidebar";
+
 import "./CloudCanvas.css";
-import { useParams } from 'react-router-dom';
-import CompPropSidebar from "./CompPropSidebar";
-import AWSCompNode from "./AWSCompNode";
+import "reactflow/dist/style.css";
+import { Button } from "react-bootstrap";
+
 
 const nodeTypes = {
   awsCompNode: AWSCompNode,
@@ -30,15 +33,15 @@ const nodeTypes = {
 
 let id = 0;
 
-const DnDFlow = () => {  
+const DnDFlow = () => {
   // Opening existing plan
-  const { plan_id_edit } = useParams()   
+  const { plan_id_edit } = useParams()
   // to Refer PlanId
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
   // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
   // const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
-  
+
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
   const [clickedNode, setClickedNode] = useStateVan({})
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
@@ -47,7 +50,7 @@ const DnDFlow = () => {
   // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-  
+  const navigate = useNavigate()
 
 
   const onSave = () => {
@@ -80,7 +83,6 @@ const DnDFlow = () => {
           console.log("Plan not updated", error)
         })
     }
-
   }
 
   useEffect(() => {
@@ -152,6 +154,19 @@ const DnDFlow = () => {
     })
 
   }
+
+  const deletePlan = () => {
+    PlanService.deletePlan(planIdRef.current.toString())
+      .then((response) => {
+        console.log("Plan has been deleted  ", planIdRef.current.toString())
+        navigate('/dashboard')
+      })
+      .catch((error) => {
+        console.log("Plan not deleted", error)
+      })
+
+  }
+
 
   const deployPlan = () => {
     const plan_clone = structuredClone(planRef.current)
@@ -287,8 +302,8 @@ const DnDFlow = () => {
         return
       }
       // dropped node is attachable type 
-      
-      if (planIdRef.current!=-1) {    // As initialized , when plan is not available
+
+      if (planIdRef.current != -1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
@@ -325,7 +340,7 @@ const DnDFlow = () => {
     /*
     Use zustland to store plan and update it
     ********** GO FROM HERE ***********
-    */ 
+    */
     console.log('refreshComp called')
 
     api.get("/ec2/" + `${awsCompId}` + "/update_instance_details")
@@ -383,8 +398,13 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              {/* <button id='save_update' onClick={onSave}> Save Plan</button>(This button is only for testing)<br /> */}
+
+              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button>(This button is only for testing)<br/>
+              <Button variant="outline-success" type="submit" onClick={deployPlan}>Deploy Plan</Button>
+              <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>              
+              {/* <button id='save_update' onClick={onSave}> Save Plan</button><br />
               <button onClick={deployPlan}>Deploy Plan</button>
+              <button onClick={deletePlan}>Delete Plan</button> */}
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
 
