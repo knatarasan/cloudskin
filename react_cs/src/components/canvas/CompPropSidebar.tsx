@@ -23,7 +23,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     instead of folowing refreshComp() method
                 */
                 refreshComp(apiObject.id);
-            })                    
+            })
         // Once created it has to update master plan object
     }
     const refreshInstance = (e: any) => {
@@ -32,7 +32,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
     const installAttachable = (e: any) => {
         console.log('install ', node.attachables[0].name)
 
-        api.put("/ec2/" + `${node.api_object.id}` + "/install_service", {})
+        api.put(`/ec2/${node.api_object.id}/install_service`, {})
             .then((response) => {
                 console.log("PG created", response)
             })
