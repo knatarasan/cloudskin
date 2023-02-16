@@ -10,6 +10,8 @@ import JsonEditor from "./components/editor/JsonEditor";
 import vmschema from "./components/editor/schema/virtualMachine.json";
 import vmdata from "./components/editor/schema/virtualMachine-data.json";
 import IconTester from "./components/canvas/IconTester";
+import Store from "./components/Samples/zustand_test";
+import StoreArray from "./components/Samples/zustand_array";
 
 const App = () => {
   return (
@@ -22,6 +24,9 @@ const App = () => {
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="iconTester" element={<IconTester schema={{}} data={{}} />} />
       <Route path="iamuser" element={<IAMUser />} />
+      <Route path="store" element={<Store />} />
+      <Route path="storeArray" element={<StoreArray/>} />
+
     </Routes>
   );
 };

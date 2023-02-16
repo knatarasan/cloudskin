@@ -22,3 +22,6 @@ const Store = () => {
 };
 
 export default Store;
+
+
+// ref: https://blog.openreplay.com/zustand-simple-modern-state-management-for-react

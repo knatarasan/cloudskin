@@ -5,11 +5,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import api from "../../services/api";
+import useStore from './Store';
 
 const CompPropSidebar = ({ node, refreshComp }: any) => {
 
+    const addFruits = useStore((state: any) => state.addFruits);  
     const [apiObject, setApiObject] = useState(node.api_object)
 
+    const addFruit = () => {
+        addFruits('MANGO');
+        
+    }
     const handleChange = (e: any) => {
         apiObject[e.target.name] = e.target.value
     };
@@ -100,6 +106,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     <Button variant="outline-success" type="submit" onClick={createInstance}>Deploy</Button>
                     <Button variant="outline-success" type="submit" onClick={refreshInstance}>Refresh</Button>
                     <Button variant="outline-success" type="submit" onClick={terminateInstance}>Terminate</Button>
+                    <Button variant="outline-success" type="submit" onClick={addFruit}>AddFruit</Button>
                 </Card.Body>
             </Card>
 

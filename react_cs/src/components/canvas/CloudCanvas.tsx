@@ -7,6 +7,7 @@ import CompPropSidebar from "./CompPropSidebar";
 import AWSCompNode from "./AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
+import useStore  from "./Store";
 
 import ReactFlow, {
   Node,
@@ -25,13 +26,11 @@ import "./CloudCanvas.css";
 import "reactflow/dist/style.css";
 import { Button } from "react-bootstrap";
 
-
 const nodeTypes = {
   awsCompNode: AWSCompNode,
 };
 
 
-let id = 0;
 
 const DnDFlow = () => {
   // Opening existing plan
@@ -52,10 +51,16 @@ const DnDFlow = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const navigate = useNavigate()
 
+  const fruits = useStore((state: any) => state.fruits);
+  const addFruits = useStore((state: any) => state.addFruits);
+  const inputRef = useRef<any>();
 
   const onSave = () => {
+
     console.log("in onSave", reactFlowInstance, reactFlowInstanceRef, planIdRef.current)
     if (reactFlowInstanceRef.current) {
+      addFruits(inputRef.current.value)
+      console.log('fruits', fruits)
 
       // update plan
       const flow = reactFlowInstanceRef.current.toObject();
@@ -400,15 +405,20 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
 
-              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button>(This button is only for testing)<br/>
+              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button>(This button is only for testing)<br />
               <Button variant="outline-success" type="submit" onClick={deployPlan}>Deploy Plan</Button>
-              <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>              
+              <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>
+
               {/* <button id='save_update' onClick={onSave}> Save Plan</button><br />
               <button onClick={deployPlan}>Deploy Plan</button>
               <button onClick={deletePlan}>Delete Plan</button> */}
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
-
+              <p>Add a new fruit</p>
+              {fruits.map((fruit) => (
+                <p key={fruit}>{fruit}</p>
+              ))}
+              <input ref={inputRef} />
               {"label" in clickedNode ? <CompPropSidebar node={clickedNode} refreshComp={refreshComp} /> : null}
             </div>
             <div>
