@@ -10,11 +10,15 @@ import useStore from './Store';
 const CompPropSidebar = ({ node, refreshComp }: any) => {
 
     const addFruits = useStore((state: any) => state.addFruits);  
+    const addStems = useStore((state: any) => state.addStems);
     const [apiObject, setApiObject] = useState(node.api_object)
 
     const addFruit = () => {
         addFruits('MANGO');
-        
+    }
+    const addStem = () => {
+        console.log('addStem')
+        addStems('Green spinach');
     }
     const handleChange = (e: any) => {
         apiObject[e.target.name] = e.target.value
@@ -107,6 +111,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     <Button variant="outline-success" type="submit" onClick={refreshInstance}>Refresh</Button>
                     <Button variant="outline-success" type="submit" onClick={terminateInstance}>Terminate</Button>
                     <Button variant="outline-success" type="submit" onClick={addFruit}>AddFruit</Button>
+                    <Button variant="outline-success" type="submit" onClick={addStem}>AddStem</Button>
                 </Card.Body>
             </Card>
 

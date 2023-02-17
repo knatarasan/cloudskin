@@ -7,7 +7,7 @@ import CompPropSidebar from "./CompPropSidebar";
 import AWSCompNode from "./AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
-import useStore  from "./Store";
+import useStore from "./Store";
 
 import ReactFlow, {
   Node,
@@ -52,6 +52,7 @@ const DnDFlow = () => {
   const navigate = useNavigate()
 
   const fruits = useStore((state: any) => state.fruits);
+  const vegies = useStore((state: any) => state.vegies);
   const addFruits = useStore((state: any) => state.addFruits);
   const inputRef = useRef<any>();
 
@@ -378,7 +379,6 @@ const DnDFlow = () => {
       .catch((error) => {
         console.log('Plan refresh failed ', error);
       })
-
   }
 
   return (
@@ -415,7 +415,7 @@ const DnDFlow = () => {
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
               <p>Add a new fruit</p>
-              {fruits.map((fruit) => (
+              {vegies.stem.map((fruit) => (
                 <p key={fruit}>{fruit}</p>
               ))}
               <input ref={inputRef} />
