@@ -1,5 +1,9 @@
+// https://blog.bitsrc.io/zustands-guide-to-simple-state-management-12c654c69990
+// https://blog.openreplay.com/zustand-simple-modern-state-management-for-react
+
 import { create } from "zustand";
 import { applyNodeChanges } from "reactflow";
+
 
 const useStore = create((set, get) => ({
   nodes: [],
@@ -34,24 +38,24 @@ const useStore = create((set, get) => ({
   },
 
 
-
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
     });
   },
 
-  updateNodeColor: (nodeId, color) => {
+  updateNodeColor: (nodeId , color,idx) => {
+
+    // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
-        if (node.id === nodeId) {
-          // it's important to create a new object here, to inform React Flow about the cahnges
+        if (node.id === nodeId.toString()) {
           node.data = { ...node.data, label: color };
         }
-
         return node;
       }),
     });
+
   },
 
   setNodes: (node) => {

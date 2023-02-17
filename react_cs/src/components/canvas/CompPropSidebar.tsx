@@ -7,10 +7,18 @@ import Button from 'react-bootstrap/Button';
 import api from "../../services/api";
 import useStore from './Store';
 
+const selector = (state) => ({
+    addFruits: state.addFruits,
+    addStems: state.addStems,
+    updateNodeColor: state.updateNodeColor,
+  });
+
 const CompPropSidebar = ({ node, refreshComp }: any) => {
 
-    const addFruits = useStore((state: any) => state.addFruits);  
-    const addStems = useStore((state: any) => state.addStems);
+    // const addFruits = useStore((state: any) => state.addFruits);  
+    // const addStems = useStore((state: any) => state.addStems);
+    const { addFruits, addStems,updateNodeColor } = useStore(selector);
+
     const [apiObject, setApiObject] = useState(node.api_object)
 
     const addFruit = () => {
@@ -37,7 +45,10 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
         // Once created it has to update master plan object
     }
     const refreshInstance = (e: any) => {
-        refreshComp(apiObject.id)
+        // refreshComp(apiObject.id)
+        updateNodeColor(apiObject.id,'GREEN',0)
+
+
     }
     const installAttachable = (e: any) => {
         console.log('install ', node.attachables[0].name)
