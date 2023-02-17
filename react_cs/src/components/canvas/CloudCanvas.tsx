@@ -26,11 +26,22 @@ import "./CloudCanvas.css";
 import "reactflow/dist/style.css";
 import { Button } from "react-bootstrap";
 
+import { shallow } from "zustand/shallow";
+
 const nodeTypes = {
   awsCompNode: AWSCompNode,
 };
 
-
+const selector = (state) => ({
+  fruits: state.fruits,
+  vegies: state.vegies,
+  addFruits: state.addFruits,
+  addPlan: state.addPlan,
+  updateNodeColor: state.updateNodeColor,
+  nodes: state.nodes,
+  setNodes: state.setNodes,
+  onNodesChange: state.onNodesChange,
+});
 
 const DnDFlow = () => {
   // Opening existing plan
@@ -47,13 +58,15 @@ const DnDFlow = () => {
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+  // const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const navigate = useNavigate()
 
-  const fruits = useStore((state: any) => state.fruits);
-  const vegies = useStore((state: any) => state.vegies);
-  const addFruits = useStore((state: any) => state.addFruits);
+  // const fruits = useStore((state: any) => state.fruits);
+  // const vegies = useStore((state: any) => state.vegies);
+  // const addFruits = useStore((state: any) => state.addFruits);
+
+  const { fruits, vegies, addFruits, nodes, setNodes, onNodesChange, addPlan, updateNodeColor } = useStore(selector, shallow);
   const inputRef = useRef<any>();
 
   const onSave = () => {
@@ -133,8 +146,7 @@ const DnDFlow = () => {
       console.log('TODO add connectivity between ', params.source, ' to ', params.target)
 
       return addEdge(params, eds)
-    }
-    ),
+    }),
     [setEdges]
   );
 
@@ -170,7 +182,6 @@ const DnDFlow = () => {
       .catch((error) => {
         console.log("Plan not deleted", error)
       })
-
   }
 
 
@@ -234,7 +245,7 @@ const DnDFlow = () => {
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
-        setNodes((nds) => nds.concat(new_node));
+        setNodes(new_node);
       })
   };
 
