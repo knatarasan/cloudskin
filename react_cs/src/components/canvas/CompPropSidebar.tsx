@@ -8,18 +8,30 @@ import api from "../../services/api";
 import useStore from './Store';
 
 const selector = (state) => ({
+    nodes: state.nodes,
     addFruits: state.addFruits,
     addStems: state.addStems,
     updateNodeColor: state.updateNodeColor,
-  });
+    updateNode: state.updateNode,
+});
 
-const CompPropSidebar = ({ node, refreshComp }: any) => {
+const CompPropSidebar = ({ node_idx }: any) => {
+// const CompPropSidebar = ({ node, refreshComp }: any) => {
+    // const node = node_id
 
-    // const addFruits = useStore((state: any) => state.addFruits);  
-    // const addStems = useStore((state: any) => state.addStems);
-    const { addFruits, addStems,updateNodeColor } = useStore(selector);
-
-    const [apiObject, setApiObject] = useState(node.api_object)
+    const { nodes, addFruits, addStems, updateNodeColor, updateNode } = useStore(selector);
+    console.log('node idx ', node_idx)
+    const node = nodes[node_idx]
+    console.log('node of idx 0', nodes)
+    console.log('CompPropSidebar node', nodes[node_idx].data)
+    const [apiObject, setApiObject] = useState( 
+        nodes[node_idx].data.api_object
+        // nodes.map((n) => {
+        //     if (n.id === node.api_object.id.toString()) {
+        //         return n.data.api_object
+        //     }
+        // })
+    );
 
     const addFruit = () => {
         addFruits('MANGO');
@@ -40,14 +52,26 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     Can you create zutand store here and update the node object
                     instead of folowing refreshComp() method
                 */
-                refreshComp(apiObject.id);
+                // refreshComp(apiObject.id);
+                updateNode(apiObject.id, response.data)
             })
         // Once created it has to update master plan object
     }
-    const refreshInstance = (e: any) => {
-        // refreshComp(apiObject.id)
-        updateNodeColor(apiObject.id,'GREEN',0)
 
+    const refreshInstance = (e: any) => {
+        console.log("Node data will be refreshed", apiObject.id);
+        // refreshComp(apiObject.id)
+
+        api.get(`/ec2/${apiObject.id}/update_instance_details`)
+            .then((response) => {
+                updateNode(apiObject.id, response.data)
+            })
+            .then(() => {
+                console.log("Node data refreshed")
+            })
+            .catch((error) => {
+                console.log('Node data refresh failed ', error);
+            })
 
     }
     const installAttachable = (e: any) => {
@@ -77,7 +101,8 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
                     Can you create zutand store here and update the node object
                     instead of folowing refreshComp() method
                 */
-                refreshComp(apiObject.id);
+                // refreshComp(apiObject.id);
+                updateNode(apiObject.id, response.data)
             })
     }
 
@@ -100,7 +125,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
         <>
             <Card id="node_props" style={{ width: '18rem' }}>
                 <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.api_object.aws_component}</i></strong></Card.Subtitle><br />
+                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{apiObject.aws_component}</i></strong></Card.Subtitle><br />
                     {Object.keys(apiObject).map((key) =>
                         <>
                             <Card.Text>
@@ -127,7 +152,7 @@ const CompPropSidebar = ({ node, refreshComp }: any) => {
             </Card>
 
 
-            {node.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
+            {node.data.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
                 <Card.Body>
                     <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.attachables[0].name}</i></strong></Card.Subtitle><br />
                     {node.attachables.map((attachable) =>

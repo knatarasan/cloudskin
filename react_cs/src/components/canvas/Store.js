@@ -58,15 +58,26 @@ const useStore = create((set, get) => ({
 
   },
 
+  updateNode: (nodeId , updated_node_api_object) => {
+
+    // TODO instead of scanning entire array, can it be done by index?
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node.data = { ...node.data, api_object:  updated_node_api_object};
+        }
+        return node;
+      }),
+    });
+
+  },
+
   setNodes: (node) => {
     console.log('setNodes');
     set((state) => ({
       nodes: state.nodes.concat(node),
     }));
   }
-
-  
-  // setNodes((nds) => nds.concat(new_node));
 
 }));
 

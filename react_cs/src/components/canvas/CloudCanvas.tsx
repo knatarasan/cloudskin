@@ -53,7 +53,7 @@ const DnDFlow = () => {
   // const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
 
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
-  const [clickedNode, setClickedNode] = useStateVan({})
+  const [clickedNode, setClickedNode, clickedNodeRef] = useState<Number>(-1)
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -247,18 +247,20 @@ const DnDFlow = () => {
         console.log('new_node ', new_node)
         setNodes(new_node);
       })
+    console.log('nodes ', nodes['arg1'])
   };
 
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    setClickedNode({})
-    setClickedNode(node.data)
+    // setClickedNode({})
+    // setClickedNode(node.data)
+    setClickedNode(0)
     // console.log('clickedNode ', clickedNode)
   }
 
   const onPaneClick = (event: any) => {
-    setClickedNode({})
+    setClickedNode(-1)
   }
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
@@ -374,6 +376,7 @@ const DnDFlow = () => {
             return node;
           })
         );
+
         const flow = reactFlowInstanceRef.current.toObject();
         const plan_wrapper = {
           plan: flow,
@@ -430,7 +433,7 @@ const DnDFlow = () => {
                 <p key={fruit}>{fruit}</p>
               ))}
               <input ref={inputRef} />
-              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} refreshComp={refreshComp} /> : null}
+              {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>
             </div>
