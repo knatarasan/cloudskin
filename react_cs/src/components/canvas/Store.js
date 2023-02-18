@@ -2,11 +2,11 @@
 // https://blog.openreplay.com/zustand-simple-modern-state-management-for-react
 
 import { create } from "zustand";
-import { applyNodeChanges } from "reactflow";
-
+import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
 
 const useStore = create((set, get) => ({
   nodes: [],
+  edges: [],
   fruits: ["apple", "banana", "orange"],
   vegies: {
     root: ["potato", "carrot", "beet"],
@@ -37,15 +37,25 @@ const useStore = create((set, get) => ({
     }));
   },
 
-
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
     });
   },
 
-  updateNodeColor: (nodeId , color,idx) => {
+  onEdgesChange: (changes) => {
+    set({
+      edges: applyEdgeChanges(changes, get().edges),
+    });
+  },
 
+  onConnect: (connection) => {
+    set({
+      edges: addEdge(connection, get().edges),
+    });
+  },
+
+  updateNodeColor: (nodeId, color, idx) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
@@ -55,30 +65,32 @@ const useStore = create((set, get) => ({
         return node;
       }),
     });
-
   },
 
-  updateNode: (nodeId , updated_node_api_object) => {
-
+  updateNode: (nodeId, updated_node_api_object) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, api_object:  updated_node_api_object};
+          node.data = { ...node.data, updated_node_api_object };
         }
         return node;
       }),
     });
-
   },
 
   setNodes: (node) => {
-    console.log('setNodes');
+    console.log("setNodes");
     set((state) => ({
       nodes: state.nodes.concat(node),
     }));
-  }
+  },
 
+  setEdges: (edge) => {
+    set((state) => ({
+      edges: state.edges.concat(edge),
+    }));
+  },
 }));
 
 export default useStore;

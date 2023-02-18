@@ -34,7 +34,7 @@
     "typed-assert": "^1.0.9",
     "use-immer": "^0.8.1",
     "web-vitals": "^3.1.0",
-    "zustand": "^4.3.2"
+    "zustand": "^4.3.3"
   },
   "scripts": {
     "start": "react-scripts start",

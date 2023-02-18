@@ -9,25 +9,16 @@ import useStore from './Store';
 
 const selector = (state) => ({
     nodes: state.nodes,
-    addFruits: state.addFruits,
-    addStems: state.addStems,
     updateNodeColor: state.updateNodeColor,
     updateNode: state.updateNode,
 });
 
 const CompPropSidebar = ({ node_idx }: any) => {
 
-    const { nodes, addFruits, addStems, updateNodeColor, updateNode } = useStore(selector);
+    const { nodes, updateNodeColor, updateNode } = useStore(selector);
     const node = nodes[node_idx]        // Refer bottom of this file for node data structure
-    const [api_object, setApiObject] = useState( nodes[node_idx].data.api_object);
+    const [api_object, setApiObject] = useState(nodes[node_idx].data.api_object);
 
-    const addFruit = () => {
-        addFruits('MANGO');
-    }
-    const addStem = () => {
-        console.log('addStem')
-        addStems('Green spinach');
-    }
     const handleChange = (e: any) => {
         api_object[e.target.name] = e.target.value
     };
@@ -49,6 +40,7 @@ const CompPropSidebar = ({ node_idx }: any) => {
             })
             .then(() => {
                 console.log("Node data refreshed")
+                console.log('nodes', nodes)
             })
             .catch((error) => {
                 console.log('Node data refresh failed ', error);
@@ -121,8 +113,6 @@ const CompPropSidebar = ({ node_idx }: any) => {
                     <Button variant="outline-success" type="submit" onClick={createInstance}>Deploy</Button>
                     <Button variant="outline-success" type="submit" onClick={refreshInstance}>Refresh</Button>
                     <Button variant="outline-success" type="submit" onClick={terminateInstance}>Terminate</Button>
-                    <Button variant="outline-success" type="submit" onClick={addFruit}>AddFruit</Button>
-                    <Button variant="outline-success" type="submit" onClick={addStem}>AddStem</Button>
                 </Card.Body>
             </Card>
 
@@ -160,7 +150,7 @@ const CompPropSidebar = ({ node_idx }: any) => {
 export default CompPropSidebar
 
 
-const node_only_for_documentation_purpose = {
+const node_struct_only_for_documentation_purpose = {
     "width": 50,
     "height": 50,
     "id": "26",
