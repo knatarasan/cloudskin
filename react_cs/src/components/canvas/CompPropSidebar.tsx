@@ -16,22 +16,10 @@ const selector = (state) => ({
 });
 
 const CompPropSidebar = ({ node_idx }: any) => {
-// const CompPropSidebar = ({ node, refreshComp }: any) => {
-    // const node = node_id
 
     const { nodes, addFruits, addStems, updateNodeColor, updateNode } = useStore(selector);
-    console.log('node idx ', node_idx)
-    const node = nodes[node_idx]
-    console.log('node of idx 0', nodes)
-    console.log('CompPropSidebar node', nodes[node_idx].data)
-    const [apiObject, setApiObject] = useState( 
-        nodes[node_idx].data.api_object
-        // nodes.map((n) => {
-        //     if (n.id === node.api_object.id.toString()) {
-        //         return n.data.api_object
-        //     }
-        // })
-    );
+    const node = nodes[node_idx]        // Refer bottom of this file for node data structure
+    const [api_object, setApiObject] = useState( nodes[node_idx].data.api_object);
 
     const addFruit = () => {
         addFruits('MANGO');
@@ -41,30 +29,23 @@ const CompPropSidebar = ({ node_idx }: any) => {
         addStems('Green spinach');
     }
     const handleChange = (e: any) => {
-        apiObject[e.target.name] = e.target.value
+        api_object[e.target.name] = e.target.value
     };
 
     const createInstance = (e: any) => {
-        api.put(`/ec2/${apiObject.id}/create_instance`, {})
+        api.put(`/ec2/${api_object.id}/create_instance`, {})
             .then((response) => {
                 console.log("AWS instance created", response)
-                /*
-                    Can you create zutand store here and update the node object
-                    instead of folowing refreshComp() method
-                */
-                // refreshComp(apiObject.id);
-                updateNode(apiObject.id, response.data)
+                updateNode(api_object.id, response.data) // update nodes in zustand store 
             })
-        // Once created it has to update master plan object
     }
 
     const refreshInstance = (e: any) => {
-        console.log("Node data will be refreshed", apiObject.id);
-        // refreshComp(apiObject.id)
+        console.log("Node data will be refreshed", api_object.id);
 
-        api.get(`/ec2/${apiObject.id}/update_instance_details`)
+        api.get(`/ec2/${api_object.id}/update_instance_details`)
             .then((response) => {
-                updateNode(apiObject.id, response.data)
+                updateNode(api_object.id, response.data)
             })
             .then(() => {
                 console.log("Node data refreshed")
@@ -93,25 +74,19 @@ const CompPropSidebar = ({ node_idx }: any) => {
     }
 
     const terminateInstance = (e: any) => {
-        console.log("AWS instance will be terminated", apiObject.id);
-        api.put(`/ec2/${apiObject.id}/terminate_instance`, {})
+        console.log("AWS instance will be terminated", api_object.id);
+        api.put(`/ec2/${api_object.id}/terminate_instance`, {})
             .then((response) => {
                 console.log("AWS instance terminated", response);
-                /*
-                    Can you create zutand store here and update the node object
-                    instead of folowing refreshComp() method
-                */
-                // refreshComp(apiObject.id);
-                updateNode(apiObject.id, response.data)
+                updateNode(api_object.id, response.data)         // update nodes in zustand store TODO testing
             })
     }
 
 
-
     const handleSubmit = (e: any) => {
-        const end_point = apiObject.aws_component;
-        console.log('update call', `/${end_point}/${apiObject.id}`, apiObject);
-        api.put(`/${end_point}/${apiObject.id}`, apiObject)
+        const end_point = api_object.aws_component;
+        console.log('update call', `/${end_point}/${api_object.id}`, api_object);
+        api.put(`/${end_point}/${api_object.id}`, api_object)
             .then((response) => {
                 console.log("AWS Comp updated", response.data.id)
                 return response.data
@@ -125,8 +100,8 @@ const CompPropSidebar = ({ node_idx }: any) => {
         <>
             <Card id="node_props" style={{ width: '18rem' }}>
                 <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{apiObject.aws_component}</i></strong></Card.Subtitle><br />
-                    {Object.keys(apiObject).map((key) =>
+                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{api_object.aws_component}</i></strong></Card.Subtitle><br />
+                    {Object.keys(api_object).map((key) =>
                         <>
                             <Card.Text>
                                 <Container>
@@ -135,7 +110,7 @@ const CompPropSidebar = ({ node_idx }: any) => {
                                             <label htmlFor={key}>{key}:</label>
                                         </Col>
                                         <Col sm={7}>
-                                            <input type="text" name={key} placeholder={apiObject[key]} onChange={handleChange}></input><br />
+                                            <input type="text" name={key} placeholder={api_object[key]} onChange={handleChange}></input><br />
                                         </Col>
                                     </Row>
                                 </Container>
@@ -178,9 +153,56 @@ const CompPropSidebar = ({ node_idx }: any) => {
             </Card>
                 : null}
 
-
         </>
     )
 }
 
 export default CompPropSidebar
+
+
+const node_only_for_documentation_purpose = {
+    "width": 50,
+    "height": 50,
+    "id": "26",
+    "data": {
+        "color": "red",
+        "label": "26",
+        "api_object": {
+            "id": 26,
+            "plan": 19,
+            "region": "us-west-1",
+            "subnet": "subnet-0a6da46fb837b5a32",
+            "image_id": "ami-0f5e8a042c8bfcd5e",
+            "host_name": null,
+            "public_ip": "56",
+            "ec2_status": 1,
+            "private_ip": null,
+            "aws_component": "ec2",
+            "instance_type": "t2.micro",
+            "security_group": "sg-0f2b88c10abf752e3",
+            "ec2_instance_id": null,
+            "installed_service": [],
+            "instance_key_pair": "cloudskin_key",
+            "date_created_or_modified": "2023-02-16T21:49:14.351984Z"
+        },
+        "attachable": "",
+        "attachables": []
+    },
+    "type": "awsCompNode",
+    "style": {
+        "width": "50px",
+        "height": "50px"
+    },
+    "dragging": false,
+    "position": {
+        "x": 101.25,
+        "y": 478
+    },
+    "selected": true,
+    "sourcePosition": "right",
+    "targetPosition": "left",
+    "positionAbsolute": {
+        "x": 101.25,
+        "y": 478
+    }
+}
