@@ -1,0 +1,46 @@
+{
+    "width": 50,
+    "height": 50,
+    "id": "26",
+    "data": {
+        "color": "red",
+        "label": "26",
+        "api_object": {
+            "id": 26,
+            "plan": 19,
+            "region": "us-west-1",
+            "subnet": "subnet-0a6da46fb837b5a32",
+            "image_id": "ami-0f5e8a042c8bfcd5e",
+            "host_name": null,
+            "public_ip": "56",
+            "ec2_status": 1,
+            "private_ip": null,
+            "aws_component": "ec2",
+            "instance_type": "t2.micro",
+            "security_group": "sg-0f2b88c10abf752e3",
+            "ec2_instance_id": null,
+            "installed_service": [],
+            "instance_key_pair": "cloudskin_key",
+            "date_created_or_modified": "2023-02-16T21:49:14.351984Z"
+        },
+        "attachable": "",
+        "attachables": []
+    },
+    "type": "awsCompNode",
+    "style": {
+        "width": "50px",
+        "height": "50px"
+    },
+    "dragging": false,
+    "position": {
+        "x": 101.25,
+        "y": 478
+    },
+    "selected": true,
+    "sourcePosition": "right",
+    "targetPosition": "left",
+    "positionAbsolute": {
+        "x": 101.25,
+        "y": 478
+    }
+}

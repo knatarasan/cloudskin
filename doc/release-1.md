@@ -219,6 +219,32 @@ PG
 - EC2
   - Key pair creation
   - Listing all instance types from AWS --> DB
+    - Build rest api end point `api/v1/aws_metadata/ec2/refresh` to return all ec2 instance metadata
+      - This command has to be cron scheduled to run every week.    
+      - A model under aws app `EC2_Metadata` holds this data
+      - create `iam-policy` , `iam-user`  and assign this policy  to collect any data from aws
+      - Create boto3 api call to collect all ec2 instance metadata from aws
+        - metadata includes instance type, vcpu, memory, etc
+        - `EC2_Metadata` is a SCD2 type table 
+          - processing logic: 
+
+##### Existing data in `EC2_Metadata`          
+sno| ec2_type | region    | price     | effective_date | end_date|
+----------|----------|-----------|-----------|----------|-----------|
+1| t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 31/12/9999 23:59:59|
+
+##### Today's extracted data from aws
+sno| ec2_type | region    | price                                    | today_date          |
+----------|----------|-----------|------------------------------------------|---------------------|
+1| t2-micro | us-west-1 | <span style="color:red">0.002 USD</span> | 05/05/2021 12:00:00 | 
+
+##### After processing :  `EC2_Metadata`
+
+sno| ec2_type | region    | price     | effective_date | end_date|
+----------|----------|-----------|-----------|----------|-----------|
+1| t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 05/05/2021 12:00:00|
+1| t2-micro | us-west-1 | 0.002 USD | 05/05/2021 12:00:00 | 31/12/9999 23:59:59|
+
   - Listing all AMI from AWS --> DB
   - Region selection AWS --> DB
   - Listing storage configs

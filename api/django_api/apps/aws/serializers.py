@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .models.AWSComponent import LB, AWSComponent
 from .models.AwsCreds import AwsCreds
 from .models.EC2 import EC2
+from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
 
@@ -42,43 +43,10 @@ class InstalledServiceSerializer(serializers.ModelSerializer):
         ]
 
 
-# class EC2Serializer(serializers.Serializer):
-#     id = serializers.ReadOnlyField()
-#     plan = serializers.ReadOnlyField(source='plan.id')
-#     aws_component = serializers.ReadOnlyField(source='aws_component.id')
-#     region = serializers.ReadOnlyField(source='aws_component.region')
-#     security_group = serializers.ReadOnlyField(source='aws_component.security_group')
-#     subnet = serializers.ReadOnlyField(source='aws_component.subnet')
-#     date_created_or_modified = serializers.ReadOnlyField(source='aws_component.date_created_or_modified')
-#     ec2_instance_id = serializers.CharField(max_length=100)
-#     ec2_status = serializers.CharField(max_length=100)
-#     instance_type = serializers.CharField(max_length=100)
-#     image_id = serializers.CharField(max_length=100)
-#     instance_key_pair = serializers.CharField(max_length=100)
-#     public_ip = serializers.CharField(max_length=100)
-#     private_ip = serializers.CharField(max_length=100)
-#     host_name = serializers.CharField(max_length=100)
-#     installed_services = InstalledServiceSerializer(many=True, read_only=True)
-#
-#     def create(self, validated_data):
-#         '''
-#         create and return a new `Plan` , given the validated data
-#         '''
-#         ec2 = EC2.objects.create(**validated_data)
-#         return ec2
-#
-#     def update(self, instance, validated_data):
-#         instance.ec2_instance_id = validated_data.get('ec2_instance_id', instance.ec2_instance_id)
-#         instance.ec2_status = validated_data.get('ec2_status', instance.ec2_status)
-#         instance.instance_type = validated_data.get('instance_type', instance.instance_type)
-#         instance.image_id = validated_data.get('image_id', instance.image_id)
-#         instance.instance_key_pair = validated_data.get('instance_key_pair', instance.instance_key_pair)
-#         instance.public_ip = validated_data.get('public_ip', instance.public_ip)
-#         instance.private_ip = validated_data.get('private_ip', instance.private_ip)
-#         instance.host_name = validated_data.get('host_name', instance.host_name)
-#         logger.debug(f'validated_data {instance}')
-#         instance.save()
-#         return instance
+class EC2MetaDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EC2MetaData
+        fields = "__all__"
 
 
 class EC2Serializer(serializers.ModelSerializer):

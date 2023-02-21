@@ -24,3 +24,25 @@ Why is deploying in cloud complex in simple terms
 	- Application
 		- Configure app deployment features for public cloud deployment
 		- Migrate DB scripts from Application
+
+
+#### Sales
+- We guide you to use right, secure economier cloud services
+- We apply all best practices 
+- We get you the best price option
+
+#### Tag lines
+Cloud simplified
+Cloud is complex, we simplify it for you
+    - Secure , [we compare all the options and get among best for your requirement] 
+    - easy to use
+    - poly cloud
+    - Explanatory [ Architecture , components , price, Best practice  ]
+    - We cover all obvious 
+
+#### For existing enterprise
+    - We take over your existing cloud infrastructure and make it secure, easy to use and cost effective
+    - Reduce devops cost
+        - 100 M they spend 5 M per annum , man power 2.5 M Infra - 2.5 M for man power
+        - Both man power and infra cost can be reduced
+

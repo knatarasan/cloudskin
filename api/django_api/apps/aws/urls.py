@@ -5,6 +5,7 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r"installable_service", views.InstallableServiceViewSet, basename="installable-service"),
+router.register(r"ec2_metadata", views.EC2MetaDataViewSet, basename="ec2-metadata"),
 
 urlpatterns = [
     path("", include(router.urls)),
@@ -14,16 +15,20 @@ urlpatterns = [
         views.EC2ViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
         name="ec2-detail",
     ),
-    path("ec2/<str:pk>/create_instance", views.EC2ViewSet.as_view({"put": "create_instance"}), name="ec2-create-instance"),
+    path("ec2/<str:pk>/create_instance", views.EC2ViewSet.as_view({"put": "create_instance"}),
+         name="ec2-create-instance"),
     path(
         "ec2/<str:pk>/update_instance_details",
         views.EC2ViewSet.as_view({"get": "update_instance_details"}),
         name="ec2-update-instance-details",
     ),
-    path("ec2/<str:pk>/install_service", views.EC2ViewSet.as_view({"put": "install_service"}), name="ec2-install-service"),
-    path("ec2/<str:pk>/uninstall_service", views.EC2ViewSet.as_view({"put": "uninstall_service"}), name="ec2-uninstall-service"),
+    path("ec2/<str:pk>/install_service", views.EC2ViewSet.as_view({"put": "install_service"}),
+         name="ec2-install-service"),
+    path("ec2/<str:pk>/uninstall_service", views.EC2ViewSet.as_view({"put": "uninstall_service"}),
+         name="ec2-uninstall-service"),
     path(
-        "ec2/<str:pk>/terminate_instance", views.EC2ViewSet.as_view({"put": "terminate_instance"}), name="ec2-terminate-instance"
+        "ec2/<str:pk>/terminate_instance", views.EC2ViewSet.as_view({"put": "terminate_instance"}),
+        name="ec2-terminate-instance"
     ),
     path(
         "installed_service/",

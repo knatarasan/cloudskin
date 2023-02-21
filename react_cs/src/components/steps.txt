@@ -1,0 +1,5 @@
+1. Add nodes into store
+2. Check functionality
+2. Add plan into store
+3. Put refreshComp into CompPropSidebar
+4. 

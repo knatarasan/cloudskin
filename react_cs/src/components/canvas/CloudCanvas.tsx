@@ -1,7 +1,13 @@
-import React, { useRef, useCallback, useEffect, useContext, useState as useStateVan } from "react";
-// import useState from 'react-usestateref';
+import React, { useRef, useCallback, useEffect, useState as useStateVan } from "react";
 import useState from 'react-usestateref';
+import { useParams, useNavigate } from 'react-router-dom';
+
+import Sidebar from "./Sidebar";
+import CompPropSidebar from "./CompPropSidebar";
+import AWSCompNode from "./AWSCompNode";
+import PlanService from "../../services/plan.service";
 import api from "../../services/api";
+import useStore from "./Store";
 
 import ReactFlow, {
   Node,
@@ -14,43 +20,59 @@ import ReactFlow, {
   Connection,
   OnConnect,
   Position,
-
 } from "reactflow";
+
 import "reactflow/dist/style.css";
 import Sidebar from "../panels/Sidebar";
 import "./CloudCanvas.css";
-import { useParams } from 'react-router-dom';
-import CompPropSidebar from "./CompPropSidebar";
-import AWSCompNode from "./AWSCompNode";
+
+import { Button } from "react-bootstrap";
+import { shallow } from "zustand/shallow";
 
 const nodeTypes = {
   awsCompNode: AWSCompNode,
 };
 
-
-let id = 0;
+const selector = (state) => ({
+  addPlan: state.addPlan,
+  updateNodeColor: state.updateNodeColor,
+  nodes: state.nodes,
+  edges: state.edges,
+  setNodes: state.setNodes,
+  setEdges: state.setEdges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  onConnect: state.onConnect,
+});
 
 const DnDFlow = () => {
+  // Opening existing plan
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
+
   const { plan_id_edit } = useParams()
+  // to Refer PlanId
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
+  // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
   // const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
-  const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
 
-  const [clickedNode, setClickedNode] = useStateVan({})
-  const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+  const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
+  const [clickedNode, setClickedNode, clickedNodeRef] = useState<Number>(-1)
+  // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-  const [save_update, setSaveUpdate] = useStateVan(true);
+  // const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
+  // const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const navigate = useNavigate()
 
+  const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
 
   const onSave = () => {
+
     console.log("in onSave", reactFlowInstance, reactFlowInstanceRef, planIdRef.current)
     if (reactFlowInstanceRef.current) {
+
 
       // update plan
       const flow = reactFlowInstanceRef.current.toObject();
@@ -78,7 +100,6 @@ const DnDFlow = () => {
           console.log("Plan not updated", error)
         })
     }
-
   }
 
   useEffect(() => {
@@ -88,9 +109,9 @@ const DnDFlow = () => {
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
-        planCreatedRef.current = true;
+        // planCreatedRef.current = true;
         if (Number(plan_id_edit)) {
-          setSaveUpdate(false)
+          // setSaveUpdate(false)
         }
         const flow = response.data.plan
         if (flow) {
@@ -116,17 +137,16 @@ const DnDFlow = () => {
   }, [])
 
 
-  const onConnect = useCallback<OnConnect>(
-    (params: Edge | Connection): void => setEdges((eds) => {
+  // const onConnect = useCallback<OnConnect>(
+  //   (params: Edge | Connection): void => setEdges((eds) => {
 
-      console.log('on connect param', params);
-      console.log('TODO add connectivity between ', params.source, ' to ', params.target)
+  //     console.log('on connect param', params);
+  //     console.log('TODO add connectivity between ', params.source, ' to ', params.target)
 
-      return addEdge(params, eds)
-    }
-    ),
-    [setEdges]
-  );
+  //     return addEdge(params, eds)
+  //   }),
+  //   [setEdges]
+  // );
 
   const onEdgesDelete = useCallback<any>(
     (params: Edge[]): void => {
@@ -135,21 +155,35 @@ const DnDFlow = () => {
   );
 
   const onNodeDelete = (nodes: any): void => {
-    // console.log('This node will be deleted ', nodes);
+    console.log('This node will be deleted ', nodes);
 
-    nodes.map((node: any) => {
-      const endpoint = node.data.api_object.aws_component;
+    // nodes.map((node: any) => {
+    //   const endpoint = node.data.api_object.aws_component;
 
-      api.delete(`/${endpoint}/${node.data.api_object.id}`)
-        // .then((response) => {
-        //   // console.log("AWS component has been deleted")
-        // })
-        .catch((error) => {
-          console.log("AWS component not deleted", error)
-        })
-    })
+    //   api.delete(`/${endpoint}/${node.data.api_object.id}`)
+    //     .then((response) => {
+    //         // console.log("AWS instance terminated", response);
+    //         // updateNode(api_object.id, response.data)         // update nodes in zustand store TODO testing
+
+    //     })
+    //     .catch((error) => {
+    //       console.log("AWS component not deleted", error)
+    //     })
+    // })
 
   }
+
+  const deletePlan = () => {
+    PlanService.deletePlan(planIdRef.current.toString())
+      .then((response) => {
+        console.log("Plan has been deleted  ", planIdRef.current.toString())
+        navigate('/dashboard')
+      })
+      .catch((error) => {
+        console.log("Plan not deleted", error)
+      })
+  }
+
 
   const deployPlan = () => {
     const plan_clone = structuredClone(planRef.current)
@@ -211,20 +245,22 @@ const DnDFlow = () => {
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
-        setNodes((nds) => nds.concat(new_node));
+        setNodes(new_node);
       })
+    console.log('nodes ', nodes['arg1'])
   };
 
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    setClickedNode({})
-    setClickedNode(node.data)
+    // setClickedNode({})
+    // setClickedNode(node.data)
+    setClickedNode(0)
     // console.log('clickedNode ', clickedNode)
   }
 
   const onPaneClick = (event: any) => {
-    setClickedNode({})
+    setClickedNode(-1)
   }
 
   const onDrop = useCallback<React.DragEventHandler<HTMLDivElement>>(
@@ -286,12 +322,11 @@ const DnDFlow = () => {
       }
       // dropped node is attachable type 
 
-
-      if (planIdRef.current && planCreatedRef.current) {
+      if (planIdRef.current != -1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
-        planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
+        // planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
 
         //create plan
         const plan_obj = {
@@ -305,7 +340,7 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
-            setSaveUpdate(false)
+            // setSaveUpdate(false)
             console.log("plan created", planIdRef.current)
           }).then(() => {
             createNewNode(data.node, 25, "red", event)
@@ -318,40 +353,47 @@ const DnDFlow = () => {
     },
     [reactFlowInstance]);
 
-  const refreshComp = (awsCompId: any) => {
-    console.log('refreshComp called')
+  // const refreshComp = (awsCompId: any) => {
 
-    api.get(`/ec2/${awsCompId}/update_instance_details`)
-      .then((response) => {
-        const updated_node_api_object = response.data
+  //   /*
+  //   Use zustland to store plan and update it
+  //   ********** GO FROM HERE ***********
+  //   */
+  //   console.log('refreshComp called')
 
-        setNodes((nds) =>
-          nds.map((node) => {
-            if (node.id === awsCompId.toString()) {
-              node.data.api_object = updated_node_api_object;
-            }
-            setClickedNode(node.data)
-            return node;
-          })
-        );
-        const flow = reactFlowInstanceRef.current.toObject();
-        const plan_wrapper = {
-          plan: flow,
-          deploy_status: 1,
-          running_status: 1,
-        };
-        setPlan(plan_wrapper)
+  //   api.get(`/ec2/${awsCompId}/update_instance_details`)
+  //     .then((response) => {
+  //       const updated_node_api_object = response.data
+
+  //       setNodes((nds) =>
+  //         nds.map((node) => {
+  //           console.log('node.id ', node.id, 'awsCompId ', awsCompId)
+  //           if (node.id === awsCompId.toString()) {
+  //             node.data.api_object = updated_node_api_object;
+  //           }
+  //           setClickedNode(node.data)
+  //           return node;
+  //         })
+  //       );
+
+  //       const flow = reactFlowInstanceRef.current.toObject();
+  //       const plan_wrapper = {
+  //         plan: flow,
+  //         deploy_status: 1,
+  //         running_status: 1,
+  //       };
+  //       setPlan(plan_wrapper)
 
 
-      })
-      .then(() => {
-        console.log("Plan successfully refreshed", planRef.current)
-      })
-      .catch((error) => {
-        console.log('Plan refresh failed ', error);
-      })
+  //     })
+  //     .then(() => {
+  //       console.log("Plan successfully refreshed", planRef.current)
+  //     })
+  //     .catch((error) => {
+  //       console.log('Plan refresh failed ', error);
+  //     })
+  // }
 
-  }
 
   return (
     <div className="dndflow">
@@ -377,12 +419,16 @@ const DnDFlow = () => {
           >
             <Controls />
             <div className="save__controls">
-              <button id='save_update' onClick={onSave}> Save Plan</button>(This button is only for testing)<br />
-              <button onClick={deployPlan}>Deploy Plan</button>
-              <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
-              <p>Plan id : {planId} is plan exist: {planCreatedRef.current}</p>
 
-              {"label" in clickedNode ? <CompPropSidebar node={clickedNode} refreshComp={refreshComp} /> : null}
+              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button>(This button is only for testing)<br />
+              <Button variant="outline-success" type="submit" onClick={deployPlan}>Deploy Plan</Button>
+              <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>
+
+              <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
+              <p>Plan id : {planId} </p>
+
+
+              {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>
             </div>
