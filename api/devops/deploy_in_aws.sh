@@ -129,16 +129,117 @@ sudo rm -rf /tmp/build/*
 
 sudo cp -r /tmp/build/* /var/www/build/
 
-sudo service nginx stop
-sudo service nginx start
-
 /home/ec2-user/.venv/bin/python /home/ec2-user/cloudskin/api/django_api/manage.py runserver 0:8000 &
 tail -f /home/ec2-user/cloudskin/api/log/app.log
 
-socat TCP-LISTEN:8000,fork TCP:127.0.0.1:80
+#Enable SSL
+#https://www.youtube.com/watch?v=8huMBHx-TKY&ab_channel=Pentacode
 
-firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000
-firewall-cmd  --remove-forward-port=port=80:proto=tcp:toport=8000
+#DNS config at Google Domains
+#Host name          Type        TTL	        Data
+#www.stratoai.app	    A	        1 hour	    54.183.97.140
 
-firewall-cmd --runtime-to-permanent
-firewall-cmd --list-all
+
+sudo amazon-linux-extras install epel -y
+sudo yum install -y certbot
+sudo yum install -y certbot-nginx
+
+sudo certbot --nginx -d www.stratoai.app
+
+'
+[ec2-user@ip-172-31-15-28 ~]$ sudo certbot --nginx -d www.stratoai.app
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator nginx, Installer nginx
+Requesting a certificate for www.stratoai.app
+Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
+
+IMPORTANT NOTES:
+ - Unable to install the certificate
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/www.stratoai.app/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/www.stratoai.app/privkey.pem
+   Your certificate will expire on 2023-05-22. To obtain a new or
+   tweaked version of this certificate in the future, simply run
+   certbot again with the "certonly" option. To non-interactively
+   renew *all* of your certificates, run "certbot renew"
+'
+
+
+#Error : Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
+# since I didn't add server for 443
+
+#Adding new server section addressed the issue
+sudo vim /etc/nginx/nginx.conf
+'
+server {
+        listen       80 ipv6only=off;
+	      listen       [::]:80;
+        server_name  ec2-54-183-97-140.us-west-1.compute.amazonaws.com;
+        root         /var/www/build;
+        location  /   {
+          try_files $uri /index.html;
+        }
+        location /api {
+          proxy_pass http://localhost:8000;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
+
+        # Load configuration files for the default server block.
+        include /etc/nginx/default.d/*.conf;
+
+        error_page 404 /404.html;
+          location = /404.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+    server {
+      listen 443 ssl;
+      server_name  ec2-54-183-97-140.us-west-1.compute.amazonaws.com;
+      listen [::]:443 ssl;
+      root 	/var/www/build;
+      ssl_certificate /etc/letsencrypt/live/www.stratoai.app/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/www.stratoai.app/privkey.pem;
+
+      location  /   {
+        try_files $uri /index.html;
+      }
+          location /api {
+            proxy_pass http://localhost:8000;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+    }
+'
+
+
+
+#Ref https://certbot.eff.org/instructions?ws=nginx&os=centosrhel8
+#ef https://community.letsencrypt.org/t/aws-linux-certbot-with-snapd/156255/5
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Following not needed
+#socat TCP-LISTEN:8000,fork TCP:127.0.0.1:80
+#
+#firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8000
+#firewall-cmd  --remove-forward-port=port=80:proto=tcp:toport=8000
+#
+#firewall-cmd --runtime-to-permanent
+#firewall-cmd --list-all
