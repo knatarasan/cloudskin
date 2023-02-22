@@ -21,13 +21,12 @@ CREATE DATABASE cs_db;
 CREATE ROLE cs WITH LOGIN PASSWORD '<password>';
 GRANT ALL PRIVILEGES ON DATABASE cs_db TO cs;
 
-#Note : After following setting , you can't connect to psql without password
+#manual
 sudo vim /var/lib/pgsql/data/pg_hba.conf
   # "local" is for Unix domain socket connections only
   local   all             all                                     md5
   # IPv4 local connections:
   host    all             all             127.0.0.1/32            md5
-
 
 sudo systemctl restart postgresql
 
@@ -35,7 +34,8 @@ sudo systemctl restart postgresql
 
 
 sudo yum install -y git
-git clone https://knatarasan:<token>@github.com/knatarasan/cloudskin.git
+# git cone
+https://knatarasan:<token>@github.com/knatarasan/cloudskin.git
 
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
@@ -85,10 +85,6 @@ sudo rm -rf /tmp/build/*
 
 scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/build
 sudo cp -r /tmp/build/* /var/www/build/
-sudo cp -r  ~/.venv/lib/python3.*/site-packages/drf_yasg/static/* /var/www/build/static/
-
-
-
 
 #At remote machine
 sudo amazon-linux-extras install -y nginx1
@@ -126,18 +122,6 @@ server {
     }
 '
 
-#  Following settings is for
-# When client hits server:80/api which will be redirected to server:8000
-# Client --> Server:80 --> server:8000
-'
-      location /api {
-                proxy_pass http://localhost:8000;
-                proxy_set_header Host $host;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
-'
-
 sudo systemctl restart nginx
 
 sudo rm -rf /var/www/build/*
@@ -150,7 +134,7 @@ tail -f /home/ec2-user/cloudskin/api/log/app.log
 
 #Enable SSL
 #https://www.youtube.com/watch?v=8huMBHx-TKY&ab_channel=Pentacode
-# Troubleshoot domain https://developers.google.com/speed/public-dns/docs/troubleshooting/domains#macos-or-linux
+
 #DNS config at Google Domains
 #Host name          Type        TTL	        Data
 #www.stratoai.app	    A	        1 hour	    54.183.97.140
