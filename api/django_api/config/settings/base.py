@@ -51,7 +51,28 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "dj_rest_auth",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth.registration",
 ]
+
+# Registration is implemented with dj_rest_auth.registration
+
+SITE_ID = 1
+# Aboe value is used for dj_rest_auth.registration
+# https://django-rest-auth.readthedocs.io/en/latest/installation.html#django-rest-auth-registration
+# without aobve value we get error
+# Exception Type:	DoesNotExist
+# Exception Value:
+# Site matching query does not exist.
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_AUTHENTICATION_METHOD = "username"
+ACCOUNT_EMAIL_REQUIRED = False
+# Above settings are used for dj_rest_auth.registration
+# ConnectionRefusedError at /api/v1/auth/registration [Errno 61] Connection refused
 
 LOCAL_APPS = ["apps.plan", "apps.aws", "apps.user"]
 
