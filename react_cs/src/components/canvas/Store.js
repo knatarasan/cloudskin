@@ -91,6 +91,20 @@ const useStore = create((set, get) => ({
       edges: state.edges.concat(edge),
     }));
   },
+
+  emptyNodes: () => {
+    set((state) => ({
+      nodes: [],
+    }));
+  } ,
+
+  emptyEdges: () => {
+    set((state) => ({
+      edges: [],
+    }));
+  }
+  
+
 }));
 
 export default useStore;
