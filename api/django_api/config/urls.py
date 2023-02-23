@@ -16,6 +16,7 @@ from .swagger import schema_view
 app_urls = [
     path("admin/", admin.site.urls),
     path("auth/", include("dj_rest_auth.urls")),
+    path("auth/registration", include("dj_rest_auth.registration.urls")),
     path("", include("apps.plan.urls")),
     path("", include("apps.aws.urls")),
     path("", include("apps.user.urls")),
@@ -24,7 +25,12 @@ app_urls = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     ###### Swagger End ######
 ]
-
+"""
+    With the following insert,
+    path("auth/registration", include("dj_rest_auth.registration.urls")),
+    we get following endpoints:
+        http://localhost:8000/api/v1/auth/registration/
+"""
 
 urlpatterns = [
     path(

@@ -1,11 +1,8 @@
-from django.urls import path
-from rest_framework import routers
+from django.urls import include, path
 
 from . import views
 
-router = routers.SimpleRouter()
-# explicitly set the basename argument when registering, as we've defined custom get_queryset to handle user only objects
-router.register(r"plan", views.PlanViewSet, "plan")
-
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("plan/", views.PlanList.as_view(), name="plan-list"),
+    path("plan/<int:pk>/", views.PlanDetail.as_view(), name="plan-detail"),
+]

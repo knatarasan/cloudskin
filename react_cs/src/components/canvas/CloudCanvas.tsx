@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect, useState as useStateVan } from "react";
+import React, { useRef, useCallback, useEffect } from "react";
 import useState from 'react-usestateref';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -22,11 +22,10 @@ import ReactFlow, {
   Position,
 } from "reactflow";
 
-import "reactflow/dist/style.css";
-import Sidebar from "../panels/Sidebar";
 import "./CloudCanvas.css";
-
+import "reactflow/dist/style.css";
 import { Button } from "react-bootstrap";
+
 import { shallow } from "zustand/shallow";
 
 const nodeTypes = {
@@ -40,6 +39,8 @@ const selector = (state) => ({
   edges: state.edges,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
+  emptyNodes: state.emptyNodes,
+  emptyEdges: state.emptyEdges,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
@@ -47,8 +48,6 @@ const selector = (state) => ({
 
 const DnDFlow = () => {
   // Opening existing plan
-  const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
-
   const { plan_id_edit } = useParams()
   // to Refer PlanId
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
@@ -61,12 +60,11 @@ const DnDFlow = () => {
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  // const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-  // const [nodes, setNodes, onNodesChange] = useNodesState<any>([]);
-  // const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
   const navigate = useNavigate()
 
-  const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
+
+  const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
   const onSave = () => {
 
@@ -130,8 +128,9 @@ const DnDFlow = () => {
     // componentWillUnMount
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
-      onSave() // BUG this save doesn't work since reactFlowInstance got lost before save function called
-
+      onSave() 
+      emptyNodes()
+      emptyEdges()
     }
     // componentWillUnMount
   }, [])
@@ -253,10 +252,7 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    // setClickedNode({})
-    // setClickedNode(node.data)
     setClickedNode(0)
-    // console.log('clickedNode ', clickedNode)
   }
 
   const onPaneClick = (event: any) => {
@@ -349,50 +345,10 @@ const DnDFlow = () => {
             console.log("Plan not saved", error.response.status)
           })
         //create plan 
+
       }
     },
     [reactFlowInstance]);
-
-  // const refreshComp = (awsCompId: any) => {
-
-  //   /*
-  //   Use zustland to store plan and update it
-  //   ********** GO FROM HERE ***********
-  //   */
-  //   console.log('refreshComp called')
-
-  //   api.get(`/ec2/${awsCompId}/update_instance_details`)
-  //     .then((response) => {
-  //       const updated_node_api_object = response.data
-
-  //       setNodes((nds) =>
-  //         nds.map((node) => {
-  //           console.log('node.id ', node.id, 'awsCompId ', awsCompId)
-  //           if (node.id === awsCompId.toString()) {
-  //             node.data.api_object = updated_node_api_object;
-  //           }
-  //           setClickedNode(node.data)
-  //           return node;
-  //         })
-  //       );
-
-  //       const flow = reactFlowInstanceRef.current.toObject();
-  //       const plan_wrapper = {
-  //         plan: flow,
-  //         deploy_status: 1,
-  //         running_status: 1,
-  //       };
-  //       setPlan(plan_wrapper)
-
-
-  //     })
-  //     .then(() => {
-  //       console.log("Plan successfully refreshed", planRef.current)
-  //     })
-  //     .catch((error) => {
-  //       console.log('Plan refresh failed ', error);
-  //     })
-  // }
 
 
   return (
@@ -404,14 +360,14 @@ const DnDFlow = () => {
             nodes={nodes}
             edges={edges}
             deleteKeyCode={deleteKeyCodes}
-            onInit={setReactFlowInstance}
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-            onConnect={onConnect}
             onNodesChange={onNodesChange}
             onNodesDelete={onNodeDelete}
             onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
             onEdgesDelete={onEdgesDelete}
+            onInit={setReactFlowInstance}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
             onNodeClick={onNodeClick}
             onPaneClick={onPaneClick}
             nodeTypes={nodeTypes}
@@ -426,8 +382,10 @@ const DnDFlow = () => {
 
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
-
-
+              {/* <p>Plan: {JSON.stringify(planRef.current)}</p>
+              <p>NODES: {JSON.stringify(nodes)}</p> */}
+              <br/>
+              <br/>
               {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>

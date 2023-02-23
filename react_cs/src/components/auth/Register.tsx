@@ -1,20 +1,20 @@
 import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
-import {Button,Alert,Form,Container,Row,Col} from "react-bootstrap";
+import { Button, Alert, Form, Container, Row, Col } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
 import { UserContext } from "../../context/Context";
-import { createUser } from "../../services/api.service";
+import AuthService from "../../services/auth.service";
 
 const Register = () => {
-  const userName = useRef();
-  const email = useRef();
-  const password = useRef();
-  const password2 = useRef();
-  const firstName = useRef();
-  const lastName = useRef();
+  const userName: any = useRef();
+  const email: any = useRef();
+  const password: any = useRef();
+  const password2: any = useRef();
+  const firstName: any = useRef();
+  const lastName: any = useRef();
   const { currentUser, setCurrentUser } = useContext(UserContext);
-  const navigate = useNavigate();
+  const navigate: any = useNavigate();
   const [alert, setAlert] = useState('some');
 
   // const handleSubmit = (e: React.SyntheticEvent): void => {
@@ -31,24 +31,30 @@ const Register = () => {
     // };
 
     // const registerData: RegisterData = {
-    const registerData = {
-      username: userName.current.value,
-      email: email.current.value,
-      password: password.current.value,
-      password2: password2.current.value,
-      first_name: firstName.current.value,
-      last_name: lastName.current.value,
-    };
+    // const registerData = {
+    //   username: userName.current.value,
+    //   email: email.current.value,
+    //   password: password.current.value,
+    //   password2: password2.current.value,
+    //   first_name: firstName.current.value,
+    //   last_name: lastName.current.value,
+    // };
 
-    createUser(registerData).then((response) => {
-      console.log("this is after res received", response);
-      if ("id" in response) {
-        setCurrentUser(response);
+    AuthService.register(userName.current.value, email.current.value, password.current.value, password.current.value)
+      .then((response) => {
+        console.log('response from axios ', response)
+
+        console.log(response);
+        // TODO : After successful login accessToken can be stored in React Context
+        // setCurrentUser({ username: response.user.username, email: response.user.email, loggedIn: true });
         navigate("/dashboard");
-      } else {
-        setAlert(response);
-      }
-    });
+      })
+      .catch(e => {
+        console.log('Check your request ', e, e.response.status)
+        navigate("/login");
+      });
+
+
   };
 
   return (

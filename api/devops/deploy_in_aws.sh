@@ -28,6 +28,18 @@ sudo vim /var/lib/pgsql/data/pg_hba.conf
   # IPv4 local connections:
   host    all             all             127.0.0.1/32            md5
 
+
+# To connect with psql from laptop
+
+#step1
+sudo vim /var/lib/pgsql/data/postgresql.conf
+listen_addresses = '*'
+
+#step2   (73.189.104.117/32:    IP Address of ISP)
+sudo vim /var/lib/pgsql/data/pg_hba.conf
+host    all             all             73.189.104.117/32          md5
+
+
 sudo systemctl restart postgresql
 
 # To check login: psql postgresql://cs:cs@127.0.0.1:5432/cs_db
