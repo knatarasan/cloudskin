@@ -17,10 +17,16 @@ const CompPropSidebar = ({ node_idx }: any) => {
 
     const { nodes, updateNodeColor, updateNode } = useStore(selector);
     const node = nodes[node_idx]        // Refer bottom of this file for node data structure
-    const [api_object, setApiObject] = useState(nodes[node_idx].data.api_object);
+    
+    // const [api_object, setApiObject] = useState(nodes[node_idx].data.api_object); 
+    // When you are using useState, you need to use onChange event to update the state
+    const api_object = nodes[node_idx].data.api_object
+
 
     const handleChange = (e: any) => {
         api_object[e.target.name] = e.target.value
+        // consider following logic, when you encouter issues in above setting
+        // setApiObject({ ...api_object, [e.target.name]: e.target.value });
     };
 
     const createInstance = (e: any) => {

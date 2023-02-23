@@ -425,8 +425,8 @@ const DnDFlow = () => {
 
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
-              <p>Plan: {JSON.stringify(planRef.current)}</p>
-              <p>NODES: {JSON.stringify(nodes)}</p>
+              {/* <p>Plan: {JSON.stringify(planRef.current)}</p>
+              <p>NODES: {JSON.stringify(nodes)}</p> */}
               <br/>
               <br/>
               {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
