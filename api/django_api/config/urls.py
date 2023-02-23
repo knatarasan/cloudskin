@@ -16,6 +16,7 @@ from .swagger import schema_view
 app_urls = [
     path("admin/", admin.site.urls),
     path("auth/", include("dj_rest_auth.urls")),
+    path("auth/registration", include("dj_rest_auth.registration.urls")),
     path("", include("apps.plan.urls")),
     path("", include("apps.aws.urls")),
     path("", include("apps.user.urls")),

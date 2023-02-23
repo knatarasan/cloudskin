@@ -2,11 +2,12 @@ import TokenService from "./token.service";
 import api from "./api";
 import * as t from "typed-assert";
 
-const register = (username: string, email: string, password: string) => {
-    return api.post("/auth/signup/", {
+const register = (username: string, email: string, password1: string,password2: string) => {
+    return api.post("/auth/registration", {
         username,
         email,
-        password
+        password1,
+        password2
     });
 };
 

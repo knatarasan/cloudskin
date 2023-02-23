@@ -19,18 +19,19 @@ export async function createInstance() {
   return await response.json();
 }
 
-export async function createUser(data) {
-  const username = "admin";
-  const password = "admin";
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      // Authorization: "Basic " + btoa(`${username}:${password}`),
-    },
-    body: JSON.stringify(data),
-  };
-  const response = await fetch(`${api_host}/user/`, requestOptions);
-  // console.log("response", response);
-  return await response.json();
-}
+// export async function createUser(data) {
+//   const username = "admin";
+//   const password = "admin";
+//   // const requestOptions = {
+//   //   method: "POST",
+//   //   headers: {
+//   //     "Content-Type": "application/json",
+//   //     // Authorization: "Basic " + btoa(`${username}:${password}`),
+//   //   },
+//   //   body: JSON.stringify(data),
+//   // };
+//   // const response = await fetch(`${api_host}/user/`, requestOptions);
+
+//   // console.log("response", response);
+//   // return await response.json();
+// }
