@@ -12,9 +12,9 @@ import {
   Button,
 } from "react-bootstrap";
 
-export default memo(({ data, isConnectable  }) => {
+export default memo(({ data, isConnectable }) => {
   const pg_data = {};
-  const ec2_data = { label: data.label };
+  const ec2_data = { label: data.label, color: data.color };
 
   if (data.attachable === "pg") {
     console.log("TODO call axios Deploy PG now");
@@ -22,7 +22,6 @@ export default memo(({ data, isConnectable  }) => {
 
   const onDependentNodeClick = (e) => {
     console.log("Dependent Node Clicked, so update content on side bar");
-
   };
 
   const styleObj = {
@@ -41,9 +40,12 @@ export default memo(({ data, isConnectable  }) => {
         onConnect={(params) => console.log("handle onConnect", params)}
         isConnectable={isConnectable}
       />
-      <div style={{ display: "flex", flexDirection: "column"}}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
         {"attachable" in data && data["attachable"] === "pg" ? (
-          <PGNodeFrag data={pg_data} onDependentNodeClick={onDependentNodeClick} />
+          <PGNodeFrag
+            data={pg_data}
+            onDependentNodeClick={onDependentNodeClick}
+          />
         ) : null}
         <EC2NodeFrag data={ec2_data} />
       </div>

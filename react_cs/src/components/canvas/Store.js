@@ -67,12 +67,12 @@ const useStore = create((set, get) => ({
     });
   },
 
-  updateNode: (nodeId, updated_node_api_object) => {
+  updateNode: (nodeId, api_object) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, updated_node_api_object };
+          node.data = { ...node.data, api_object };
         }
         return node;
       }),

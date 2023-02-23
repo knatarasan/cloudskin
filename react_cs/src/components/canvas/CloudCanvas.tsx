@@ -64,7 +64,7 @@ const DnDFlow = () => {
   const navigate = useNavigate()
 
   const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
-  
+
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
   const onSave = () => {
@@ -425,8 +425,10 @@ const DnDFlow = () => {
 
               <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
-
-
+              <p>Plan: {JSON.stringify(planRef.current)}</p>
+              <p>NODES: {JSON.stringify(nodes)}</p>
+              <br/>
+              <br/>
               {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>
