@@ -58,6 +58,8 @@ THIRD_PARTY_APPS = [
     "dj_rest_auth.registration",
 ]
 
+# Registration is implemented with dj_rest_auth.registration
+
 SITE_ID = 1
 # Aboe value is used for dj_rest_auth.registration
 # https://django-rest-auth.readthedocs.io/en/latest/installation.html#django-rest-auth-registration
