@@ -102,9 +102,16 @@ class AwsCredsSerializer(serializers.ModelSerializer):
             "aws_access_secret",
             "aws_private_key_pair_pem_name",
             "aws_private_key_pair_pem",
+            "aws_access_key_en",
+            "aws_access_secret_en",
+            "aws_private_key_pair_pem_en",
             "date_created",
             "date_modified",
         ]
+        # read_only_fields = ["aws_access_key", "aws_access_secret", "aws_private_key_pair_pem"]
+        # With above convertion of read_only_fields could not be pick from front end
+
+        write_only_fields = ["aws_access_key_en", "aws_access_secret_en", "aws_private_key_pair_pem_en"]
 
 
 # class AwsCredsSerializer(serializers.Serializer):
