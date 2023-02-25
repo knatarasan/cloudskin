@@ -204,5 +204,6 @@ GRAPH_MODELS = {
 
 AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)
 
-RSA_PUBLIC_KEY = "rsa_public_key.pem"
-RSA_PRIVATE_KEY = "rsa_private_key.pem"
+
+PUBLIC_KEY_FILE = os.path.join(BASE_DIR, "private_key.pem")
+PRIVATE_KEY_FILE = os.path.join(BASE_DIR, "public_key.pem")

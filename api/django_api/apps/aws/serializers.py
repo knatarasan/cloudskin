@@ -163,28 +163,29 @@ class RSADecryptedField(serializers.Field):
 class AwsCredsSerializer(serializers.Serializer):
     id = serializers.ReadOnlyField()
     owner = serializers.ReadOnlyField(source="owner.username")
-    aws_access_key = serializers.CharField(write_only=True)
-    aws_access_secret = serializers.CharField(write_only=True)
-    aws_private_key_pair_pem = serializers.CharField(write_only=True)
+    aws_access_key_en = serializers.CharField(write_only=True)
+    aws_access_secret_en = serializers.CharField(write_only=True)
+    aws_private_key_pair_pem_en = serializers.CharField(write_only=True)
     aws_iam_user = serializers.CharField()
     aws_private_key_pair_pem_name = serializers.CharField()
     date_created = serializers.DateTimeField()
     date_modified = serializers.DateTimeField()
-    aws_access_key_de = serializers.SerializerMethodField()
-    aws_access_secret_de = serializers.SerializerMethodField()
-    aws_private_key_pair_pem_de = serializers.SerializerMethodField()
+    aws_access_key = serializers.SerializerMethodField()
+    aws_access_secret = serializers.SerializerMethodField()
+    aws_private_key_pair_pem = serializers.SerializerMethodField()
 
-    def get_aws_access_key_de(self, obj):
+    # https://medium.com/finnovate-io/using-custom-model-fields-to-encrypt-and-decrypt-data-in-django-8255a4960b72
+    def get_aws_access_key(self, obj):
         rsa = RSA()
-        return rsa.decrypt(obj.aws_access_key)
+        return rsa.decrypt(obj.aws_access_key_en)
 
-    def get_aws_access_secret_de(self, obj):
+    def get_aws_access_secret(self, obj):
         rsa = RSA()
-        return rsa.decrypt(obj.aws_access_secret)
+        return rsa.decrypt(obj.aws_access_secret_en)
 
-    def get_aws_private_key_pair_pem_de(self, obj):
+    def get_aws_private_key_pair_pem(self, obj):
         rsa = RSA()
-        return rsa.decrypt(obj.aws_private_key_pair_pem)
+        return rsa.decrypt(obj.aws_private_key_pair_pem_en)
 
     def create(self, validated_data):
         """
@@ -195,13 +196,12 @@ class AwsCredsSerializer(serializers.Serializer):
         return aws_creds
 
     def update(self, instance, validated_data):
-        instance.aws_access_key = validated_data.get("aws_access_key", instance.aws_access_key)
-        instance.aws_access_secret = validated_data.get("aws_access_secret", instance.aws_access_secret)
-        instance.private_key_pair_pem = validated_data.get("private_key_pair_pem", instance.private_key_pair_pem)
+        instance.aws_access_key = validated_data.get("aws_access_key_en", instance.aws_access_key)
+        instance.aws_access_secret = validated_data.get("aws_access_secret_en", instance.aws_access_secret)
+        instance.private_key_pair_pem = validated_data.get("private_key_pair_pem_en", instance.private_key_pair_pem)
         instance.aws_iam_user = validated_data.get("aws_iam_user", instance.aws_iam_user)
         instance.aws_private_key_pair_pem_name = validated_data.get(
             "aws_private_key_pair_pem_name", instance.aws_private_key_pair_pem_name
         )
         instance.save()
-        logger.info("AwsCreds updated")
         return instance
