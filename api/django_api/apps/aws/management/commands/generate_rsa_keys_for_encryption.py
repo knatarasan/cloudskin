@@ -8,7 +8,9 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = "Generate new rsa key for encryption"
+    help = (
+        "Generate new rsa key for encryption, as file path mentioned as  settings.PUBLIC_KEY_FILE and settings.PRIVATE_KEY_FILE"
+    )
 
     def handle(self, *args, **options):
         # Get the latest data from AWS

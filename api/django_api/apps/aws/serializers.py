@@ -174,7 +174,10 @@ class AwsCredsSerializer(serializers.Serializer):
     aws_access_secret = serializers.SerializerMethodField()
     aws_private_key_pair_pem = serializers.SerializerMethodField()
 
+    # Use following two ways to optimize it
     # https://medium.com/finnovate-io/using-custom-model-fields-to-encrypt-and-decrypt-data-in-django-8255a4960b72
+    # RSAEncryptedField
+
     def get_aws_access_key(self, obj):
         rsa = RSA()
         return rsa.decrypt(obj.aws_access_key_en)
