@@ -8,81 +8,96 @@ from django.db import models
 logger = logging.getLogger(__name__)
 
 
+# class RSA_Key_Generator:
+#     @classmethod
+#     def generate_keys(cls, public_key_file, private_key_file):
+#         """
+#         public_key_file: path to public key file
+#         private_key_file: path to private key file
+#         """
+
+#         print("public_key_file", public_key_file)
+#         print("private_key_file", private_key_file)
+#         # Generate key pair
+#         (public_key, private_key) = rsa.newkeys(1024)
+#         # Save public key to string
+#         public_key_str = public_key.save_pkcs1().decode("utf-8")
+#         # Save private key to string
+#         private_key_str = private_key.save_pkcs1().decode("utf-8")
+#         # Write public key to file
+#         with open(public_key_file, "w", encoding="utf-8") as f:
+#             f.write(public_key_str)
+
+#         # Write private key to file
+#         with open(private_key_file, "w", encoding="utf-8") as f:
+#             f.write(private_key_str)
+
+
 class RSA:
     def __init__(self):
-        # generate public and private keys with
-        # rsa.newkeys method,this method accepts
-        # key length as its parameter
-        # key length should be atleast 16
+        self.publicKey, self.privateKey = self.retrieve_keys(settings.PUBLIC_KEY_FILE, settings.PRIVATE_KEY_FILE)
 
-        self.publicKey, self.privateKey = rsa.newkeys(512)
-        public_key_file = settings.RSA_PUBLIC_KEY
-        private_key_file = settings.RSA_PRIVATE_KEY
+    def encrypt(self, secret: str):
+        """
+        Receive string encrypt it with public key and return encrypted string
+        """
 
-        if not os.path.exists(public_key_file):
-            with open(public_key_file, "w+") as f:
-                f.write(self.publicKey.save_pkcs1().decode())
-        else:
-            with open(public_key_file, "r") as f:
-                self.publicKey = rsa.PublicKey.load_pkcs1(f.read().encode())
+        if secret is not None:
+            return rsa.encrypt(secret.encode(), self.publicKey)
+        return "".encode()
 
-        if not os.path.exists(private_key_file):
-            with open(private_key_file, "w+") as f:
-                f.write(self.privateKey.save_pkcs1().decode())
-            os.chmod(private_key_file, 400)
+    def decrypt(self, encryptedSecret: bytes):
+        """
+        Receive encrypted string decrypt it with private key and return decrypted string
+        """
+        if encryptedSecret:
+            try:
+                decMessage = rsa.decrypt(encryptedSecret, self.privateKey)
+                return decMessage.decode()
+            except Exception as e:
+                logger.error("Check whether you use right key for decryption", e)
+                return ""
 
-        else:
-            with open(private_key_file, "r") as f:
-                self.privateKey = rsa.PrivateKey.load_pkcs1(f.read().encode())
+        logger.error("encryptedSecret is null")
+        return ""
 
-    def encrypt(self, accessKeys):
-        # rsa.encrypt method is used to encrypt
-        # string with public key string should be
-        # encode to byte string before encryption
-        # with encode method
-        encMessage = rsa.encrypt(accessKeys.encode(), self.publicKey)
+    def retrieve_keys(self, public_key_file, private_key_file):
+        # Read public key from file
+        with open(public_key_file, "r", encoding="utf-8") as f:
+            public_key_str = f.read()
 
-        return encMessage
+        # Read private key from file
+        with open(private_key_file, "r", encoding="utf-8") as f:
+            private_key_str = f.read()
 
-    def decrypt(self, encMessage: str):
-        # the encrypted message can be decrypted
-        # with ras.decrypt method and private key
-        # decrypt method returns encoded byte string,
-        # use decode method to convert it to string
-        # public key cannot be used for decryption
-        encMessageBytes: bytes = bytes(encMessage, "utf-8")
-        decMessage = rsa.decrypt(encMessageBytes, self.privateKey).decode()
-        return decMessage
+        # Load public key from string
+        public_key = rsa.PublicKey.load_pkcs1(public_key_str.encode("utf-8"))
+
+        # Load private key from string
+        private_key = rsa.PrivateKey.load_pkcs1(private_key_str.encode("utf-8"))
+
+        return (public_key, private_key)
 
 
 class AwsCreds(models.Model):
     owner = models.ForeignKey("auth.User", related_name="aws_creds", on_delete=models.CASCADE)
     aws_iam_user = models.TextField(null=True)
-    aws_access_key = models.TextField(null=True)
-    aws_access_secret = models.TextField(null=True)
+    aws_access_key_en = models.BinaryField(null=True)  # TODO to be removed
+    aws_access_secret_en = models.BinaryField(null=True)  # TODO to be removed
     aws_private_key_pair_pem_name = models.TextField(null=True)
-    aws_private_key_pair_pem = models.TextField(null=True)
+    aws_private_key_pair_pem_en = models.BinaryField(null=True)  # TODO to be removed
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     # TODO to implement encrypt and decrypt aws_access_key and aws_access_secert
-    # def save(self, *args, **kwargs):
-    #     rsa = RSA()
-    #     logger.debug(f'while Saving:  {self}')
-    #     self.aws_access_key = rsa.encrypt(self.aws_access_key)
-    #     self.aws_access_secret = rsa.encrypt(self.aws_access_secret)
-    #     self.aws_private_key_pair_pem = rsa.encrypt(self.aws_private_key_pair_pem)
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        rsa_obj = RSA()
+        logger.debug(f"while Saving:  {self}")
+        self.aws_access_key_en = rsa_obj.encrypt(self.aws_access_key_en)
+        self.aws_access_secret_en = rsa_obj.encrypt(self.aws_access_secret_en)
+        self.aws_private_key_pair_pem_en = rsa_obj.encrypt(self.aws_private_key_pair_pem_en)
 
-    # get doesn't override the get method of the model
+        super().save(*args, **kwargs)
 
-    # def get(self, *args, **kwargs):
-    #     rsa = RSA()
-    #     self.aws_access_key = rsa.decrypt(self.aws_access_key)
-    #     self.aws_access_secret = rsa.decrypt(self.aws_access_secret)
-    #     self.aws_private_key_pair_pem = rsa.decrypt(self.aws_private_key_pair_pem)
-    #     logger.debug(f'after decrypted :  {self}')
-    #     super(AwsCreds, self).get(*args, **kwargs)
-    #
-    # def __str__(self):
-    #     return f'owner: {self.owner} iam {self.aws_iam_user} access_key {self.aws_access_key} access_secret {self.aws_access_secret}'
+    def __str__(self):
+        return f"owner: {self.owner} iam {self.aws_iam_user}"
