@@ -51,6 +51,13 @@ coverage.xml
 .pytest_cache/
 cover/
 
+django_api/config/static/*
+
+django_api/logs/*
+
+django_api/config/*.pem
+
+devops/SSL_config/*.pem
 
 # Translations
 *.mo

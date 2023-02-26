@@ -63,6 +63,8 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
 
+python manage.py collectstatic
+
 # For testing make sure the port number 0:8000
 python manage.py runserver 0:8000
 http://ec2-54-183-97-140.us-west-1.compute.amazonaws.com:8000/api/v1/
@@ -141,7 +143,7 @@ sudo rm -rf /tmp/build/*
 
 sudo cp -r /tmp/build/* /var/www/build/
 
-/home/ec2-user/.venv/bin/python /home/ec2-user/cloudskin/api/django_api/manage.py runserver 0:8000 &
+nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
 tail -f /home/ec2-user/cloudskin/api/log/app.log
 
 #Enable SSL
@@ -237,9 +239,32 @@ server {
 
 
 
+# SSLify www.stratoclo.com
+
+(.venv) [ec2-user@ip-172-31-15-28 django_api]$ sudo certbot --nginx -d www.stratoclo.com
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Plugins selected: Authenticator nginx, Installer nginx
+Requesting a certificate for www.stratoclo.com
+Performing the following challenges:
+http-01 challenge for www.stratoclo.com
+Using default addresses 80 and [::]:80 ipv6only=on for authentication.
+Waiting for verification...
+Cleaning up challenges
+Could not automatically find a matching server block for www.stratoclo.com. Set the `server_name` directive to use the Nginx installer.
+
+IMPORTANT NOTES:
+ - Unable to install the certificate
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/www.stratoclo.com/privkey.pem
+   Your certificate will expire on 2023-05-27. To obtain a new or
+   tweaked version of this certificate in the future, simply run
+   certbot again with the "certonly" option. To non-interactively
+   renew *all* of your certificates, run "certbot renew"
 
 
-
+#sudo systemctl restart nginx
 
 
 
@@ -255,3 +280,6 @@ server {
 #
 #firewall-cmd --runtime-to-permanent
 #firewall-cmd --list-all
+
+Backup SSL certificate:
+scp -i ~/.ssh/cloudskin_key.pem -r ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/*.pem ~/workspace/cloudskin/api/devops/SSL_config/
