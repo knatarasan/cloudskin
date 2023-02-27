@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import { Button, Alert, Form, Container, Row, Col } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
-import { UserContext } from "../../context/Context";
 import AuthService from "../../services/auth.service";
 
 const Register = () => {
@@ -13,7 +12,6 @@ const Register = () => {
   const password2: any = useRef();
   const firstName: any = useRef();
   const lastName: any = useRef();
-  const { currentUser, setCurrentUser } = useContext(UserContext);
   const navigate: any = useNavigate();
   const [alert, setAlert] = useState('some');
 
