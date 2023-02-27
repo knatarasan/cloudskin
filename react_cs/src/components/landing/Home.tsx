@@ -11,12 +11,12 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
-import useStore from "../canvas/Store";
+import { useStore } from "../canvas/Store";
 
 
-const Home = ()=>  {
+const Home = () => {
   // const { currentUser, setCurrentUser } = useContext(UserContext);
-  const  user = useStore(state => state.user);
+  const user = useStore(state => state.user);
 
   return (
     <div>
@@ -249,7 +249,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -266,7 +266,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -283,7 +283,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -304,7 +304,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col >
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -322,7 +322,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -339,7 +339,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -360,7 +360,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'

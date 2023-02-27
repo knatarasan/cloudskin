@@ -5,7 +5,8 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import logo from "../../static/images/logo3.png";
 import PlanService from '../../services/plan.service'
 import AuthService from "../../services/auth.service";
-import useStore from "../canvas/Store";
+import { useStore } from "../canvas/Store";
+
 
 const selector = (state) => ({
   user: state.user,
@@ -19,11 +20,11 @@ const Dashboard = () => {
 
   const handleLogout = (e: React.SyntheticEvent): void => {
     AuthService.logout()
-    .then((response) => { 
-      console.log("logout response", response)
-      // Updata store with empty user after successful logout
-      addUser({ username: "", email: "", loggedIn: false, access_token: "" });
-    })
+      .then((response) => {
+        console.log("logout response", response)
+        // Updata store with empty user after successful logout
+        addUser({ username: "", email: "", loggedIn: false, access_token: "" });
+      })
 
     console.log("handleLogout context is set to false", user.username);
     navigate("/");
