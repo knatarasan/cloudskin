@@ -13,10 +13,16 @@ const useStore = create((set, get) => ({
     leaf: ["lettuce", "spinach", "kale"],
     stem: ["broccoli", "cauliflower", "celery"],
   },
-
+  user: { username: "", email: "", loggedIn: false, access_token: "" },
   plan: {
     deploy_status: 1,
     running_status: 1,
+  },
+
+  addUser: (user) => {
+    set((state) => ({
+      user: user,
+    }));
   },
 
   addFruits: (fruit) => {

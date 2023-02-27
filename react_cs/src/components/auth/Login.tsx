@@ -2,9 +2,8 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Container, Row, Col, } from "react-bootstrap";
 import logo from "../../static/images/logo3.png";
-import { UserContext } from "../../context/Context";
-
 import AuthService from "../../services/auth.service";
+import useStore from "../canvas/Store";
 
 
 const Login = () => {
@@ -12,7 +11,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+  const addUser = useStore(state => state.addUser)
 
   type User = {
     pk: number,
@@ -29,10 +28,7 @@ const Login = () => {
     AuthService.login(username, password)
       .then((response: { access_token: string; user: User }) => {
         console.log('response from axios ', response)
-
-        console.log(response);
-        // TODO : After successful login accessToken can be stored in React Context
-        setCurrentUser({ username: response.user.username, email: response.user.email, loggedIn: true });
+        addUser({ username: response.user.username, email: response.user.email, loggedIn: true, access_token: response.access_token });
         navigate("/dashboard");
       })
       .catch(e => {

@@ -3,29 +3,29 @@ import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import logo from "../../static/images/logo3.png";
-import { UserContext } from "../../context/Context";
 import PlanService from '../../services/plan.service'
 import AuthService from "../../services/auth.service";
+import useStore from "../canvas/Store";
+
+const selector = (state) => ({
+  user: state.user,
+  addUser: state.addUser,
+});
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [plans, setPlans] = useState<any>();
-  const { currentUser, setCurrentUser } = useContext(UserContext);
-  const [authenticated, setAuthenticated] = useState(currentUser);
+  const { user, addUser } = useStore(selector);
 
   const handleLogout = (e: React.SyntheticEvent): void => {
-    setAuthenticated({
-      username: '',
-      email: '',
-      // tokenAccess: '',
-      loggedIn: false
-    });
-    setCurrentUser(undefined);
+    AuthService.logout()
+    .then((response) => { 
+      console.log("logout response", response)
+      // Updata store with empty user after successful logout
+      addUser({ username: "", email: "", loggedIn: false, access_token: "" });
+    })
 
-    // localStorage.removeItem("accessToken");
-    AuthService.logout();
-
-    console.log("handleLogout context is set to false", currentUser);
+    console.log("handleLogout context is set to false", user.username);
     navigate("/");
   };
 
@@ -49,7 +49,7 @@ const Dashboard = () => {
 
   }
 
-  if (!authenticated) {
+  if (!user.loggedIn) {
     console.log("not auth");
     return <Navigate replace to="/login" />;
   } else {
@@ -65,7 +65,7 @@ const Dashboard = () => {
             </Link>
             <Nav className="me-auto">
               <Navbar.Text>
-                {'username' in currentUser ? "Signed in:  " + currentUser.username : null}
+                {'username' in user ? "Signed in: " + user.username : null}
               </Navbar.Text>
               <Nav.Link href="" onClick={handleLogout}>Logout</Nav.Link>
               <Nav.Link as={Link} to="/iamuser">IAM User</Nav.Link>
