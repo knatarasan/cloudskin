@@ -4,8 +4,6 @@ import logo from "../../static/images/logo3.png";
 import landing_page_img from "../../static/images/depict_product.png";
 import create_plan_img from "../../static/images/create_plan.png";
 import how_to_use_img from "../../static/images/landing_page_eng.png"
-import { useContext } from "react";
-import { UserContext } from "../../context/Context";
 import { Link } from "react-router-dom";
 import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
 import { FaSitemap, FaMap } from 'react-icons/fa';
@@ -13,15 +11,15 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
+import { useStore } from "../canvas/Store";
 
 
-const Home = ()=>  {
-  const { currentUser, setCurrentUser } = useContext(UserContext);
+const Home = () => {
+  // const { currentUser, setCurrentUser } = useContext(UserContext);
+  const user = useStore(state => state.user);
 
   return (
     <div>
-
-
       <style type="text/css">
         {`
 
@@ -91,11 +89,11 @@ const Home = ()=>  {
                   </ul>
                 </li>
                 {(() => {
-                  if (currentUser && "loggedIn" in currentUser) {
+                  if (user.loggedIn) {
                     return (
                       <>
                         <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="">Signed in: {currentUser.username}</Nav.Link>
+                        <Nav.Link href="">Signed in: {user.username}</Nav.Link>
                       </>
                     )
                   } else {
@@ -251,7 +249,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -268,7 +266,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -285,7 +283,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -306,7 +304,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col >
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -324,7 +322,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -341,7 +339,7 @@ const Home = ()=>  {
                 </Card>
               </Col>
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -362,7 +360,7 @@ const Home = ()=>  {
             <br />
             <Row xs={1} md={3} className="g-4">
               <Col>
-              <Card
+                <Card
                   border="dark"
                   key="light"
                   text='dark'

@@ -7,7 +7,7 @@ import CompPropSidebar from "./CompPropSidebar";
 import AWSCompNode from "./AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
-import useStore from "./Store";
+import { useStore } from "./Store";
 
 import ReactFlow, {
   Node,
@@ -128,7 +128,7 @@ const DnDFlow = () => {
     // componentWillUnMount
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
-      onSave() 
+      onSave()
       emptyNodes()
       emptyEdges()
     }
@@ -384,8 +384,8 @@ const DnDFlow = () => {
               <p>Plan id : {planId} </p>
               {/* <p>Plan: {JSON.stringify(planRef.current)}</p>
               <p>NODES: {JSON.stringify(nodes)}</p> */}
-              <br/>
-              <br/>
+              <br />
+              <br />
               {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>

@@ -1,33 +1,24 @@
 // https://blog.bitsrc.io/zustands-guide-to-simple-state-management-12c654c69990
-// https://blog.openreplay.com/zustand-simple-modern-state-management-for-react
+// https://blog.openreplay.com/zustand-simple-modern-state-management-for-react    <- Refer this for Persisting management
+   
 
+import { persist } from "zustand/middleware";
 import { create } from "zustand";
 import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
 
-const useStore = create((set, get) => ({
+//  This is change is for persisting the state
+let store = ((set, get) => ({
   nodes: [],
   edges: [],
-  fruits: ["apple", "banana", "orange"],
-  vegies: {
-    root: ["potato", "carrot", "beet"],
-    leaf: ["lettuce", "spinach", "kale"],
-    stem: ["broccoli", "cauliflower", "celery"],
-  },
-
+  user: { username: "", email: "", loggedIn: false, access_token: "" },
   plan: {
     deploy_status: 1,
     running_status: 1,
   },
 
-  addFruits: (fruit) => {
+  addUser: (user) => {
     set((state) => ({
-      fruits: [...state.fruits, fruit],
-    }));
-  },
-
-  addStems: (stem) => {
-    set((state) => ({
-      vegies: { ...state.vegies, stem: [...state.vegies.stem, stem] },
+      user: user,
     }));
   },
 
@@ -96,15 +87,14 @@ const useStore = create((set, get) => ({
     set((state) => ({
       nodes: [],
     }));
-  } ,
+  },
 
   emptyEdges: () => {
     set((state) => ({
       edges: [],
     }));
-  }
-  
-
+  },
 }));
 
-export default useStore;
+store = persist(store, {name: "useStore"});
+export const useStore = create(store);

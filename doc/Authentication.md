@@ -34,3 +34,15 @@ sequenceDiagram
     user->>Server: Thx 
     deactivate Server
 ```
+
+Login flow:
+
+```mermaid
+graph TD;
+  A[Login] --> B[AuthService];
+  B --> C[TokenService];
+  C -. Local Storage is added .-> B;
+  B -. Context is Set .-> A;
+```
+
+Login.tsx -->  auth.service.ts --> token.service.ts (localStorage is added)
