@@ -3,17 +3,18 @@ import { Link } from "react-router-dom";
 import logo from "../../static/images/logo3.png";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import api from "../../services/api";
 
 const IAMUser = () => {
-    const [aws_key, setAWSKey] = useState("");
-    const [aws_secret, setAWSSecret] = useState("");
+    const iam_user: any = useRef()
+    const aws_key: any = useRef()
+    const aws_secret: any = useRef()
 
-    const login = (e: React.SyntheticEvent): void => {
+    const storeAWSCreds = (e: React.SyntheticEvent): void => {
         e.preventDefault();
 
-        api.post("/aws_creds/", { aws_key: aws_key, aws_secret: aws_secret })
+        api.post("/aws_creds/", { aws_access_key_en: aws_key.current.value, aws_access_secret_en: aws_secret.current.value, aws_iam_user: iam_user.current.value })
             .then((response: { status: number; data: { access: any }; }) => {
                 console.log('response from axios ', response)
 
@@ -29,24 +30,24 @@ const IAMUser = () => {
     };
 
     const codeStringCreateUser =
-        '    mac ~ % aws iam create-user --user-name cx_user \n' +
+        '    mac ~ % aws iam create-user --user-name  \n' +
         '    { \n' +
         '        "User": { \n' +
         '            "Path": "/", \n' +
-        '            "UserName": "cx_user", \n' +
+        '            "UserName": "sc_user", \n' +
         '            "UserId": "AIDAU3XNRECYRMX00XXXX", \n' +
-        '            "Arn": "arn:aws:iam::334431854769:user/cx_user", \n' +
+        '            "Arn": "arn:aws:iam::334431854769:user/sc_user", \n' +
         '            "CreateDate": "2023-01-16T18:22:47+00:00" \n' +
         '        } \n' +
         '    } \n'
 
     const codeStringCreatePolicy =
-        'mac ~ % aws iam create-policy --policy-name cx_policy --policy-document file://cx_policy.json, \n' +
+        'mac ~ % aws iam create-policy --policy-name sc_policy --policy-document file://sc_policy.json, \n' +
         '    { \n' +
         '       "Policy": { \n' +
-        '            "PolicyName": "cx_policy", \n' +
+        '            "PolicyName": "sc_policy", \n' +
         '            "PolicyId": "ANPAU3XNRECYZ5X00XXXX", \n' +
-        '            "Arn": "arn:aws:iam::334439999999:policy/cx_policy", \n' +
+        '            "Arn": "arn:aws:iam::334439999999:policy/sc_policy", \n' +
         '            "Path": "/",\n' +
         '            "DefaultVersionId": "v1",\n' +
         '            "AttachmentCount": 0,\n' +
@@ -88,7 +89,7 @@ const IAMUser = () => {
         '    ]\n' +
         '}'
 
-    const codeStringAttachPolicy = 'mac ~ % aws iam attach-user-policy --policy-arn arn:aws:iam::334439999999:policy/cx_policy --user-name cx_user'
+    const codeStringAttachPolicy = 'mac ~ % aws iam attach-user-policy --policy-arn arn:aws:iam::334439999999:policy/sc_policy --user-name sc_user'
 
     return (
         <>
@@ -116,7 +117,7 @@ const IAMUser = () => {
                                     </SyntaxHighlighter>
                                 </li>
 
-                                <li> Create a policy file named cx_policy.json <br />
+                                <li> Create a policy file named sc_policy.json <br />
 
                                     <SyntaxHighlighter language="json" style={docco}>
                                         {codeStringPolicy}
@@ -140,15 +141,24 @@ const IAMUser = () => {
                                         <Container>
                                             <Row>
                                                 <Col xs={6}>
-                                                    <Form onSubmit={login}>
+                                                    <Form onSubmit={storeAWSCreds}>
+                                                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                            <Form.Label>AWS_USER (IAM)</Form.Label>
+                                                            <Form.Control
+                                                                type="text"
+                                                                ref={iam_user}
+                                                                placeholder="iam user"
+                                                                name="aws_user"
+                                                            />
+                                                        </Form.Group>
+
                                                         <Form.Group className="mb-3" controlId="formBasicEmail">
                                                             <Form.Label>AWS_ACCESS_KEY</Form.Label>
                                                             <Form.Control
                                                                 type="text"
+                                                                ref={aws_key}
                                                                 placeholder="aws_access_key"
                                                                 name="aws_key"
-                                                                value={aws_key}
-                                                                onChange={(e) => setAWSKey(e.target.value)}
                                                             />
                                                             <Form.Text className="text-muted">
                                                                 We'll never share your email with anyone else.
@@ -159,9 +169,9 @@ const IAMUser = () => {
                                                             <Form.Label>AWS_SECRET_ACCESS_KEY</Form.Label>
                                                             <Form.Control
                                                                 type="text"
+                                                                ref={aws_secret}
                                                                 placeholder="aws_secret_access_key"
                                                                 name="aws_secret"
-                                                                onChange={(e) => setAWSSecret(e.target.value)}
                                                             />
                                                         </Form.Group>
                                                         <Button variant="primary" type="submit">
