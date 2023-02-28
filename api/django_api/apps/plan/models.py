@@ -1,9 +1,8 @@
 import logging
 import uuid
 
-from django.db import models
-
 from apps.core.models import BaseModel
+from django.db import models
 
 logger = logging.getLogger(__name__)
 
@@ -34,5 +33,4 @@ class Plan(BaseModel):
         super().save(*args, **kwargs)
 
     class Meta:
-        db_table = "plan"
         ordering = ["-last_modified_datetime"]
