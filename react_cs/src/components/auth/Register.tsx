@@ -4,6 +4,7 @@ import Dashboard from "../dashboard/Dashboard";
 import { Button, Alert, Form, Container, Row, Col } from "react-bootstrap";
 import logo from "../../static/images/cloud.png";
 import AuthService from "../../services/auth.service";
+import { useStore } from "../canvas/Store";
 
 const Register = () => {
   const userName: any = useRef();
@@ -14,6 +15,7 @@ const Register = () => {
   const lastName: any = useRef();
   const navigate: any = useNavigate();
   const [alert, setAlert] = useState('some');
+  const addUser = useStore(state => state.addUser );
 
   // const handleSubmit = (e: React.SyntheticEvent): void => {
   const handleSubmit = (e) => {
@@ -41,10 +43,7 @@ const Register = () => {
     AuthService.register(userName.current.value, email.current.value, password.current.value, password.current.value)
       .then((response) => {
         console.log('response from axios ', response)
-
-        console.log(response);
-        // TODO : After successful login accessToken can be stored in React Context
-        // setCurrentUser({ username: response.user.username, email: response.user.email, loggedIn: true });
+        addUser({ username: response.user.username, email: response.user.email, loggedIn: true, access_token: response.access_token });
         navigate("/dashboard");
       })
       .catch(e => {

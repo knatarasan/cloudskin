@@ -13,7 +13,15 @@ const register = (
     email,
     password1,
     password2,
-  });
+  })
+  .then((response) => {
+    // TokenService.setUser(response.data);
+    return response.data;
+  })
+  .catch((error) => {
+    // TokenService.removeUser();
+    console.log(error);
+});
 };
 
 const login = (username: string, password: string) => {
