@@ -21,6 +21,9 @@ const IAMUser = () => {
                 const accessToken = response.data.access
                 localStorage.setItem("accessToken", accessToken);
                 // TODO : After successful login accessToken can be stored in React Context
+                iam_user.current.value = ""
+                aws_key.current.value = ""
+                aws_secret.current.value = ""
 
             })
             .catch(e => {
