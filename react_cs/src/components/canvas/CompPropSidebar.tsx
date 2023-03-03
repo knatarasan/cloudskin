@@ -34,7 +34,13 @@ const CompPropSidebar = ({ node_idx }: any) => {
             .then((response) => {
                 console.log("AWS instance created", response)
                 updateNode(api_object.id, response.data) // update nodes in zustand store 
-            })
+            }).catch(
+                (error) => {
+                    console.log("AWS instance not created", error)
+                }
+            );
+
+        console.log("AWS instance will be created", api_object.id);
     }
 
     const refreshInstance = (e: any) => {

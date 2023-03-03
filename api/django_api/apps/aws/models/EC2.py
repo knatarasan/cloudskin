@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 
 from .AWSComponent import AWSComponent
-from .AwsCreds import AwsCreds
+from .AwsCreds import RSA, AwsCreds
 from .InstallableService import InstallableService
 from .InstalledService import InstalledService
 
@@ -27,11 +27,22 @@ class EC2(AWSComponent):
     private_ip = models.TextField(null=True)
     host_name = models.TextField(null=True)
 
+    def get_aws_creds(self):
+        rsa_local = RSA()
+
+        AWS_ACCESS_KEY_ID = rsa_local.decrypt(AwsCreds.objects.get(owner=self.plan.owner).aws_access_key_en)
+        AWS_SECRET_ACCESS_KEY = rsa_local.decrypt(AwsCreds.objects.get(owner=self.plan.owner).aws_access_secret_en)
+
+        return AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+
     def create_aws_instance(self) -> str:
         # Retrive plan since plan has owner
         logger.debug(f"Plan {self.plan} owner {self.plan.owner} ")
-        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=self.plan.owner).aws_access_key
-        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=self.plan.owner).aws_access_secret
+
+        AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
+
+        logger.debug("AWS_ACCESS_KEY_ID: " + AWS_ACCESS_KEY_ID)
+        logger.debug("AWS_SECRET_ACCESS_KEY: " + AWS_SECRET_ACCESS_KEY)
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
         if settings.AWS_TEST_MODE:
@@ -62,8 +73,8 @@ class EC2(AWSComponent):
                     MaxCount=1,
                     InstanceType=self.instance_type,
                     KeyName=self.instance_key_pair,
-                    SecurityGroupIds=[self.security_group],
-                    SubnetId=self.subnet,
+                    # SecurityGroupIds=[self.security_group],
+                    # SubnetId=self.subnet,
                 )
                 self.ec2_instance_id = instances[0].instance_id
                 logger.debug(f"Instance created waiting to boot up {instances[0]} ")
@@ -82,19 +93,30 @@ class EC2(AWSComponent):
                 return None
 
     def update_instance_details(self):
-        AWS_ACCESS_KEY_ID = AwsCreds.objects.get(owner=self.plan.owner).aws_access_key
-        AWS_SECRET_ACCESS_KEY = AwsCreds.objects.get(owner=self.plan.owner).aws_access_secret
+        AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         ec2 = boto3.resource(
-            "ec2", aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY, region_name="us-west-1"
+            "ec2",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=self.region,
         )
 
         if self.ec2_instance_id:
-            instance_details = ec2.meta.client.describe_instances(InstanceIds=[self.ec2_instance_id])
-            self.public_ip = instance_details["Reservations"][0]["Instances"][0].get("PublicIpAddress", "Not Assigned")
-            self.private_ip = instance_details["Reservations"][0]["Instances"][0].get("PrivateIpAddress", "Not Assigned")
-            self.host_name = instance_details["Reservations"][0]["Instances"][0].get("PublicDnsName", "Not Assigned")
-            self.save()
+            try:
+                instance_details = ec2.meta.client.describe_instances(InstanceIds=[self.ec2_instance_id])
+                self.public_ip = instance_details["Reservations"][0]["Instances"][0].get("PublicIpAddress", "Not Assigned")
+                self.private_ip = instance_details["Reservations"][0]["Instances"][0].get("PrivateIpAddress", "Not Assigned")
+                self.host_name = instance_details["Reservations"][0]["Instances"][0].get("PublicDnsName", "Not Assigned")
+                self.security_group = instance_details["Reservations"][0]["Instances"][0].get("SecurityGroups", "Not Assigned")[
+                    0
+                ]["GroupId"]
+                self.subnet = instance_details["Reservations"][0]["Instances"][0].get("SubnetId", "Not Assigned")
+                self.save()
+
+            except Exception as e:
+                logger.error(f"Instance not found, check ERROR {e}")
+                return None
 
             return instance_details["Reservations"][0]["Instances"][0]
         else:

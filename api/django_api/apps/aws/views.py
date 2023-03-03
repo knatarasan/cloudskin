@@ -77,8 +77,13 @@ class EC2ViewSet(viewsets.ModelViewSet):
         logger.debug(" at start of create_instance  ")
         ec2 = EC2.objects.get(pk=pk)
         logger.debug(f"ec2 is {ec2}")
-        ec2.create_aws_instance()
-        return Response(status=status.HTTP_201_CREATED)
+        if ec2.create_aws_instance():
+            serializer = EC2Serializer(ec2)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.debug("Instance creation failed")
+            serializer = EC2Serializer(ec2)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["put"])
     def terminate_instance(self, request, pk=None):
@@ -91,10 +96,14 @@ class EC2ViewSet(viewsets.ModelViewSet):
     def update_instance_details(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
         if ec2.ec2_instance_id:
-            ec2.update_instance_details()
-            serializer = EC2Serializer(ec2)
-            # 201 since , if there is any update in instance , ec2 object will be updated
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if ec2.update_instance_details():
+                serializer = EC2Serializer(ec2)
+
+                # 201 since , if there is any update in instance , ec2 object will be updated
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                serializer = EC2Serializer(ec2)
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
         else:
             logger.debug("No instance for this ec2 object ")
             serializer = EC2Serializer(ec2)
