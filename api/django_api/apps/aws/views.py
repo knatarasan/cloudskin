@@ -70,6 +70,16 @@ class EC2ViewSet(viewsets.ModelViewSet):
     queryset = EC2.objects.all()
     serializer_class = EC2Serializer
 
+    @action(detail=True, methods=["get"])
+    def health(self, request, pk=None):
+        ec2 = EC2.objects.get(pk=pk)
+        serializer = EC2Serializer(ec2)
+
+        if ec2.health():
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
     @action(
         detail=True, methods=["put"]
     )  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
