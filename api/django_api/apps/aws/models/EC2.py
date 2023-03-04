@@ -84,7 +84,7 @@ class EC2(AWSComponent):
                 # instances[0].wait_until_exists()
                 self.public_ip = instances[0].public_ip_address
                 self.host_name = instances[0].public_dns_name
-                self.ec2_status = AWSComponent.AWSCompStatus.RUNNING
+                self.ec2_status = AWSComponent.AWSCompStatus.running
                 self.save()
                 return instances[0].instance_id
 
@@ -104,24 +104,53 @@ class EC2(AWSComponent):
 
         if self.ec2_instance_id:
             try:
-                instance_details = ec2.meta.client.describe_instances(InstanceIds=[self.ec2_instance_id])
-                self.public_ip = instance_details["Reservations"][0]["Instances"][0].get("PublicIpAddress", "Not Assigned")
-                self.private_ip = instance_details["Reservations"][0]["Instances"][0].get("PrivateIpAddress", "Not Assigned")
-                self.host_name = instance_details["Reservations"][0]["Instances"][0].get("PublicDnsName", "Not Assigned")
-                self.security_group = instance_details["Reservations"][0]["Instances"][0].get("SecurityGroups", "Not Assigned")[
-                    0
-                ]["GroupId"]
-                self.subnet = instance_details["Reservations"][0]["Instances"][0].get("SubnetId", "Not Assigned")
+                instance = ec2.Instance(f"{self.ec2_instance_id}")
+                self.public_ip = instance.public_ip_address
+                self.private_ip = instance.private_ip_address
+                self.host_name = instance.public_dns_name
+                self.security_group = instance.security_groups[0]["GroupId"]
+                self.subnet = instance.subnet_id
                 self.save()
+                self.health()
 
             except Exception as e:
                 logger.error(f"Instance not found, check ERROR {e}")
                 return None
 
-            return instance_details["Reservations"][0]["Instances"][0]
+            return instance
         else:
             logger.error(f"Instance id not found for {self} ")
             return None
+
+    def health(self):
+        AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
+
+        ec2 = boto3.resource(
+            "ec2",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            region_name=self.region,
+        )
+        instance = ec2.Instance(f"{self.ec2_instance_id}")
+
+        if instance.state["Name"] == "stopping":
+            self.ec2_status = AWSComponent.AWSCompStatus.stopping
+        elif instance.state["Name"] == "stopped":
+            self.ec2_status = AWSComponent.AWSCompStatus.stopped
+        elif instance.state["Name"] == "starting":
+            self.ec2_status = AWSComponent.AWSCompStatus.starting
+        elif instance.state["Name"] == "running":
+            self.ec2_status = AWSComponent.AWSCompStatus.running
+        elif instance.state["Name"] == "terminated":
+            self.ec2_status = AWSComponent.AWSCompStatus.terminated
+        elif instance.state["Name"] == "shutting-down":
+            self.ec2_status = AWSComponent.AWSCompStatus.shutting_down
+        else:
+            logger.debug(f"Instance state {instance.state['Name']} not handled")
+            return None
+
+        self.save()
+        return self.ec2_status
 
     def install_service(self, service_name):
         logger.info(f"Installing service {service_name} on {self.host_name} ")
@@ -172,7 +201,7 @@ class EC2(AWSComponent):
                 self.private_ip = None
                 self.public_ip = None
                 self.host_name = None
-                self.ec2_status = AWSComponent.AWSCompStatus.TERMINATED
+                self.ec2_status = AWSComponent.AWSCompStatus.terminated
                 self.save()
                 return "Terminated"
 

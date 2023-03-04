@@ -1,11 +1,10 @@
 import logging
 from datetime import datetime
 
+from apps.plan.models import Plan
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
-
-from apps.plan.models import Plan
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +22,14 @@ class AWSComponent(models.Model):
     objects = InheritanceManager()
 
     class AWSCompStatus(models.IntegerChoices):
-        PREPARED = 1
-        STARTED = 2  # Create Instance
-        STOPPED = 3  # Stop Instance
-        DELETED = 4  # Delete Instance
-        RUNNING = 10
-        FAILED = -1
-        TERMINATED = -2
+        PREPARED = -1  # This is specific to SC
+        pending = 1  # These are statuses from EC2
+        starting = 2
+        running = 3
+        stopping = 4
+        stopped = 5
+        shutting_down = 6
+        terminated = 7
 
     def __str__(self):
         return f"ID {self.id} PLAN {self.plan}"

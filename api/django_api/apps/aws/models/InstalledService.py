@@ -51,7 +51,6 @@ class InstalledService(models.Model):
         return ssh
 
     def install_service(self):
-
         # Run commands to install PostgreSQL on the EC2 instance
         error = []
         stdouts = []
@@ -70,7 +69,7 @@ class InstalledService(models.Model):
         self.install_log = str(stdouts)
 
         self.service_url = self.ec2.host_name + ":" + str(self.service_port)
-        self.service_status = AWSComponent.AWSCompStatus.RUNNING
+        self.service_status = AWSComponent.AWSCompStatus.running
         self.save()
 
     def uninstall_service(self):
