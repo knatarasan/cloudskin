@@ -170,25 +170,31 @@ class AwsCredsSerializer(serializers.Serializer):
     aws_private_key_pair_pem_name = serializers.CharField(required=False, allow_blank=True)
     date_created = serializers.DateTimeField(read_only=True)
     date_modified = serializers.DateTimeField(read_only=True)
-    aws_access_key = serializers.SerializerMethodField()
-    aws_access_secret = serializers.SerializerMethodField()
-    aws_private_key_pair_pem = serializers.SerializerMethodField()
+
+    """
+    TODO : 
+        1. while storing aws secrets , it need not return stored value, following comments can be removed
+        2. Convert above serializer into Model Serializer
+    """
+    # aws_access_key = serializers.SerializerMethodField()
+    # aws_access_secret = serializers.SerializerMethodField()
+    # aws_private_key_pair_pem = serializers.SerializerMethodField()
 
     # Use following two ways to optimize it
     # https://medium.com/finnovate-io/using-custom-model-fields-to-encrypt-and-decrypt-data-in-django-8255a4960b72
     # RSAEncryptedField
 
-    def get_aws_access_key(self, obj):
-        rsa = RSA()
-        return rsa.decrypt(obj.aws_access_key_en)
+    # def get_aws_access_key(self, obj):
+    #     rsa = RSA()
+    #     return rsa.decrypt(obj.aws_access_key_en)
 
-    def get_aws_access_secret(self, obj):
-        rsa = RSA()
-        return rsa.decrypt(obj.aws_access_secret_en)
+    # def get_aws_access_secret(self, obj):
+    #     rsa = RSA()
+    #     return rsa.decrypt(obj.aws_access_secret_en)
 
-    def get_aws_private_key_pair_pem(self, obj):
-        rsa = RSA()
-        return rsa.decrypt(obj.aws_private_key_pair_pem_en)
+    # def get_aws_private_key_pair_pem(self, obj):
+    #     rsa = RSA()
+    #     return rsa.decrypt(obj.aws_private_key_pair_pem_en)
 
     def create(self, validated_data):
         """

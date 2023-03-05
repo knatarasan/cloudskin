@@ -41,9 +41,6 @@ class EC2(AWSComponent):
 
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
-        logger.debug("AWS_ACCESS_KEY_ID: " + AWS_ACCESS_KEY_ID)
-        logger.debug("AWS_SECRET_ACCESS_KEY: " + AWS_SECRET_ACCESS_KEY)
-
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
         if settings.AWS_TEST_MODE:
             logger.info(
@@ -108,7 +105,7 @@ class EC2(AWSComponent):
                 self.public_ip = instance.public_ip_address
                 self.private_ip = instance.private_ip_address
                 self.host_name = instance.public_dns_name
-                self.security_group = instance.security_groups[0]["GroupId"]
+                self.security_group = instance.security_groups[0]["GroupId"] if instance.security_groups else None
                 self.subnet = instance.subnet_id
                 self.save()
                 self.health()
@@ -123,6 +120,11 @@ class EC2(AWSComponent):
             return None
 
     def health(self):
+        """
+        TODO
+            1. Right now every call to health updates, DB for EC2 model object , it has to be refactored
+            2. From Frontend no separate call to health is used, current iteration uses this function from self.update_instance_details
+        """
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         ec2 = boto3.resource(
