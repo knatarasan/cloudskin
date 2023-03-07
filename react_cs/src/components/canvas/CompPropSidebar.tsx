@@ -129,7 +129,7 @@ const CompPropSidebar = ({ node_idx }: any) => {
             </Card>
 
 
-            {node.data.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
+            {/* {node.data.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
                 <Card.Body>
                     <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.attachables[0].name}</i></strong></Card.Subtitle><br />
                     {node.attachables.map((attachable) =>
@@ -153,7 +153,7 @@ const CompPropSidebar = ({ node_idx }: any) => {
                     <Button variant="outline-success" type="submit" onClick={unInstallAttachable}>Uninstall</Button>
                 </Card.Body>
             </Card>
-                : null}
+                : null} */}
 
         </>
     )

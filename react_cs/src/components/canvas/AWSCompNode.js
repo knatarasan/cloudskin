@@ -14,7 +14,11 @@ import {
 
 export default memo(({ data, isConnectable }) => {
   const pg_data = {};
-  const ec2_data = { label: data.label, color: data.color, api_object: data.api_object };
+  const ec2_data = {
+    label: data.label,
+    color: data.color,
+    api_object: data.api_object,
+  };
 
   if (data.attachable === "pg") {
     console.log("TODO call axios Deploy PG now");

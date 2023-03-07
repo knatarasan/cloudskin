@@ -1,13 +1,12 @@
 // https://blog.bitsrc.io/zustands-guide-to-simple-state-management-12c654c69990
 // https://blog.openreplay.com/zustand-simple-modern-state-management-for-react    <- Refer this for Persisting management
-   
 
 import { persist } from "zustand/middleware";
 import { create } from "zustand";
 import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
 
 //  This is change is for persisting the state
-let store = ((set, get) => ({
+let store = (set, get) => ({
   nodes: [],
   edges: [],
   user: { username: "", email: "", loggedIn: false, access_token: "" },
@@ -89,12 +88,18 @@ let store = ((set, get) => ({
     }));
   },
 
+  removeNode: (nodeId) => {
+    set((state) => ({
+      nodes: state.nodes.filter((node) => node.id !== nodeId),
+    }));
+  },
+
   emptyEdges: () => {
     set((state) => ({
       edges: [],
     }));
   },
-}));
+});
 
-store = persist(store, {name: "useStore"});
+store = persist(store, { name: "useStore" });
 export const useStore = create(store);

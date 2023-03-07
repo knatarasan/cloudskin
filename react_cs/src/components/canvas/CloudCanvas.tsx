@@ -44,6 +44,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  removeNode: state.removeNode
 });
 
 const DnDFlow = () => {
@@ -62,7 +63,7 @@ const DnDFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
 
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, removeNode } = useStore(selector, shallow);
 
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
@@ -155,7 +156,18 @@ const DnDFlow = () => {
 
   const onNodeDelete = (nodes: any): void => {
     console.log('This node will be deleted ', nodes);
+    /*
+      - if is there an active instance attached to it
+        - delete
+      - else 
+        - dont delte , but alert
+    */
 
+    nodes.map((node) => {
+      if (node.data.api_object.ec2_status === -1) {
+        removeNode(node.id)
+      }
+    })
     // nodes.map((node: any) => {
     //   const endpoint = node.data.api_object.aws_component;
 
@@ -252,7 +264,14 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    setClickedNode(0)
+    // scan for index of this node and set index id into setClickNode
+
+    nodes.map((node_i, idx) => {
+      if (node_i.id === node.id) {
+        setClickedNode(idx);
+      }
+    })
+
   }
 
   const onPaneClick = (event: any) => {
