@@ -1,9 +1,9 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import logo from "../../static/images/logo3.png";
+import logo from "../../static/images/logo_stratoclo.png";
 import landing_page_img from "../../static/images/depict_product.png";
 import create_plan_img from "../../static/images/create_plan.png";
-import how_to_use_img from "../../static/images/landing_page_eng.png"
+import how_to_use_img from "../../static/images/how_to_use_stratoclo.png"
 import { Link } from "react-router-dom";
 import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
 import { FaSitemap, FaMap } from 'react-icons/fa';
@@ -24,11 +24,30 @@ const Home = () => {
         {`
 
     .navbar-custom {
-      background-color: #72ADDE;
+      background-color: #FFFFFF;
+      font-size: 20px;
     }
+
+    .landing-main {
+      background-color: #FCE2D7;
+      color: #491619;
+    }
+
+    .alternate-section {
+      background-color: #302334;
+      color: #491619;
+    }
+
     .navbar-custom .navbar-brand,
     .navbar-custom .navbar-text {
       color: green;
+    }
+
+    .get-started {
+      display: block;
+      width: 25%;
+      background-color: #FFFFFF;
+      color: #491619;
     }
 
     .card-bg-gradient {
@@ -39,7 +58,7 @@ const Home = () => {
       background: linear-gradient(to right, #ffffff,#5DB1E9);
     }
     .alt-bg {
-      background: #ebf7f7
+      background: #FCE2D7
     }
 
     .card-title-motivation-gradient {
@@ -66,7 +85,7 @@ const Home = () => {
           <div className="container px-5">
             <Link to="/">
               <Navbar.Brand>
-                <img src={logo} width={75} height={"auto"}></img>
+                <img src={logo} width={200} height={"auto"}></img>
               </Navbar.Brand>
             </Link>
             <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
@@ -110,28 +129,28 @@ const Home = () => {
           </div>
         </Navbar>
         {/* Header */}
-        <header className="bg-primary py-5">
+        <header className="py-5 landing-main" >
           <div className="container px-5">
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
                 <div className="my-5 text-center text-xl-start">
-                  <h1 className="display-5 fw-bolder text-white mb-2">Deploy an App in Cloud in Minutes</h1>
-                  <p className="lead fw-normal text-white-50 mb-4">
+                  <h1 className="display-5 fw-bolder mb-2">Deploy an App in Cloud in Minutes</h1>
+                  <p className="lead fw-normal mb-4">
                     No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
                     No code cloud deployment<br />
                     One click deployment<br />
                     Best practices applied, <strong>you can focus on your business</strong><br />
                   </p>
-
-                  <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                    <a className="btn btn-light btn-lg px-4 me-sm-3" href="#features">Get Started</a>
-                    <a className="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
-                  </div>
                 </div>
               </div>
               <div className="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img className="img-fluid rounded-3 my-5" src={how_to_use_img} alt="..." /></div>
             </div>
+            <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+              <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="#features">Get Started</a>
+              <a className="btn btn-outline-light btn-lg px-4 get-started" href="#!">Learn More</a>
+            </div>
           </div>
+
         </header>
 
 
@@ -239,7 +258,7 @@ const Home = () => {
         </section>
 
         {/* <!-- Features section--> */}
-        <section className="py-5 bg-primary" id="features">
+        <section className="py-5 alternate-section" id="features">
           <Container>
             <Row className="text-center">
               <h5 className="fw-bolder mb-0">FEATURES:</h5>

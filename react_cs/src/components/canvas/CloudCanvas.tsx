@@ -395,16 +395,13 @@ const DnDFlow = () => {
             <Controls />
             <div className="save__controls">
 
-              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button>(This button is only for testing)<br />
+              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button><br />
               <Button variant="outline-success" type="submit" onClick={deployPlan}>Deploy Plan</Button>
               <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>
-
-              <h1>{planRef.current.deploy_status}</h1> <h5>There is a bug in save plan & deploy plan cycle</h5>
               <p>Plan id : {planId} </p>
-              {/* <p>Plan: {JSON.stringify(planRef.current)}</p>
-              <p>NODES: {JSON.stringify(nodes)}</p> */}
-              <br />
-              <br />
+
+              <br/>
+              <br/>
               {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
             </div>
             <div>

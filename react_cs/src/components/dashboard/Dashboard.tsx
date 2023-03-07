@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import logo from "../../static/images/logo3.png";
+import logo from "../../static/images/logo_stratoclo.png";
 import PlanService from '../../services/plan.service'
 import AuthService from "../../services/auth.service";
 import { useStore } from "../canvas/Store";
