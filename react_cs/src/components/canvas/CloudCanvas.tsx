@@ -155,7 +155,16 @@ const DnDFlow = () => {
 
   const onNodeDelete = (nodes: any): void => {
     console.log('This node will be deleted ', nodes);
+    /*
+      - if is there an active instance attached to it
+        - delete
+      - else 
+        - dont delte , but alert
+    */
 
+    nodes.map((node)=>{
+      const status = node.data.api_object.ec2_status
+    })
     // nodes.map((node: any) => {
     //   const endpoint = node.data.api_object.aws_component;
 
@@ -252,7 +261,8 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    setClickedNode(0)
+
+    setClickedNode(node.id)
   }
 
   const onPaneClick = (event: any) => {
