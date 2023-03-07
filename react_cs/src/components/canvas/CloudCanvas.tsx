@@ -44,6 +44,7 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  removeNode: state.removeNode
 });
 
 const DnDFlow = () => {
@@ -62,7 +63,7 @@ const DnDFlow = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
 
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, removeNode } = useStore(selector, shallow);
 
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
@@ -162,8 +163,10 @@ const DnDFlow = () => {
         - dont delte , but alert
     */
 
-    nodes.map((node)=>{
-      const status = node.data.api_object.ec2_status
+    nodes.map((node) => {
+      if (node.data.api_object.ec2_status === -1) {
+        removeNode(node.id)
+      }
     })
     // nodes.map((node: any) => {
     //   const endpoint = node.data.api_object.aws_component;
@@ -261,8 +264,14 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
+    // scan for index of this node and set index id into setClickNode
 
-    setClickedNode(node.id)
+    nodes.map((node_i, idx) => {
+      if (node_i.id === node.id) {
+        setClickedNode(idx);
+      }
+    })
+
   }
 
   const onPaneClick = (event: any) => {
