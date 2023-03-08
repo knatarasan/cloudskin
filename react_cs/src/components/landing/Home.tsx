@@ -12,7 +12,7 @@ import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 import { useStore } from "../canvas/Store";
-
+import Interested from "./Interested";
 
 const Home = () => {
   // const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -25,7 +25,7 @@ const Home = () => {
 
     .navbar-custom {
       background-color: #FFFFFF;
-      font-size: 20px;
+      font-size: 16px;
     }
 
     .landing-main {
@@ -34,8 +34,8 @@ const Home = () => {
     }
 
     .alternate-section {
-      background-color: #302334;
-      color: #491619;
+      background-color: #FFFFFF;
+      color: #4B7949;
     }
 
     .navbar-custom .navbar-brand,
@@ -48,14 +48,21 @@ const Home = () => {
       width: 25%;
       background-color: #FFFFFF;
       color: #491619;
+      border: 2px solid black;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .card-font {
+      color: #491619;
     }
 
     .card-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#ebf7f7);
+      background: linear-gradient(to right, #ffffff,#FCE2D7);
     }
 
     .card-feature-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#5DB1E9);
+      background: linear-gradient(to right, #ffffff,#FCE2D7);
     }
     .alt-bg {
       background: #FCE2D7
@@ -134,7 +141,7 @@ const Home = () => {
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
                 <div className="my-5 text-center text-xl-start">
-                  <h1 className="display-5 fw-bolder mb-2">Deploy an App in Cloud in Minutes</h1>
+                  <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
                   <p className="lead fw-normal mb-4">
                     No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
                     No code cloud deployment<br />
@@ -150,12 +157,14 @@ const Home = () => {
               <a className="btn btn-outline-light btn-lg px-4 get-started" href="#!">Learn More</a>
             </div>
           </div>
-
+          <Interested />
         </header>
 
 
+
+
         {/* <!-- Motivation section--> */}
-        <section className="py-5 alt-bg" id="features">
+        <section className="py-5 alt-bg card-font" id="features">
           <Container>
             <Row className="text-center">
               <h4 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h4>
@@ -253,12 +262,12 @@ const Home = () => {
           </Container>
 
           <Row className="text-center">
-            <h2><strong>At ClEffex we deploy and manage your cloud application</strong></h2>
+            <h2><strong>At StratoClo we deploy and manage your cloud application</strong></h2>
           </Row>
         </section>
 
         {/* <!-- Features section--> */}
-        <section className="py-5 alternate-section" id="features">
+        <section className="py-5 alternate-section card-font" id="features">
           <Container>
             <Row className="text-center">
               <h5 className="fw-bolder mb-0">FEATURES:</h5>
@@ -335,7 +344,7 @@ const Home = () => {
                     <h1><GrConfigure /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Configuration management:</strong></Card.Title>
                     <Card.Text>
-                      ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
+                      StratoClo applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -352,7 +361,7 @@ const Home = () => {
                     <h1><GrDeploy /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Deployment automation:</strong></Card.Title>
                     <Card.Text>
-                      ClEffex takes care of releasing updates and new versions of your applications.
+                      StratoClo takes care of releasing updates and new versions of your applications.
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -390,7 +399,7 @@ const Home = () => {
                     <h1><GiPiggyBank /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Cost optimization:</strong></Card.Title>
                     <Card.Text>
-                      CLeFFeX helps you optimize your use of resources in order to minimize costs.
+                      StratoClo helps you optimize your use of resources in order to minimize costs.
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -402,7 +411,7 @@ const Home = () => {
         </section>
 
         {/* <!-- Process section--> */}
-        <section className="py-5" id="features">
+        <section className="py-5 landing-main" id="features">
           <div className="container px-5 my-5">
             <Container>
               <Row className="text-center">
@@ -463,21 +472,7 @@ const Home = () => {
           </div>
         </section>
 
-        {/* <!-- Cant wait--> */}
-        <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
-          <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
-            <div className="mb-4 mb-xl-0">
-              <div className="fs-3 fw-bold text-white">Wanna join our waitlist</div>
-            </div>
-            <div className="ms-xl-4">
-              <div className="input-group mb-2">
-                <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
-                <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
-              </div>
-              <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
-            </div>
-          </div>
-        </aside>
+
 
         {/* <!-- Status Quo section--> */}
         <section className="py-5" id="features">
@@ -501,13 +496,13 @@ const Home = () => {
 
 
         {/* <!-- Blog preview section--> */}
-        <section className="py-5 bg-light">
+        <section className="py-5 landing-main">
           <div className="container px-5 my-5">
             <div className="row gx-5 justify-content-center">
               <div className="col-lg-8 col-xl-6">
                 <div className="text-center">
                   <h2 className="fw-bolder">From our blog</h2>
-                  <p className="lead fw-normal text-muted mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
+                  <p className="lead fw-normal mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
                 </div>
               </div>
             </div>
@@ -581,27 +576,12 @@ const Home = () => {
       </main>
 
       {/* <!-- Call to action--> */}
-      <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
-        <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
-          <div className="mb-4 mb-xl-0">
-            <div className="fs-3 fw-bold text-white">To know more about deploy your app fast</div>
-            <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
-          </div>
-          <div className="ms-xl-4">
-            <div className="input-group mb-2">
-              <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
-              <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
-            </div>
-            <div className="small text-white-50">We care about privacy, and will never share your data.</div>
-          </div>
-        </div>
-      </aside>
 
       {/* // <!-- Footer--> */}
       <footer className="bg-dark py-4 mt-auto">
         <div className="container px-5">
           <div className="row align-items-center justify-content-between flex-column flex-sm-row">
-            <div className="col-auto"><div className="small m-0 text-white">Copyright &copy; Your Website 2022</div></div>
+            <div className="col-auto"><div className="small m-0 text-white">&copy; 2023 StratoClo. All rights reserved.</div></div>
             <div className="col-auto">
               <a className="link-light small" href="#!">Privacy</a>
               <span className="text-white mx-1">&middot;</span>
