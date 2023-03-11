@@ -1,34 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useNavigate, Navigate, Link } from "react-router-dom";
-import { Container, Navbar, Nav, Table, Col, Row, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Navigate, Link } from "react-router-dom";
+import { Container, Table, Col, Row, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import logo from "../../static/images/logo_stratoclo.png";
 import PlanService from '../../services/plan.service'
-import AuthService from "../../services/auth.service";
 import { useStore } from "../canvas/Store";
-
-
-const selector = (state) => ({
-  user: state.user,
-  addUser: state.addUser,
-});
+import SCNavbar from "../navbar/Navbar";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const [plans, setPlans] = useState<any>();
-  const { user, addUser } = useStore(selector);
-
-  const handleLogout = (e: React.SyntheticEvent): void => {
-    AuthService.logout()
-      .then((response) => {
-        console.log("logout response", response)
-        // Updata store with empty user after successful logout
-        addUser({ username: "", email: "", loggedIn: false, access_token: "" });
-      })
-
-    console.log("handleLogout context is set to false", user.username);
-    navigate("/");
-  };
+  const user = useStore(state => state.user);
 
   useEffect(() => {
     PlanService.getUserPlans()
@@ -57,22 +37,7 @@ const Dashboard = () => {
     return (
 
       <>
-        <Navbar bg="light" variant="light">
-          <Container>
-            <Link to="/">
-              <Navbar.Brand>
-                <img src={logo} width={50} height={"auto"}></img>
-              </Navbar.Brand>
-            </Link>
-            <Nav className="me-auto">
-              <Navbar.Text>
-                {'username' in user ? "Signed in: " + user.username : null}
-              </Navbar.Text>
-              <Nav.Link href="" onClick={handleLogout}>Logout</Nav.Link>
-              <Nav.Link as={Link} to="/iamuser">IAM User</Nav.Link>
-            </Nav>
-          </Container>
-        </Navbar>
+      <SCNavbar/>
         <Container>
           <Row><br /></Row>
           <Row>

@@ -1,23 +1,17 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import logo from "../../static/images/logo_stratoclo.png";
-import landing_page_img from "../../static/images/depict_product.png";
 import create_plan_img from "../../static/images/create_plan.png";
 import how_to_use_img from "../../static/images/how_to_use_stratoclo.png"
-import { Link } from "react-router-dom";
-import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
+import { Col, Row, Card } from "react-bootstrap";
 import { FaSitemap, FaMap } from 'react-icons/fa';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
-import { useStore } from "../canvas/Store";
 import Interested from "./Interested";
+import SCNavbar from "../navbar/Navbar";
 
 const Home = () => {
-  // const { currentUser, setCurrentUser } = useContext(UserContext);
-  const user = useStore(state => state.user);
-
   return (
     <div>
       <style type="text/css">
@@ -88,53 +82,8 @@ const Home = () => {
 
       <main className="flex-shrink-0">
         {/* Navigation */}
-        <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom" >
-          <div className="container px-5">
-            <Link to="/">
-              <Navbar.Brand>
-                <img src={logo} width={200} height={"auto"}></img>
-              </Navbar.Brand>
-            </Link>
-            <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item"><a className="nav-link" href="pricing.html">Pricing</a></li>
-                <li className="nav-item"><a className="nav-link" href="faq.html">FAQ</a></li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                    <li><a className="dropdown-item" href="blog-home.html">Blog Home</a></li>
-                    <li><a className="dropdown-item" href="blog-post.html">Blog Post</a></li>
-                  </ul>
-                </li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                    <li><a className="dropdown-item" href="portfolio-overview.html">Portfolio Overview</a></li>
-                    <li><a className="dropdown-item" href="portfolio-item.html">Portfolio Item</a></li>
-                  </ul>
-                </li>
-                {(() => {
-                  if (user.loggedIn) {
-                    return (
-                      <>
-                        <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="">Signed in: {user.username}</Nav.Link>
-                      </>
-                    )
-                  } else {
-                    return (
-                      <>
-                        <Nav.Link href="/login">Login</Nav.Link>
-                        <Nav.Link href="/register">Sign Up</Nav.Link>
-                      </>
-                    )
-                  }
-                })()}
-              </ul>
-            </div>
-          </div>
-        </Navbar>
+        <SCNavbar />
+
         {/* Header */}
         <header className="py-5 landing-main" >
           <div className="container px-5">
