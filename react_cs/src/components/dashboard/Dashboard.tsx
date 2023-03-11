@@ -5,6 +5,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import PlanService from '../../services/plan.service'
 import { useStore } from "../canvas/Store";
 import SCNavbar from "../navbar/Navbar";
+import '../../App.css'
 
 const Dashboard = () => {
   const [plans, setPlans] = useState<any>();
@@ -37,54 +38,56 @@ const Dashboard = () => {
     return (
 
       <>
-      <SCNavbar/>
-        <Container>
-          <Row><br /></Row>
-          <Row>
-            <Col><h4> Plans </h4></Col>
-            <Col></Col>
-            <Col><Link to={`/plan/${null}`}><Button variant="outline-primary" size="sm">Create plan</Button></Link></Col>
+        <SCNavbar />
+        <section className="app-bg-shade">
+          <Container className="app-bg-white">
+            <Row><br /></Row>
             <Row>
+              <Col><h4 className="app-color"> Plans </h4></Col>
+              <Col></Col>
+              <Col><Link to={`/plan/${null}`}><Button className="app-button" size="sm">Create plan</Button>
+              </Link></Col>
+              <Row>
+              </Row>
             </Row>
-          </Row>
-          <Row><br /></Row>
-          <Row>
-            <Col>
-              <Table striped bordered hover size="sm">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Plan Name</th>
-                    <th>Deployed Status</th>
-                    <th>Running Status</th>
-                    <th>Edit Plan</th>
-                    <th>Delete Plan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* {console.log('plans here',plans)} */}
-                  {plans?.map((plan: any) => (
-
-                    <tr id={plan.plan_id}>
-                      <td>
-                        <Link to={`/plan/${plan.plan_id}`}>{plan.plan_id}</Link></td>
-                      <td>{plan.owner}</td>
-                      <td>{plan.deploy_status}</td>
-                      <td>{plan.running_status}</td>
-                      <td>
-                        <Link to={`/plan/${plan.plan_id}`}><FaEdit /></Link>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                      </td>
-                      <td>
-                        <button onClick={() => deletePlan(plan.plan_id)}><FaTrashAlt /></button>
-                      </td>
+            <Row><br /></Row>
+            <Row>
+              <Col>
+                <Table striped bordered hover size="sm" className="app-color">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Plan Name</th>
+                      <th>Deployed Status</th>
+                      <th>Running Status</th>
+                      <th>Edit Plan</th>
+                      <th>Delete Plan</th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Col>
-          </Row>
-        </Container>
+                  </thead>
+                  <tbody>
+                    {/* {console.log('plans here',plans)} */}
+                    {plans?.map((plan: any) => (
+
+                      <tr key={plan.plan_id}>
+                        <td><Link to={`/plan/${plan.plan_id}`}>{plan.plan_id}</Link></td>
+                        <td>{plan.owner}</td>
+                        <td>{plan.deploy_status}</td>
+                        <td>{plan.running_status}</td>
+                        <td>
+                          <Link to={`/plan/${plan.plan_id}`}><FaEdit /></Link>
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                        <td>
+                          <button onClick={() => deletePlan(plan.plan_id)}><FaTrashAlt /></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          </Container>
+        </section>
       </>
     );
   }

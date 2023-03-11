@@ -17,15 +17,16 @@ const Home = () => {
       <style type="text/css">
         {`
 
+    .landing-main {
+      background-color: #FCE2D7;
+      color: #491619;
+    }
+
     .navbar-custom {
       background-color: #FFFFFF;
       font-size: 16px;
     }
 
-    .landing-main {
-      background-color: #FCE2D7;
-      color: #491619;
-    }
 
     .alternate-section {
       background-color: #FFFFFF;
@@ -40,8 +41,8 @@ const Home = () => {
     .get-started {
       display: block;
       width: 25%;
-      background-color: #FFFFFF;
-      color: #491619;
+      background-color:#491619;
+      color:#FFFFFF;
       border: 2px solid black;
       padding: 10px;
       border-radius: 5px;
@@ -85,11 +86,14 @@ const Home = () => {
         <SCNavbar />
 
         {/* Header */}
+        
         <header className="py-5 landing-main" >
           <div className="container px-5">
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
                 <div className="my-5 text-center text-xl-start">
+
+
                   <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
                   <p className="lead fw-normal mb-4">
                     No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)

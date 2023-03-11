@@ -1,0 +1,22 @@
+.app-color {
+    color: #491619;
+}
+
+.app-bg-shade {
+    background-color: #FCE2D7;
+}
+
+.app-bg-white {
+    background-color: #FFFFFF;
+}
+
+.app-button {
+    display: block;
+    width: 25%;
+    /* background-color: #FFFFFF;
+    background-color: 'red';
+    color: #491619; */
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 5px;
+  }
