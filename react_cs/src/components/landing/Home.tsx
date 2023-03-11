@@ -157,11 +157,7 @@ const Home = () => {
               <a className="btn btn-outline-light btn-lg px-4 get-started" href="#!">Learn More</a>
             </div>
           </div>
-          <Interested />
         </header>
-
-
-
 
         {/* <!-- Motivation section--> */}
         <section className="py-5 alt-bg card-font" id="features">
@@ -468,14 +464,20 @@ const Home = () => {
                   </p>
                 </Col>
               </Row>
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <Interested />
+
             </Container>
           </div>
         </section>
 
 
-
         {/* <!-- Status Quo section--> */}
-        <section className="py-5" id="features">
+        <section className="py-5 alternate-section card-font" id="interested">
           <div className="container px-5 my-5">
             <Container>
               <Row>
