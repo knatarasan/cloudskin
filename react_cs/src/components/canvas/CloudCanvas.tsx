@@ -8,6 +8,7 @@ import AWSCompNode from "./AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
 import { useStore } from "./Store";
+import CanvasNavbar from "./CanvasNavbar";
 
 import ReactFlow, {
   Node,
@@ -67,6 +68,7 @@ const DnDFlow = () => {
 
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
+
   const onSave = () => {
 
     console.log("in onSave", reactFlowInstance, reactFlowInstanceRef, planIdRef.current)
@@ -100,6 +102,7 @@ const DnDFlow = () => {
         })
     }
   }
+
 
   useEffect(() => {
 
@@ -371,45 +374,48 @@ const DnDFlow = () => {
 
 
   return (
-    <div className="dndflow">
-      <ReactFlowProvider>
-        <Sidebar />
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            deleteKeyCode={deleteKeyCodes}
-            onNodesChange={onNodesChange}
-            onNodesDelete={onNodeDelete}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onEdgesDelete={onEdgesDelete}
-            onInit={setReactFlowInstance}
-            onDrop={onDrop}
-            onDragOver={onDragOver}
-            onNodeClick={onNodeClick}
-            onPaneClick={onPaneClick}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <Controls />
-            <div className="save__controls">
+    <>
+      <CanvasNavbar onSave={onSave} deployPlan={deployPlan} deletePlan={deletePlan} />
+      <div className="dndflow">
+        <ReactFlowProvider>
+          <Sidebar />
+          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              deleteKeyCode={deleteKeyCodes}
+              onNodesChange={onNodesChange}
+              onNodesDelete={onNodeDelete}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onEdgesDelete={onEdgesDelete}
+              onInit={setReactFlowInstance}
+              onDrop={onDrop}
+              onDragOver={onDragOver}
+              onNodeClick={onNodeClick}
+              onPaneClick={onPaneClick}
+              nodeTypes={nodeTypes}
+              fitView
+            >
+              <Controls />
+              <div className="save__controls">
 
-              <Button variant="outline-success" type="submit" onClick={onSave}>Save</Button><br />
-              <Button variant="outline-success" type="submit" onClick={deployPlan}>Deploy Plan</Button>
-              <Button variant="outline-danger" type="submit" onClick={deletePlan}>Delete Plan</Button>
-              <p>Plan id : {planId} </p>
+                <Button variant="outline-success" type="submit" disabled onClick={onSave}>Save</Button><br />
+                <Button variant="outline-success" type="submit" disabled onClick={deployPlan}>Deploy Plan</Button>
+                <Button variant="outline-danger" type="submit"  disabled onClick={deletePlan}>Delete Plan</Button>
+                <p>Plan id : {planId} </p>
 
-              <br/>
-              <br/>
-              {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
-            </div>
-            <div>
-            </div>
-          </ReactFlow>
-        </div>
-      </ReactFlowProvider>
-    </div>
+                <br />
+                <br />
+                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
+              </div>
+              <div>
+              </div>
+            </ReactFlow>
+          </div>
+        </ReactFlowProvider>
+      </div>
+    </>
   );
 };
 

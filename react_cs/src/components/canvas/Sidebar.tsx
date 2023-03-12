@@ -18,7 +18,6 @@ const ComponentsBar = () => {
   return (
     <aside>
       <section className="app-color">
-        <Link to="/dashboard">Dashboard</Link>
         <div className="description">PALETTE</div>
         <div id='App'
           className="dndnode input"
