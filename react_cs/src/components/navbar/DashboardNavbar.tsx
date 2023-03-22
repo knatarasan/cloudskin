@@ -30,7 +30,7 @@ const DBNavbar = () => {
 
     return (
         <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color app-bg-shade" >
+            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color app-navbar">
                 <div className="container px-5">
                     <Link to="/">
                         <Navbar.Brand>

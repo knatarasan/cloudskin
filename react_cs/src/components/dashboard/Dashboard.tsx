@@ -40,12 +40,13 @@ const Dashboard = () => {
       <>
         <DBNavbar />
         <section>
-          <Container className="app-bg-white">
+
+          <Container className="">
             <Row><br /></Row>
             <Row>
               <Col><h4 className="app-color"> Plans </h4></Col>
               <Col></Col>
-              <Col><Link to={`/plan/${null}`}><Button className="app-button" size="sm">Create plan</Button>
+              <Col><Link to={`/plan/${null}`}><Button variant="outline-secondary" size="sm">Create Plan</Button>
               </Link></Col>
               <Row>
               </Row>
@@ -55,7 +56,7 @@ const Dashboard = () => {
               <Col>
                 <Table striped bordered hover size="sm" className="app-color">
                   <thead>
-                    <tr>
+                    <tr className="app-color">
                       <th>#</th>
                       <th>Plan Name</th>
                       <th>Deployed Status</th>
@@ -68,17 +69,17 @@ const Dashboard = () => {
                     {/* {console.log('plans here',plans)} */}
                     {plans?.map((plan: any) => (
 
-                      <tr key={plan.plan_id}>
-                        <td><Link to={`/plan/${plan.plan_id}`}>{plan.plan_id}</Link></td>
+                      <tr key={plan.plan_id} className="app-color">
+                        <td ><Link to={`/plan/${plan.plan_id}`}>{plan.plan_id}</Link></td>
                         <td>{plan.owner}</td>
                         <td>{plan.deploy_status}</td>
                         <td>{plan.running_status}</td>
                         <td>
-                          <Link to={`/plan/${plan.plan_id}`}><FaEdit /></Link>
+                          <Link to={`/plan/${plan.plan_id}`}><FaEdit className="app-color" /></Link>
                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </td>
                         <td>
-                          <button onClick={() => deletePlan(plan.plan_id)}><FaTrashAlt /></button>
+                          <button onClick={() => deletePlan(plan.plan_id)}><FaTrashAlt className="app-color" /></button>
                         </td>
                       </tr>
                     ))}

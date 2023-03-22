@@ -36,7 +36,7 @@ const CanvasNavbar = ({ onSave, deployPlan, deletePlan }) => {
 
     return (
         <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color" >
+            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color app-navbar" style={{ height: '40px' }}>
                 <div className="container">
                     <Link to="/dashboard">
                         <Navbar.Brand>

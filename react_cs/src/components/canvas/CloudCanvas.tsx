@@ -8,7 +8,7 @@ import AWSCompNode from "./AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
 import { useStore } from "./Store";
-import CanvasNavbar from "./CanvasNavbar";
+import CanvasNavbar from "../navbar/CanvasNavbar";
 
 import ReactFlow, {
   Node,
@@ -380,6 +380,8 @@ const DnDFlow = () => {
         <ReactFlowProvider>
           <Sidebar />
           <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+            <p>Plan id : {planId} </p>
+
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -400,13 +402,6 @@ const DnDFlow = () => {
               <Controls />
               <div className="save__controls">
 
-                <Button variant="outline-success" type="submit" disabled onClick={onSave}>Save</Button><br />
-                <Button variant="outline-success" type="submit" disabled onClick={deployPlan}>Deploy Plan</Button>
-                <Button variant="outline-danger" type="submit"  disabled onClick={deletePlan}>Delete Plan</Button>
-                <p>Plan id : {planId} </p>
-
-                <br />
-                <br />
                 {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
               </div>
               <div>

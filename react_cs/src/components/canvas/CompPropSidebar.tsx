@@ -102,9 +102,9 @@ const CompPropSidebar = ({ node_idx }: any) => {
 
     return (
         <>
-            <Card id="node_props" style={{ width: '18rem' }}>
+            <Card id="node_props" style={{ width: '18rem' }} className="app-color">
                 <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{api_object.aws_component}</i></strong></Card.Subtitle><br />
+                    <Card.Subtitle className="mb-2 text-muted"><strong className="app-color">Properties of <i>{api_object.aws_component}</i></strong></Card.Subtitle><br />
                     {Object.keys(api_object).map((key) =>
                         <>
                             <Card.Text>
@@ -121,10 +121,10 @@ const CompPropSidebar = ({ node_idx }: any) => {
                             </Card.Text>
                         </>
                     )}
-                    <Button variant="outline-success" type="submit" onClick={handleSubmit}>Save</Button>
-                    <Button variant="outline-success" type="submit" onClick={createInstance}>Deploy</Button>
-                    <Button variant="outline-success" type="submit" onClick={refreshInstance}>Refresh</Button>
-                    <Button variant="outline-success" type="submit" onClick={terminateInstance}>Terminate</Button>
+                    <Button variant="outline-secondary" type="submit" onClick={handleSubmit}>Save</Button>
+                    <Button variant="outline-secondary" type="submit" onClick={createInstance}>Deploy</Button>
+                    <Button variant="outline-secondary" type="submit" onClick={refreshInstance}>Refresh</Button>
+                    <Button variant="outline-secondary" type="submit" onClick={terminateInstance}>Terminate</Button>
                 </Card.Body>
             </Card>
 

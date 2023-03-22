@@ -6,6 +6,12 @@
     background-color: #FCE2D7;
 }
 
+.app-navbar {
+    background-color: #FCE2D7;
+    color: #491619;
+    height: 40px;
+}
+
 .app-bg-white {
     background-color: #FFFFFF;
 }
@@ -19,4 +25,4 @@
     border: 2px solid black;
     padding: 10px;
     border-radius: 5px;
-  }
+}

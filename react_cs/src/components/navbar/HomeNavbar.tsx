@@ -30,11 +30,11 @@ const SCNavbar = () => {
 
     return (
         <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color" >
+            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-navbar" >
                 <div className="container px-5">
                     <Link to="/">
                         <Navbar.Brand>
-                            <img src={logo} width={200} height={"auto"}></img>
+                            <img src={logo} width={150} height={"auto"}></img>
                         </Navbar.Brand>
                     </Link>
                     <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
