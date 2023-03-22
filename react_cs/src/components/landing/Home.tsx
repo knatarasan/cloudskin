@@ -9,7 +9,7 @@ import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 import Interested from "./Interested";
-import SCNavbar from "../navbar/Navbar";
+import SCNavbar from "../navbar/HomeNavbar";
 
 const Home = () => {
   return (

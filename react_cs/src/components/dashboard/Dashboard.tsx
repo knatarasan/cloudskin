@@ -4,7 +4,7 @@ import { Container, Table, Col, Row, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import PlanService from '../../services/plan.service'
 import { useStore } from "../canvas/Store";
-import SCNavbar from "../navbar/Navbar";
+import DBNavbar from "../navbar/DashboardNavbar";
 import '../../App.css'
 
 const Dashboard = () => {
@@ -38,8 +38,8 @@ const Dashboard = () => {
     return (
 
       <>
-        <SCNavbar />
-        <section className="app-bg-shade">
+        <DBNavbar />
+        <section>
           <Container className="app-bg-white">
             <Row><br /></Row>
             <Row>
