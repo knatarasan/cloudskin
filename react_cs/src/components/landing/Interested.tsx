@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
+import '../../App.css'
 
 // display: block;
 // width: 25%;

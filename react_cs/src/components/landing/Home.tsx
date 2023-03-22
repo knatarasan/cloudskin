@@ -10,84 +10,18 @@ import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 import Interested from "./Interested";
 import SCNavbar from "../navbar/HomeNavbar";
+import '../../App.css'
 
 const Home = () => {
   return (
     <div>
-      <style type="text/css">
-        {`
-
-    .landing-main {
-      background-color: #FCE2D7;
-      color: #491619;
-    }
-
-    .navbar-custom {
-      background-color: #FFFFFF;
-      font-size: 16px;
-    }
-
-
-    .alternate-section {
-      background-color: #FFFFFF;
-      color: #4B7949;
-    }
-
-    .navbar-custom .navbar-brand,
-    .navbar-custom .navbar-text {
-      color: green;
-    }
-
-    .get-started {
-      display: block;
-      width: 25%;
-      background-color:#491619;
-      color:#FFFFFF;
-      border: 2px solid black;
-      padding: 10px;
-      border-radius: 5px;
-    }
-
-    .card-font {
-      color: #491619;
-    }
-
-    .card-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#FCE2D7);
-    }
-
-    .card-feature-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#FCE2D7);
-    }
-    .alt-bg {
-      background: #FCE2D7
-    }
-
-    .card-title-motivation-gradient {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to right, #700808,#ff3838);
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
-    }
-
-    .card-title-features-gradient {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to right, #0711db,
-        #2f39fa, #525aff, #4d85ff, #02bae3);
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
-    }
-
-    `}
-      </style>
-
       <main className="flex-shrink-0">
         {/* Navigation */}
         <SCNavbar />
 
         {/* Header */}
-        
-        <header className="py-5 landing-main" >
+
+        <header className="py-5 app" >
           <div className="container px-5">
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
@@ -113,7 +47,7 @@ const Home = () => {
         </header>
 
         {/* <!-- Motivation section--> */}
-        <section className="py-5 alt-bg card-font" id="features">
+        <section className="py-5 app" id="features">
           <Container>
             <Row className="text-center">
               <h4 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h4>
@@ -216,7 +150,7 @@ const Home = () => {
         </section>
 
         {/* <!-- Features section--> */}
-        <section className="py-5 alternate-section card-font" id="features">
+        <section className="py-5 app-color" id="features">
           <Container>
             <Row className="text-center">
               <h5 className="fw-bolder mb-0">FEATURES:</h5>
@@ -360,7 +294,7 @@ const Home = () => {
         </section>
 
         {/* <!-- Process section--> */}
-        <section className="py-5 landing-main" id="features">
+        <section className="py-5 app" id="features">
           <div className="container px-5 my-5">
             <Container>
               <Row className="text-center">
@@ -430,7 +364,7 @@ const Home = () => {
 
 
         {/* <!-- Status Quo section--> */}
-        <section className="py-5 alternate-section card-font" id="interested">
+        <section className="py-5 app-color" id="interested">
           <div className="container px-5 my-5">
             <Container>
               <Row>
@@ -451,7 +385,7 @@ const Home = () => {
 
 
         {/* <!-- Blog preview section--> */}
-        <section className="py-5 landing-main">
+        <section className="py-5 app">
           <div className="container px-5 my-5">
             <div className="row gx-5 justify-content-center">
               <div className="col-lg-8 col-xl-6">

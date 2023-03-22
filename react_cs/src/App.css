@@ -1,3 +1,8 @@
+.app {
+    color: #491619;
+    background-color: #FCE2D7;
+}
+
 .app-color {
     color: #491619;
 }
@@ -25,4 +30,38 @@
     border: 2px solid black;
     padding: 10px;
     border-radius: 5px;
+}
+
+.get-started {
+    display: block;
+    width: 25%;
+    background-color: #491619;
+    color: #FFFFFF;
+    border: 2px solid #491619;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.card-bg-gradient {
+    background: linear-gradient(to right, #ffffff, #FCE2D7);
+}
+
+
+.card-feature-bg-gradient {
+    background: linear-gradient(to right, #ffffff, #FCE2D7);
+}
+
+.card-title-motivation-gradient {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, #700808, #ff3838);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.card-title-features-gradient {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(to right, #0711db,
+            #2f39fa, #525aff, #4d85ff, #02bae3);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
 }
