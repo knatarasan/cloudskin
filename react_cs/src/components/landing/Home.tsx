@@ -1,142 +1,53 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import logo from "../../static/images/logo3.png";
-import landing_page_img from "../../static/images/depict_product.png";
 import create_plan_img from "../../static/images/create_plan.png";
-import how_to_use_img from "../../static/images/landing_page_eng.png"
-import { Link } from "react-router-dom";
-import { Col, Row, Nav, Navbar, Button, Card } from "react-bootstrap";
+import how_to_use_img from "../../static/images/how_to_use_stratoclo.png"
+import { Col, Row, Card } from "react-bootstrap";
 import { FaSitemap, FaMap } from 'react-icons/fa';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
-import { useStore } from "../canvas/Store";
-
+import Interested from "./Interested";
+import SCNavbar from "../navbar/HomeNavbar";
+import '../../App.css'
 
 const Home = () => {
-  // const { currentUser, setCurrentUser } = useContext(UserContext);
-  const user = useStore(state => state.user);
-
   return (
     <div>
-      <style type="text/css">
-        {`
-
-    .navbar-custom {
-      background-color: #72ADDE;
-    }
-    .navbar-custom .navbar-brand,
-    .navbar-custom .navbar-text {
-      color: green;
-    }
-
-    .card-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#ebf7f7);
-    }
-
-    .card-feature-bg-gradient {
-      background: linear-gradient(to right, #ffffff,#5DB1E9);
-    }
-    .alt-bg {
-      background: #ebf7f7
-    }
-
-    .card-title-motivation-gradient {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to right, #700808,#ff3838);
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
-    }
-
-    .card-title-features-gradient {
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(to right, #0711db,
-        #2f39fa, #525aff, #4d85ff, #02bae3);
-      -webkit-text-fill-color: transparent;
-      -webkit-background-clip: text;
-    }
-
-    `}
-      </style>
-
       <main className="flex-shrink-0">
         {/* Navigation */}
-        <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom" >
-          <div className="container px-5">
-            <Link to="/">
-              <Navbar.Brand>
-                <img src={logo} width={75} height={"auto"}></img>
-              </Navbar.Brand>
-            </Link>
-            <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li className="nav-item"><a className="nav-link" href="pricing.html">Pricing</a></li>
-                <li className="nav-item"><a className="nav-link" href="faq.html">FAQ</a></li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                    <li><a className="dropdown-item" href="blog-home.html">Blog Home</a></li>
-                    <li><a className="dropdown-item" href="blog-post.html">Blog Post</a></li>
-                  </ul>
-                </li>
-                <li className="nav-item dropdown">
-                  <a className="nav-link dropdown-toggle" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                    <li><a className="dropdown-item" href="portfolio-overview.html">Portfolio Overview</a></li>
-                    <li><a className="dropdown-item" href="portfolio-item.html">Portfolio Item</a></li>
-                  </ul>
-                </li>
-                {(() => {
-                  if (user.loggedIn) {
-                    return (
-                      <>
-                        <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
-                        <Nav.Link href="">Signed in: {user.username}</Nav.Link>
-                      </>
-                    )
-                  } else {
-                    return (
-                      <>
-                        <Nav.Link href="/login">Login</Nav.Link>
-                        <Nav.Link href="/register">Sign Up</Nav.Link>
-                      </>
-                    )
-                  }
-                })()}
-              </ul>
-            </div>
-          </div>
-        </Navbar>
+        <SCNavbar />
+
         {/* Header */}
-        <header className="bg-primary py-5">
+
+        <header className="py-5 app" >
           <div className="container px-5">
             <div className="row gx-5 align-items-center justify-content-center">
               <div className="col-lg-8 col-xl-7 col-xxl-6">
                 <div className="my-5 text-center text-xl-start">
-                  <h1 className="display-5 fw-bolder text-white mb-2">Deploy an App in Cloud in Minutes</h1>
-                  <p className="lead fw-normal text-white-50 mb-4">
+
+
+                  <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
+                  <p className="lead fw-normal mb-4">
                     No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
                     No code cloud deployment<br />
                     One click deployment<br />
                     Best practices applied, <strong>you can focus on your business</strong><br />
                   </p>
-
-                  <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-                    <a className="btn btn-light btn-lg px-4 me-sm-3" href="#features">Get Started</a>
-                    <a className="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
-                  </div>
                 </div>
               </div>
               <div className="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img className="img-fluid rounded-3 my-5" src={how_to_use_img} alt="..." /></div>
             </div>
+            <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
+              <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="#features">Get Started</a>
+              <a className="btn btn-outline-light btn-lg px-4 get-started" href="#!">Learn More</a>
+            </div>
           </div>
         </header>
 
-
         {/* <!-- Motivation section--> */}
-        <section className="py-5 alt-bg" id="features">
+        <section className="py-5 app" id="features">
           <Container>
             <Row className="text-center">
               <h4 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h4>
@@ -234,12 +145,12 @@ const Home = () => {
           </Container>
 
           <Row className="text-center">
-            <h2><strong>At ClEffex we deploy and manage your cloud application</strong></h2>
+            <h2><strong>At StratoClo we deploy and manage your cloud application</strong></h2>
           </Row>
         </section>
 
         {/* <!-- Features section--> */}
-        <section className="py-5 bg-primary" id="features">
+        <section className="py-5 app-color" id="features">
           <Container>
             <Row className="text-center">
               <h5 className="fw-bolder mb-0">FEATURES:</h5>
@@ -316,7 +227,7 @@ const Home = () => {
                     <h1><GrConfigure /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Configuration management:</strong></Card.Title>
                     <Card.Text>
-                      ClEffex applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
+                      StratoClo applies all best practice configurations and maintaining your infrastructure and applications. (and encourage you to override if necessary only)
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -333,7 +244,7 @@ const Home = () => {
                     <h1><GrDeploy /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Deployment automation:</strong></Card.Title>
                     <Card.Text>
-                      ClEffex takes care of releasing updates and new versions of your applications.
+                      StratoClo takes care of releasing updates and new versions of your applications.
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -371,7 +282,7 @@ const Home = () => {
                     <h1><GiPiggyBank /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Cost optimization:</strong></Card.Title>
                     <Card.Text>
-                      CLeFFeX helps you optimize your use of resources in order to minimize costs.
+                      StratoClo helps you optimize your use of resources in order to minimize costs.
                     </Card.Text>
                   </Card.Body>
                 </Card>
@@ -383,7 +294,7 @@ const Home = () => {
         </section>
 
         {/* <!-- Process section--> */}
-        <section className="py-5" id="features">
+        <section className="py-5 app" id="features">
           <div className="container px-5 my-5">
             <Container>
               <Row className="text-center">
@@ -440,28 +351,20 @@ const Home = () => {
                   </p>
                 </Col>
               </Row>
+              <br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <Interested />
+
             </Container>
           </div>
         </section>
 
-        {/* <!-- Cant wait--> */}
-        <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
-          <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
-            <div className="mb-4 mb-xl-0">
-              <div className="fs-3 fw-bold text-white">Wanna join our waitlist</div>
-            </div>
-            <div className="ms-xl-4">
-              <div className="input-group mb-2">
-                <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
-                <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
-              </div>
-              <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
-            </div>
-          </div>
-        </aside>
 
         {/* <!-- Status Quo section--> */}
-        <section className="py-5" id="features">
+        <section className="py-5 app-color" id="interested">
           <div className="container px-5 my-5">
             <Container>
               <Row>
@@ -482,13 +385,13 @@ const Home = () => {
 
 
         {/* <!-- Blog preview section--> */}
-        <section className="py-5 bg-light">
+        <section className="py-5 app">
           <div className="container px-5 my-5">
             <div className="row gx-5 justify-content-center">
               <div className="col-lg-8 col-xl-6">
                 <div className="text-center">
                   <h2 className="fw-bolder">From our blog</h2>
-                  <p className="lead fw-normal text-muted mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
+                  <p className="lead fw-normal mb-5">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eaque fugit ratione dicta mollitia. Officiis ad.</p>
                 </div>
               </div>
             </div>
@@ -562,27 +465,12 @@ const Home = () => {
       </main>
 
       {/* <!-- Call to action--> */}
-      <aside className="bg-primary bg-gradient rounded-3 p-4 p-sm-5 mt-5">
-        <div className="d-flex align-items-center justify-content-between flex-column flex-xl-row text-center text-xl-start">
-          <div className="mb-4 mb-xl-0">
-            <div className="fs-3 fw-bold text-white">To know more about deploy your app fast</div>
-            <div className="text-white-50">Sign up for our newsletter for the latest updates.</div>
-          </div>
-          <div className="ms-xl-4">
-            <div className="input-group mb-2">
-              <input className="form-control" type="text" placeholder="Email address..." aria-label="Email address..." aria-describedby="button-newsletter" />
-              <button className="btn btn-outline-light" id="button-newsletter" type="button">Sign up</button>
-            </div>
-            <div className="small text-white-50">We care about privacy, and will never share your data.</div>
-          </div>
-        </div>
-      </aside>
 
       {/* // <!-- Footer--> */}
       <footer className="bg-dark py-4 mt-auto">
         <div className="container px-5">
           <div className="row align-items-center justify-content-between flex-column flex-sm-row">
-            <div className="col-auto"><div className="small m-0 text-white">Copyright &copy; Your Website 2022</div></div>
+            <div className="col-auto"><div className="small m-0 text-white">&copy; 2023 StratoClo. All rights reserved.</div></div>
             <div className="col-auto">
               <a className="link-light small" href="#!">Privacy</a>
               <span className="text-white mx-1">&middot;</span>

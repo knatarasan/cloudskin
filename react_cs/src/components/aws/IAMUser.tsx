@@ -1,6 +1,6 @@
 import { Container, Navbar, Nav, Row, Col, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import logo from "../../static/images/logo3.png";
+import logo from "../../static/images/logo_stratoclo.png";
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import React, { useRef } from "react";

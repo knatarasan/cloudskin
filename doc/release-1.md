@@ -276,3 +276,13 @@ https://systemweakness.com/how-to-get-started-hacking-django-applications-f40756
 
 https://cloud.google.com/startup
 https://aws.amazon.com/activate/
+
+#### logo : landing page design
+
+https://looka.com/s/114880341
+
+looka - logo generator
+
+visme.co - for infographics generation
+
+http://colormind.io/ - for color palette generation
