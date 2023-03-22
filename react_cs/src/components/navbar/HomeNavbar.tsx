@@ -30,7 +30,7 @@ const SCNavbar = () => {
 
     return (
         <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-navbar" >
+            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom home-navbar" >
                 <div className="container px-5">
                     <Link to="/">
                         <Navbar.Brand>

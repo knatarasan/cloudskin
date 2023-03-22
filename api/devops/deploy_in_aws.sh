@@ -90,7 +90,10 @@ sudo systemctl enable --now gunicorn.service
 # from local machine
 # update proxy in package.json file to point ec2 instance  Eg: "proxy": "http://54.193.172.190/:8000",
 
+# @dev machine
 npm run build
+
+# @prod machine
 sudo rm -rf /var/www/build/*
 sudo rm -rf /tmp/build/*
 
