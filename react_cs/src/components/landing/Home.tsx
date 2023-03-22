@@ -9,7 +9,7 @@ import { GrResources, GrConfigure, GrDeploy } from 'react-icons/gr';
 import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 import Interested from "./Interested";
-import SCNavbar from "../navbar/HomeNavbar";
+import HomeNavbar from "../navbar/HomeNavbar";
 import '../../App.css'
 
 const Home = () => {
@@ -17,7 +17,7 @@ const Home = () => {
     <div>
       <main className="flex-shrink-0">
         {/* Navigation */}
-        <SCNavbar />
+        <HomeNavbar />
 
         {/* Header */}
 
@@ -37,7 +37,7 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-              <div className="col-xl-5 col-xxl-6 d-none d-xl-block text-center"><img className="img-fluid rounded-3 my-5" src={how_to_use_img} alt="..." /></div>
+                <img className="img-fluid rounded-3 my-5" style={{maxWidth:'400px', maxHeight:'500px'}} src={how_to_use_img} alt="..." />
             </div>
             <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
               <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="#features">Get Started</a>

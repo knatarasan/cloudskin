@@ -29,41 +29,39 @@ const DBNavbar = () => {
     };
 
     return (
-        <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color app-navbar">
-                <div className="container px-5">
-                    <Link to="/">
-                        <Navbar.Brand>
-                            <img src={logo} width={50} height={"auto"}></img>
-                        </Navbar.Brand>
-                    </Link>
-                    <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0  navbar">
+        <Navbar className="navbar sticky-top bg-light" expand="lg">
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
 
-                            {(() => {
-                                if (user.loggedIn) {
-                                    return (
-                                        <>
-                                            <Nav.Link className="app-color" as={Link} to="#">Feedback</Nav.Link>
-                                            <Nav.Link className="app-color" href="">Signed in: {user.username}</Nav.Link>
-                                            <Nav.Link className="app-color" href="" onClick={handleLogout}>Logout</Nav.Link>
-                                        </>
-                                    )
-                                } else {
-                                    return (
-                                        <>
-                                            <Nav.Link className="app-color" href="/login">Login</Nav.Link>
-                                            <Nav.Link className="app-color" href="/register">Sign Up</Nav.Link>
-                                        </>
-                                    )
-                                }
-                            })()}
-                        </ul>
-                    </div>
-                </div>
-            </Navbar>
-        </div>
+                <Link to="/">
+                    <Navbar.Brand>
+                        <img src={logo} width={50} height={"auto"}></img>
+                    </Navbar.Brand>
+                </Link>
+                <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
+                <ul className="navbar-nav ms-auto mb-2 mb-lg-0  navbar">
+
+                    {(() => {
+                        if (user.loggedIn) {
+                            return (
+                                <>
+                                    <Nav.Link className="app-color" as={Link} to="#">Feedback</Nav.Link>
+                                    <Nav.Link className="app-color" href="">Signed in: {user.username}</Nav.Link>
+                                    <Nav.Link className="app-color" href="" onClick={handleLogout}>Logout</Nav.Link>
+                                </>
+                            )
+                        } else {
+                            return (
+                                <>
+                                    <Nav.Link className="app-color" href="/login">Login</Nav.Link>
+                                    <Nav.Link className="app-color" href="/register">Sign Up</Nav.Link>
+                                </>
+                            )
+                        }
+                    })()}
+                </ul>
+            </Navbar.Collapse>
+        </Navbar>
     )
 }
 
