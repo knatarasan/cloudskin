@@ -35,50 +35,50 @@ const CanvasNavbar = ({ onSave, deployPlan, deletePlan }) => {
     }
 
     return (
-        <div>
-            <Navbar className="navbar sticky-top navbar-expand-lg navbar-custom app-color app-navbar">
-                <div className="container">
-                    <Link to="/dashboard">
-                        <Navbar.Brand>
-                            <img src={logo} width={50} height={"auto"}></img>
-                        </Navbar.Brand>
-                    </Link>
-                    <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav navbar">
-                            <Navbar.Collapse id="basic-navbar-nav">
-                                <Nav className="me-auto">
-                                    <NavDropdown title="File" id="basic-nav-dropdown">
-                                        <NavDropdown.Item className="app-color" href="#action/3.1" onClick={onSave}>Save</NavDropdown.Item>
-                                        <NavDropdown.Item href="#action/3.2" onClick={deployPlan}>
-                                            Deploy
-                                        </NavDropdown.Item>
-                                        <NavDropdown.Item href="#action/3.3" onClick={deletePlan}>Delete</NavDropdown.Item>
-                                        <NavDropdown.Divider />
-                                    </NavDropdown>
-                                </Nav>
-                            </Navbar.Collapse>
-                            {(() => {
-                                if (user.loggedIn) {
-                                    return (
-                                        <>
-                                            <Nav.Link className="app-color" href="">Signed in: {user.username}</Nav.Link>
-                                        </>
-                                    )
-                                } else {
-                                    return (
-                                        <>
-                                            <Nav.Link className="app-color" href="/login">Login</Nav.Link>
-                                            <Nav.Link className="app-color" href="/register">Sign Up</Nav.Link>
-                                        </>
-                                    )
-                                }
-                            })()}
-                        </ul>
-                    </div>
-                </div>
-            </Navbar>
-        </div>
+        <Navbar className="navbar sticky-top bg-light" expand="lg">
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+
+                <Link to="/dashboard">
+                    <Navbar.Brand>
+                        <img src={logo} width={50} height={"auto"}></img>
+                    </Navbar.Brand>
+                </Link>
+                <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
+
+                <ul className="navbar-nav navbar">
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="me-auto">
+                            <NavDropdown title="File" id="basic-nav-dropdown">
+                                <NavDropdown.Item className="app-color" href="#action/3.1" onClick={onSave}>Save</NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.2" onClick={deployPlan}>
+                                    Deploy
+                                </NavDropdown.Item>
+                                <NavDropdown.Item href="#action/3.3" onClick={deletePlan}>Delete</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                            </NavDropdown>
+                        </Nav>
+                    </Navbar.Collapse>
+                    {(() => {
+                        if (user.loggedIn) {
+                            return (
+                                <>
+                                    <Nav.Link className="app-color" href="">Signed in: {user.username}</Nav.Link>
+                                </>
+                            )
+                        } else {
+                            return (
+                                <>
+                                    <Nav.Link className="app-color" href="/login">Login</Nav.Link>
+                                    <Nav.Link className="app-color" href="/register">Sign Up</Nav.Link>
+                                </>
+                            )
+                        }
+                    })()}
+                </ul>
+            </Navbar.Collapse>
+        </Navbar>
+
     )
 }
 

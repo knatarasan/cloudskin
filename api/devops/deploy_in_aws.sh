@@ -100,6 +100,8 @@ sudo rm -rf /tmp/build/*
 # make sure you have updated .env.production.local
 # https://create-react-app.dev/docs/adding-custom-environment-variables/
 
+
+# @dev machine
 scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/build
 sudo cp -r /tmp/build/* /var/www/build/
 
