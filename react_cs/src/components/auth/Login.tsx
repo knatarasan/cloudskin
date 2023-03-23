@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, Container, Row, Col, } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Alert} from "react-bootstrap";
 import logo from "../../static/images/logo_stratoclo.png";
 import AuthService from "../../services/auth.service";
 import { useStore } from "../canvas/Store";
@@ -11,6 +11,9 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alert, setAlert] = useState("")
+
   const addUser = useStore(state => state.addUser)
 
   type User = {
@@ -32,20 +35,36 @@ const Login = () => {
         navigate("/dashboard");
       })
       .catch(e => {
-        console.log('Check your request ', e, e.response.status)
-        navigate("/login");
+        setAlert(e.toString())
+        handleShowAlert()
       });
 
   };
 
+  const handleShowAlert = () => {
+    setShowAlert(true);
+  }
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+    setAlert("")
+  }
 
   return (
     <div>
+            <div>
+        {/* <button onClick={handleShowAlert}>Show Alert</button> */}
+        {showAlert &&
+          <Alert dismissible onClose={handleCloseAlert} variant="danger">
+            {alert}
+          </Alert>
+        }
+      </div>
       <Container>
         <Row>
           <Col xs={6}>
             <a href="/">
-              <img src={logo} width={75} height={"auto"} />
+              <img src={logo} width={190} height={"auto"} />
             </a>
             <Form onSubmit={login}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
