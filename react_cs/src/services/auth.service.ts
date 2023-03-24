@@ -17,6 +17,9 @@ const register = (
     })
     .then((response) => {
       TokenService.setUser(response.data);
+
+      // Following call is an work around , to get refresh token while a user registers
+      login(username, password1)
       return response.data;
     })
     .catch((error) => {
