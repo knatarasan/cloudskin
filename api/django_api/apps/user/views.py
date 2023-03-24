@@ -1,8 +1,10 @@
-from rest_framework.views import APIView
 from django.contrib.auth.models import User
-from .serializers import UserSerializer
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from .serializers import UserSerializer
 
 
 class UserList(APIView):
@@ -21,6 +23,8 @@ class UserList(APIView):
 
 
 class UserDetail(APIView):
+    permission_classes = [IsAdminUser]
+
     def get(self, request, pk, format=None):
         user = User.objects.get(pk=pk)
         serializer = UserSerializer(user)
