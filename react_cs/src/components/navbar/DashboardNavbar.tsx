@@ -46,6 +46,7 @@ const DBNavbar = () => {
                             return (
                                 <>
                                     <Nav.Link className="app-color" as={Link} to="#">Feedback</Nav.Link>
+                                    <Nav.Link className="app-color" as={Link} to="/IAMUser">Prep_aws_User</Nav.Link>
                                     <Nav.Link className="app-color" href="">Signed in: {user.username}</Nav.Link>
                                     <Nav.Link className="app-color" href="" onClick={handleLogout}>Logout</Nav.Link>
                                 </>

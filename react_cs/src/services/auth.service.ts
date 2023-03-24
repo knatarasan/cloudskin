@@ -16,11 +16,11 @@ const register = (
       password2,
     })
     .then((response) => {
-      // TokenService.setUser(response.data);
+      TokenService.setUser(response.data);
       return response.data;
     })
     .catch((error) => {
-      // TokenService.removeUser();
+      TokenService.removeUser();
       throw new Error(error.response.data.username[0]);
     });
 };
