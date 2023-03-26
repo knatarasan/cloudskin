@@ -49,8 +49,8 @@ const CanvasNavbar = ({ onSave, deployPlan, deletePlan }) => {
                 <ul className="navbar-nav navbar">
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <NavDropdown title="File" id="basic-nav-dropdown">
-                                <NavDropdown.Item className="app-color" href="#action/3.1" onClick={onSave}>Save</NavDropdown.Item>
+                            <NavDropdown title="File" id="basic-nav-dropdown" data-testid="nav-File">
+                                <NavDropdown.Item className="app-color" href="#action/3.1" onClick={onSave} data-testid="nav-Save">Save</NavDropdown.Item>
                                 <NavDropdown.Item href="#action/3.2" onClick={deployPlan}>
                                     Deploy
                                 </NavDropdown.Item>

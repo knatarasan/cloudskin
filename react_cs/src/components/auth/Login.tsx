@@ -75,6 +75,7 @@ const Login = () => {
                   name="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  data-testid="username"
                 />
                 <Form.Text className="text-muted">
                   We'll never share your email with anyone else.
@@ -88,9 +89,10 @@ const Login = () => {
                   placeholder="Password"
                   name="password"
                   onChange={(e) => setPassword(e.target.value)}
+                  data-testid="password"
                 />
               </Form.Group>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" data-testid="submit">
                 Submit
               </Button>
 

@@ -379,7 +379,7 @@ const DnDFlow = () => {
       <div className="dndflow">
         <ReactFlowProvider>
           <Sidebar />
-          <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+          <div className="reactflow-wrapper" ref={reactFlowWrapper} data-testid="work-canvas">
             <p>Plan id : {planId} </p>
 
             <ReactFlow

@@ -79,6 +79,7 @@ const Register = () => {
                     ref={userName}
                     name="username"
                     placeholder="Enter username"
+                    data-testid="username"
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -88,6 +89,7 @@ const Register = () => {
                     ref={email}
                     name="email"
                     placeholder="Enter email"
+                    data-testid="email"
                   />
                   <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
@@ -100,6 +102,7 @@ const Register = () => {
                     ref={password}
                     name="password"
                     placeholder="Password"
+                    data-testid="password"
                   />
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
@@ -107,6 +110,7 @@ const Register = () => {
                     ref={password2}
                     name="confirmpassword"
                     placeholder="Confirm Password"
+                    data-testid="confirmpassword"
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -116,6 +120,7 @@ const Register = () => {
                     ref={firstName}
                     name="firstname"
                     placeholder="First Name"
+                    data-testid="firstname"
                   />
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control
@@ -123,9 +128,10 @@ const Register = () => {
                     ref={lastName}
                     name="lastname"
                     placeholder="Last Name"
+                    data-testid="lastname"
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" data-testid="submit">
                   Submit
                 </Button>
               </Form>
