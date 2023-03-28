@@ -2,7 +2,7 @@ import React, { useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import { Button, Alert, Form, Container, Row, Col } from "react-bootstrap";
-import logo from "../../static/images/cloud.png";
+import logo from "../../static/images/logo_stratoclo.png";
 import AuthService from "../../services/auth.service";
 import { useStore } from "../canvas/Store";
 
@@ -14,58 +14,61 @@ const Register = () => {
   const firstName: any = useRef();
   const lastName: any = useRef();
   const navigate: any = useNavigate();
-  const [alert, setAlert] = useState('some');
-  const addUser = useStore(state => state.addUser );
+  const [showAlert, setShowAlert] = useState(false);
+  const [alert, setAlert] = useState("")
+
+  const addUser = useStore(state => state.addUser);
 
   // const handleSubmit = (e: React.SyntheticEvent): void => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // type RegisterData = {
-    //   username: string,
-    //   email: string,
-    //   password: string,
-    //   password2: string,
-    //   first_name: string,
-    //   last_name: string,
-    // };
-
-    // const registerData: RegisterData = {
-    // const registerData = {
-    //   username: userName.current.value,
-    //   email: email.current.value,
-    //   password: password.current.value,
-    //   password2: password2.current.value,
-    //   first_name: firstName.current.value,
-    //   last_name: lastName.current.value,
-    // };
-
     AuthService.register(userName.current.value, email.current.value, password.current.value, password.current.value)
       .then((response) => {
+        // if(response.response.data=="") {
+
+        // }
         console.log('response from axios ', response)
         addUser({ username: response.user.username, email: response.user.email, loggedIn: true, access_token: response.access_token });
         navigate("/dashboard");
       })
       .catch(e => {
-        console.log('Check your request ', e, e.response.status)
-        navigate("/login");
+        console.log('Check your request ', e.toString())
+        setAlert(e.toString())
+        handleShowAlert()
+        // navigate("/login");
       });
 
 
   };
 
+  const handleShowAlert = () => {
+    setShowAlert(true);
+  }
+
+  const handleCloseAlert = () => {
+    setShowAlert(false);
+    setAlert("")
+  }
+
   return (
     <>
-      <Alert key="key" variant="danger">
-        This is a {alert} alert—check it out!{" "}
-      </Alert>
+      <div>
+        {/* <button onClick={handleShowAlert}>Show Alert</button> */}
+        {showAlert &&
+          <Alert dismissible onClose={handleCloseAlert} variant="danger">
+            {alert}
+          </Alert>
+        }
+      </div>
+
 
       <div>
         <Container>
           <Row>
             <Col xs={6}>
               <a href="/">
-                <img src={logo} width={75} height={"auto"} />
+                <img src={logo} width={190} height={"auto"} />
               </a>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -76,6 +79,7 @@ const Register = () => {
                     ref={userName}
                     name="username"
                     placeholder="Enter username"
+                    data-testid="username"
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -85,6 +89,7 @@ const Register = () => {
                     ref={email}
                     name="email"
                     placeholder="Enter email"
+                    data-testid="email"
                   />
                   <Form.Text className="text-muted">
                     We'll never share your email with anyone else.
@@ -97,6 +102,7 @@ const Register = () => {
                     ref={password}
                     name="password"
                     placeholder="Password"
+                    data-testid="password"
                   />
                   <Form.Label>Confirm Password</Form.Label>
                   <Form.Control
@@ -104,6 +110,7 @@ const Register = () => {
                     ref={password2}
                     name="confirmpassword"
                     placeholder="Confirm Password"
+                    data-testid="confirmpassword"
                   />
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -113,6 +120,7 @@ const Register = () => {
                     ref={firstName}
                     name="firstname"
                     placeholder="First Name"
+                    data-testid="firstname"
                   />
                   <Form.Label>Last Name</Form.Label>
                   <Form.Control
@@ -120,9 +128,10 @@ const Register = () => {
                     ref={lastName}
                     name="lastname"
                     placeholder="Last Name"
+                    data-testid="lastname"
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" data-testid="submit">
                   Submit
                 </Button>
               </Form>

@@ -8,20 +8,24 @@ const register = (
   password1: string,
   password2: string
 ) => {
-  return api.post("/auth/registration", {
-    username,
-    email,
-    password1,
-    password2,
-  })
-  .then((response) => {
-    // TokenService.setUser(response.data);
-    return response.data;
-  })
-  .catch((error) => {
-    // TokenService.removeUser();
-    console.log(error);
-});
+  return api
+    .post("/auth/registration", {
+      username,
+      email,
+      password1,
+      password2,
+    })
+    .then((response) => {
+      TokenService.setUser(response.data);
+
+      // Following call is an work around , to get refresh token while a user registers
+      login(username, password1)
+      return response.data;
+    })
+    .catch((error) => {
+      TokenService.removeUser();
+      throw new Error(error.response.data.username[0]);
+    });
 };
 
 const login = (username: string, password: string) => {
@@ -38,12 +42,11 @@ const login = (username: string, password: string) => {
     })
     .catch((error) => {
       TokenService.removeUser();
-      console.log(error);
+      throw new Error(error.response.data.non_field_errors[0]);
     });
 };
 
 const logout = () => {
-
   TokenService.removeUser();
   // Related Open issue - Will resolve it at some point.
   // https://github.com/iMerica/dj-rest-auth/issues/261
