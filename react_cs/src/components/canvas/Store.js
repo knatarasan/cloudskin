@@ -4,7 +4,10 @@
 import { persist } from "zustand/middleware";
 import { create } from "zustand";
 import { applyNodeChanges, applyEdgeChanges, addEdge } from "reactflow";
+import LRUCache from "lru-cache";
 
+// This  is placeholder for LRU Cache
+const lru_cache = new LRUCache({ max: 3 });
 //  This is change is for persisting the state
 let store = (set, get) => ({
   nodes: [],
@@ -14,6 +17,8 @@ let store = (set, get) => ({
     deploy_status: 1,
     running_status: 1,
   },
+
+  ec2_instance_types: [],
 
   addUser: (user) => {
     set((state) => ({
@@ -69,6 +74,12 @@ let store = (set, get) => ({
     });
   },
 
+  setEc2_instance_types: (ec2_instance_type) => {
+    set((state) => ({
+      ec2_instance_types: state.ec2_instance_types.concat(ec2_instance_type),
+    }));
+  },
+
   setNodes: (node) => {
     console.log("setNodes");
     set((state) => ({
@@ -99,6 +110,25 @@ let store = (set, get) => ({
       edges: [],
     }));
   },
+
+  // place hoder for LRU Cache
+  // add a function to set the state with caching
+  setCaching: (key, value) => {
+    lru_cache.set(key, value); // add the value to the cache
+    set({ [key]: value }); // set the state
+  },
+
+  // place hoder for LRU Cache
+  // add a function to get the state with caching
+  getCaching: (key) => {
+    const cachedValue = lru_cache.get(key); // get the value from the cache
+    if (cachedValue !== undefined) {
+      return cachedValue;
+    }
+    const value =get()[key]; // get the value from the store
+    lru_cache.set(key, value); // add the value to the cache
+    return value;
+    }
 });
 
 store = persist(store, { name: "useStore" });
