@@ -1,16 +1,7 @@
-import React, { memo, useRef, useState, useStore } from "react";
+import React, { memo } from "react";
 import { Handle } from "reactflow";
 import PGNodeFrag from "./PGNodeFrag";
 import EC2NodeFrag from "./EC2NodeFrag";
-import {
-  Container,
-  Navbar,
-  Nav,
-  Table,
-  Col,
-  Row,
-  Button,
-} from "react-bootstrap";
 
 export default memo(({ data, isConnectable }) => {
   const pg_data = {};
