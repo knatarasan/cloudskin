@@ -26,7 +26,6 @@ let store = (set, get) => ({
     }));
   },
 
-  
   addPlan: (plan) => {
     set((state) => ({
       plan: plan,
@@ -63,12 +62,19 @@ let store = (set, get) => ({
     });
   },
 
-  updateEc2_instance_types: (region, ec2_instance_type_list ) => {
+  updateEc2_instance_types: (region, ec2_instance_type_list) => {
     set({
-      ec2_instance_types: { ...get().ec2_instance_types, [region]: ec2_instance_type_list },
+      ec2_instance_types: {
+        ...get().ec2_instance_types,
+        [region]: ec2_instance_type_list,
+      },
     });
   },
-
+  emptyEc2_instance_types: () => {
+    set((state) => ({
+      ec2_instance_types: [],
+    }));
+  },
 
   updateNode: (nodeId, api_object) => {
     // TODO instead of scanning entire array, can it be done by index?
@@ -80,12 +86,6 @@ let store = (set, get) => ({
         return node;
       }),
     });
-  },
-
-  setEc2_instance_types: (ec2_instance_type) => {
-    set((state) => ({
-      ec2_instance_types: state.ec2_instance_types.concat(ec2_instance_type),
-    }));
   },
 
   setNodes: (node) => {
@@ -104,12 +104,6 @@ let store = (set, get) => ({
   emptyNodes: () => {
     set((state) => ({
       nodes: [],
-    }));
-  },
-
-  emptyEc2_instance_types: () => {
-    set((state) => ({
-      ec2_instance_types: [],
     }));
   },
 
@@ -139,10 +133,10 @@ let store = (set, get) => ({
     if (cachedValue !== undefined) {
       return cachedValue;
     }
-    const value =get()[key]; // get the value from the store
+    const value = get()[key]; // get the value from the store
     lru_cache.set(key, value); // add the value to the cache
     return value;
-    }
+  },
 });
 
 store = persist(store, { name: "useStore" });
