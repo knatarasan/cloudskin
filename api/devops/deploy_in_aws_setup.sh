@@ -90,20 +90,6 @@ sudo systemctl enable --now gunicorn.service
 # from local machine
 # update proxy in package.json file to point ec2 instance  Eg: "proxy": "http://54.193.172.190/:8000",
 
-# @dev machine
-npm run build
-
-# @prod machine
-sudo rm -rf /var/www/build/*
-sudo rm -rf /tmp/build/*
-
-# make sure you have updated .env.production.local
-# https://create-react-app.dev/docs/adding-custom-environment-variables/
-
-
-# @dev machine
-scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/build
-sudo cp -r /tmp/build/* /var/www/build/
 
 #At remote machine
 sudo amazon-linux-extras install -y nginx1
@@ -143,13 +129,7 @@ server {
 
 sudo systemctl restart nginx
 
-sudo rm -rf /var/www/build/*
-sudo rm -rf /tmp/build/*
 
-sudo cp -r /tmp/build/* /var/www/build/
-
-nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
-tail -f /home/ec2-user/cloudskin/api/log/app.log
 
 #Enable SSL
 #https://www.youtube.com/watch?v=8huMBHx-TKY&ab_channel=Pentacode
@@ -270,9 +250,6 @@ IMPORTANT NOTES:
 
 
 #sudo systemctl restart nginx
-
-
-
 
 
 

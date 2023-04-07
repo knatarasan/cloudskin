@@ -2,6 +2,8 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import create_plan_img from "../../static/images/create_plan.png";
 import how_to_use_img from "../../static/images/how_to_use_stratoclo.png"
+import status_quo_img from "../../static/images/landing/status_quo.png"
+import clean_img from "../../static/images/landing/clean_implementation.png"
 import { Col, Row, Card } from "react-bootstrap";
 import { FaSitemap, FaMap } from 'react-icons/fa';
 import { AiOutlineArrowRight } from 'react-icons/ai';
@@ -50,7 +52,7 @@ const Home = () => {
         <section className="py-5 app" id="features">
           <Container>
             <Row className="text-center">
-              <h4 className="fw-bolder mb-0">Current deployment process is complex, slow and requires deeper expertise in AWS </h4>
+              <h4 className="fw-bolder mb-0">Navigating and managing cloud is complex, but could have been lot easier and observable</h4>
             </Row>
             <br />
             <br />
@@ -145,7 +147,7 @@ const Home = () => {
           </Container>
 
           <Row className="text-center">
-            <h2><strong>At StratoClo we deploy and manage your cloud application</strong></h2>
+            <h2><strong>At StratoClo we help to  manage your cloud assets easier</strong></h2>
           </Row>
         </section>
 
@@ -154,7 +156,7 @@ const Home = () => {
           <Container>
             <Row className="text-center">
               <h5 className="fw-bolder mb-0">FEATURES:</h5>
-              <h2 className="fw-bolder mb-0">Deploy your application simply and fast</h2>
+              <h2 className="fw-bolder mb-0">Navigate cloud easier and manage your cloud assets easier</h2>
             </Row>
             <br />
             <br />
@@ -303,60 +305,18 @@ const Home = () => {
 
               </Row>
               <br />
-              <video width="640" height="360" controls>
-                <source src="https://stratoclo.s3.us-west-1.amazonaws.com/deploy_plan.mp4" type="video/mp4" />
-              </video>
               <br />
               <br />
               <Row>
-                <Col >
-                  <h2 className="h5">1 Create Plan</h2>
-                  <p className="mb-0">
-                    Select components like App, Load Balancers and drag and drop to plan area
-                  </p>
+                <Col>
+                  <img className="img-fluid rounded-3 my-5" style={{ maxWidth: '300px', maxHeight: '300px' }} src={how_to_use_img} alt="..." />
                 </Col>
-                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
-              </Row>
-              <br />
-              <br />
-              <Row className="bg-light">
-                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
-                <Col >
-                  <h2 className="h5">2 Configure Plan</h2>
-                  <p className="mb-0">
-                    Configure EC2.  <br />
-                    Configure DataBase<br />
-                    Configure Load Balancer<br />
-                  </p>
+                <Col>
+                  <video width="640" height="360" controls style={{ maxWidth: '800px', maxHeight: '700px' }}>
+                    <source src="https://stratoclo.s3.us-west-1.amazonaws.com/deploy_plan.mp4" type="video/mp4" />
+                  </video>
                 </Col>
               </Row>
-              <br />
-              <br />
-              <Row>
-                <Col >
-                  <h2 className="h5">3 Deploy Plan</h2>
-                  <p className="mb-0">
-                    Configure EC2 IAM<br />
-                    Deploy App : Create required AWS assets in backend
-                  </p>
-                </Col>
-                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
-              </Row>
-              <br />
-              <br />
-              <Row className="bg-light">
-                <Col><img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." /></Col>
-                <Col >
-                  <h2 className="h5">4 Monitor Plan</h2>
-                  <p className="mb-0">
-                    Monitor health of  EC2  <br />
-                    Monitor health of  DataBase  <br />
-                    Monitor health of  LoadBalancer  <br />
-                  </p>
-                </Col>
-              </Row>
-              <br />
-              <br />
               <br />
               <br />
               <br />
@@ -375,12 +335,12 @@ const Home = () => {
                 <Col >
                   <p className="mb-0 text-center">Status Quo</p>
                   <h2 className="h5  text-center">Complexity</h2>
-                  <img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." />
+                  <img className="img-fluid rounded-3 my-5" width="100%" src={status_quo_img} alt="..." />
                 </Col>
                 <Col>
                   <p className="mb-0 text-center">Simplified Deployment</p>
                   <h2 className="h5  text-center">Piece of Mind</h2>
-                  <img className="img-fluid rounded-3 my-5" width="100%" src={create_plan_img} alt="..." />
+                  <img className="img-fluid rounded-3 my-5" width="100%" src={clean_img} alt="..." />
                 </Col>
               </Row>
             </Container>
@@ -389,7 +349,7 @@ const Home = () => {
 
 
         {/* <!-- Blog preview section--> */}
-        <section className="py-5 app">
+        {/* <section className="py-5 app">
           <div className="container px-5 my-5">
             <div className="row gx-5 justify-content-center">
               <div className="col-lg-8 col-xl-6">
@@ -465,7 +425,10 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
+        {/* <!-- Blog preview section--> */}
+
+
       </main>
 
       {/* <!-- Call to action--> */}
