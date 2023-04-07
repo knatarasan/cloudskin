@@ -18,7 +18,7 @@ let store = (set, get) => ({
     running_status: 1,
   },
 
-  ec2_instance_types: [],
+  ec2_instance_types: {},
 
   addUser: (user) => {
     set((state) => ({
@@ -26,6 +26,7 @@ let store = (set, get) => ({
     }));
   },
 
+  
   addPlan: (plan) => {
     set((state) => ({
       plan: plan,
@@ -62,6 +63,13 @@ let store = (set, get) => ({
     });
   },
 
+  updateEc2_instance_types: (region, ec2_instance_type_list ) => {
+    set({
+      ec2_instance_types: { ...get().ec2_instance_types, [region]: ec2_instance_type_list },
+    });
+  },
+
+
   updateNode: (nodeId, api_object) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
@@ -96,6 +104,12 @@ let store = (set, get) => ({
   emptyNodes: () => {
     set((state) => ({
       nodes: [],
+    }));
+  },
+
+  emptyEc2_instance_types: () => {
+    set((state) => ({
+      ec2_instance_types: [],
     }));
   },
 

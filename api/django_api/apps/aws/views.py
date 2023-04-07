@@ -140,7 +140,7 @@ class EC2ViewSet(viewsets.ModelViewSet):
 
 
 class EC2MetaBasicViewSet(viewsets.ModelViewSet):
-    queryset = EC2MetaBasics.objects.all()
+    queryset = EC2MetaBasics.objects.all().order_by("instance_type")
     serializer_class = EC2MetaBasicsSerializer
 
 

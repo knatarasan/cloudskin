@@ -9,12 +9,13 @@ import '../../App.css'
 const selector = (state) => ({
     user: state.user,
     addUser: state.addUser,
+    emptyEc2_instance_types: state.emptyEc2_instance_types,
 });
 
 const DBNavbar = () => {
     const navigate = useNavigate();
 
-    const { user, addUser } = useStore(selector);
+    const { user, addUser, emptyEc2_instance_types } = useStore(selector);
 
     const handleLogout = (e: React.SyntheticEvent): void => {
         AuthService.logout()
@@ -22,6 +23,7 @@ const DBNavbar = () => {
                 console.log("logout response", response)
                 // Updata store with empty user after successful logout
                 addUser({ username: "", email: "", loggedIn: false, access_token: "" });
+                emptyEc2_instance_types()
             })
 
         console.log("handleLogout context is set to false", user.username);
