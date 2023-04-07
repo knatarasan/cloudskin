@@ -27,6 +27,7 @@ urlpatterns = [
     path(
         "ec2/<str:pk>/terminate_instance", views.EC2ViewSet.as_view({"put": "terminate_instance"}), name="ec2-terminate-instance"
     ),
+    path("ec2_meta_basics/", views.EC2MetaBasicViewSet.as_view({"get": "list", "post": "create"}), name="ec2_meta_basics"),
     path(
         "installed_service/",
         views.InstalledServiceViewSet.as_view({"get": "list", "post": "create"}),

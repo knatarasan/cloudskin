@@ -8,11 +8,13 @@ from rest_framework.views import APIView
 from .models.AWSComponent import LB
 from .models.AwsCreds import AwsCreds
 from .models.EC2 import EC2
+from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
 from .serializers import (
     AwsCredsSerializer,
+    EC2MetaBasicsSerializer,
     EC2MetaDataSerializer,
     EC2Serializer,
     InstallableServiceSerializer,
@@ -80,9 +82,8 @@ class EC2ViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(
-        detail=True, methods=["put"]
-    )  # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
+    # Refer https://www.django-rest-framework.org/api-guide/routers/#routing-for-extra-actions
+    @action(detail=True, methods=["put"])
     def create_instance(self, request, pk=None):
         logger.debug(" at start of create_instance  ")
         ec2 = EC2.objects.get(pk=pk)
@@ -136,6 +137,11 @@ class EC2ViewSet(viewsets.ModelViewSet):
         ec2.uninstall_service("postgresql")
         serializer = EC2Serializer(ec2)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class EC2MetaBasicViewSet(viewsets.ModelViewSet):
+    queryset = EC2MetaBasics.objects.all().order_by("instance_type")
+    serializer_class = EC2MetaBasicsSerializer
 
 
 class AwsCredsList(APIView):

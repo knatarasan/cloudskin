@@ -1,21 +1,25 @@
-import { useState } from "react"
+import { useState, useCallback, useEffect } from "react"
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import api from "../../services/api";
+import EC2InstanceList from "./EC2InstanceList";
 import { useStore } from './Store';
 
 const selector = (state) => ({
     nodes: state.nodes,
     updateNodeColor: state.updateNodeColor,
     updateNode: state.updateNode,
+    setEc2_instance_types: state.setEc2_instance_types,
+    ec2_instance_types: state.ec2_instance_types,
+    updateEc2_instance_types: state.updateEc2_instance_types,
 });
 
 const CompPropSidebar = ({ node_idx }: any) => {
 
-    const { nodes, updateNodeColor, updateNode } = useStore(selector);
+    const { nodes, updateNodeColor, updateNode, ec2_instance_types, setEc2_instance_types, updateEc2_instance_types } = useStore(selector);
     const node = nodes[node_idx]        // Refer bottom of this file for node data structure
 
     // const [api_object, setApiObject] = useState(nodes[node_idx].data.api_object); 
@@ -29,6 +33,16 @@ const CompPropSidebar = ({ node_idx }: any) => {
         // setApiObject({ ...api_object, [e.target.name]: e.target.value });
     };
 
+    useEffect(() => {
+        console.log('api_object', api_object)
+        // make api call to get instance types
+        api.get(`/ec2_meta_basics/`)
+            .then((response) => {
+                // setEc2_instance_types(response.data);
+                updateEc2_instance_types('us-east-1', response.data)
+            });
+
+    }, [])
     const createInstance = (e: any) => {
         api.put(`/ec2/${api_object.id}/create_instance`, {})
             .then((response) => {
@@ -108,16 +122,19 @@ const CompPropSidebar = ({ node_idx }: any) => {
                     {Object.keys(api_object).map((key) =>
                         <>
                             <Card.Text>
-                                <Container>
-                                    <Row>
-                                        <Col sm={5}>
-                                            <label htmlFor={key}>{key}:</label>
-                                        </Col>
-                                        <Col sm={7}>
-                                            <input type="text" name={key} placeholder={api_object[key]} onChange={handleChange}></input><br />
-                                        </Col>
-                                    </Row>
-                                </Container>
+                                {key === 'instance_type' ? <EC2InstanceList curr_selection={api_object[key]} node_idx={node_idx} /> :
+                                    <Container>
+                                        <Row>
+                                            <Col sm={5}>
+                                                <label htmlFor={key}>{key}:</label>
+                                            </Col>
+                                            <Col sm={7}>
+                                                <input type="text" name={key} placeholder={api_object[key]} onChange={handleChange}></input><br />
+                                            </Col>
+                                        </Row>
+                                    </Container>
+                                }
+
                             </Card.Text>
                         </>
                     )}

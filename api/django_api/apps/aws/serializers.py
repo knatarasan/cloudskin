@@ -5,6 +5,7 @@ from rest_framework import serializers
 from .models.AWSComponent import LB, AWSComponent
 from .models.AwsCreds import RSA, AwsCreds
 from .models.EC2 import EC2
+from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
@@ -73,6 +74,12 @@ class EC2Serializer(serializers.ModelSerializer):
             "host_name",
             "installed_service",
         ]
+
+
+class EC2MetaBasicsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EC2MetaBasics
+        fields = "__all__"
 
 
 class LBSerializer(serializers.ModelSerializer):

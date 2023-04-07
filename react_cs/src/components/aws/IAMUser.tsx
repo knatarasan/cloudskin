@@ -113,6 +113,37 @@ const IAMUser = () => {
                 <Row>
                     <Col>
                         <div>
+
+                            <h4> Create IAM User (AWS Console) </h4>
+                            <video width="640" height="360" controls>
+                                <source src="https://stratoclo.s3.us-west-1.amazonaws.com/create_iam_user.mp4" type="video/mp4" />
+                            </video>
+
+                            <ol>
+                                <li> Create IAM Policy <br />
+                                    <p>create a policy called sc_policy with sc_policy.json </p>
+
+                                    <SyntaxHighlighter language="json" style={docco}>
+                                        {codeStringPolicy}
+                                    </SyntaxHighlighter>
+
+                                </li>
+
+                                <li> Create User called sc_user attach  sc_policy with it  <br />
+
+                                </li>
+                                <li> Create AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY  <br />
+
+                                </li>
+
+                                <li> Create Key pair called stratocl  <br />
+
+                                </li>
+
+                            </ol>
+                            <br />
+                            <br />
+                            <h4> Create IAM User (AWS CLI) </h4>
                             <ol>
                                 <li> Create IAM User <br />
                                     <SyntaxHighlighter language="json" style={docco}>
@@ -138,54 +169,58 @@ const IAMUser = () => {
                                         {codeStringAttachPolicy}
                                     </SyntaxHighlighter>
                                 </li>
-                                <li>
-                                    Enter AWS credentials <br />
-                                    <div>
-                                        <Container>
-                                            <Row>
-                                                <Col xs={6}>
-                                                    <Form onSubmit={storeAWSCreds}>
-                                                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                                                            <Form.Label>AWS_USER (IAM)</Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                ref={iam_user}
-                                                                placeholder="iam user"
-                                                                name="aws_user"
-                                                            />
-                                                        </Form.Group>
+                                <br />
+                                <br />
+                                <br />
+                                <br />
 
-                                                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                                                            <Form.Label>AWS_ACCESS_KEY</Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                ref={aws_key}
-                                                                placeholder="aws_access_key"
-                                                                name="aws_key"
-                                                            />
-                                                            <Form.Text className="text-muted">
-                                                                We'll never share your email with anyone else.
-                                                            </Form.Text>
-                                                        </Form.Group>
+                                <div>
+                                    <h4>Enter AWS credentials <br /></h4>
+                                    <Container>
+                                        <Row>
+                                            <Col xs={6}>
+                                                <Form onSubmit={storeAWSCreds}>
+                                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                        <Form.Label>AWS_USER (IAM)</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            ref={iam_user}
+                                                            placeholder="iam user"
+                                                            name="aws_user"
+                                                        />
+                                                    </Form.Group>
 
-                                                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                                                            <Form.Label>AWS_SECRET_ACCESS_KEY</Form.Label>
-                                                            <Form.Control
-                                                                type="text"
-                                                                ref={aws_secret}
-                                                                placeholder="aws_secret_access_key"
-                                                                name="aws_secret"
-                                                            />
-                                                        </Form.Group>
-                                                        <Button variant="primary" type="submit">
-                                                            Submit
-                                                        </Button>
-                                                    </Form>
-                                                </Col>
-                                            </Row>
-                                        </Container>
-                                    </div>
-                                </li>
+                                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                        <Form.Label>AWS_ACCESS_KEY</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            ref={aws_key}
+                                                            placeholder="aws_access_key"
+                                                            name="aws_key"
+                                                        />
+                                                        <Form.Text className="text-muted">
+                                                            We'll never share your email with anyone else.
+                                                        </Form.Text>
+                                                    </Form.Group>
+
+                                                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                                                        <Form.Label>AWS_SECRET_ACCESS_KEY</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            ref={aws_secret}
+                                                            placeholder="aws_secret_access_key"
+                                                            name="aws_secret"
+                                                        />
+                                                    </Form.Group>
+                                                    <Button variant="primary" type="submit">
+                                                        Submit
+                                                    </Button>
+                                                </Form>
+                                            </Col>
+                                        </Row>
+                                    </Container>
+                                </div>
+
                                 <br />
                             </ol>
                             <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html#id_users_create_cliwpsapi" target="_blank" rel="noreferrer noopener">Click here to refer IAM User creation</a>

@@ -37,7 +37,7 @@ const Home = () => {
                   </p>
                 </div>
               </div>
-                <img className="img-fluid rounded-3 my-5" style={{maxWidth:'400px', maxHeight:'500px'}} src={how_to_use_img} alt="..." />
+              <img className="img-fluid rounded-3 my-5" style={{ maxWidth: '400px', maxHeight: '500px' }} src={how_to_use_img} alt="..." />
             </div>
             <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
               <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="#features">Get Started</a>
@@ -302,6 +302,10 @@ const Home = () => {
                 <h2 className="fw-bolder mb-0">Deploy your app in 3 steps </h2>
 
               </Row>
+              <br />
+              <video width="640" height="360" controls>
+                <source src="https://stratoclo.s3.us-west-1.amazonaws.com/deploy_plan.mp4" type="video/mp4" />
+              </video>
               <br />
               <br />
               <Row>

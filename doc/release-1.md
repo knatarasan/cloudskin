@@ -229,21 +229,21 @@ PG
           - processing logic: 
 
 ##### Existing data in `EC2_Metadata`          
-sno| ec2_type | region    | price     | effective_date | end_date|
-----------|----------|-----------|-----------|----------|-----------|
-1| t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 31/12/9999 23:59:59|
+| sno | ec2_type | region    | price     | effective_date      | end_date            |
+| --- | -------- | --------- | --------- | ------------------- | ------------------- |
+| 1   | t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 31/12/9999 23:59:59 |
 
 ##### Today's extracted data from aws
-sno| ec2_type | region    | price                                    | today_date          |
-----------|----------|-----------|------------------------------------------|---------------------|
-1| t2-micro | us-west-1 | <span style="color:red">0.002 USD</span> | 05/05/2021 12:00:00 | 
+| sno | ec2_type | region    | price                                    | today_date          |
+| --- | -------- | --------- | ---------------------------------------- | ------------------- |
+| 1   | t2-micro | us-west-1 | <span style="color:red">0.002 USD</span> | 05/05/2021 12:00:00 |
 
 ##### After processing :  `EC2_Metadata`
 
-sno| ec2_type | region    | price     | effective_date | end_date|
-----------|----------|-----------|-----------|----------|-----------|
-1| t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 05/05/2021 12:00:00|
-1| t2-micro | us-west-1 | 0.002 USD | 05/05/2021 12:00:00 | 31/12/9999 23:59:59|
+| sno | ec2_type | region    | price     | effective_date      | end_date            |
+| --- | -------- | --------- | --------- | ------------------- | ------------------- |
+| 1   | t2-micro | us-west-1 | 0.001 USD | 05/02/2021 12:00:00 | 05/05/2021 12:00:00 |
+| 1   | t2-micro | us-west-1 | 0.002 USD | 05/05/2021 12:00:00 | 31/12/9999 23:59:59 |
 
   - Listing all AMI from AWS --> DB
   - Region selection AWS --> DB
@@ -286,3 +286,15 @@ looka - logo generator
 visme.co - for infographics generation
 
 http://colormind.io/ - for color palette generation
+
+
+
+### FAQ
+
+- Why stratoclo is secure ?
+  - Key handling
+  - Data Handling
+  - Monitoring assets
+
+
+Continue from Store
