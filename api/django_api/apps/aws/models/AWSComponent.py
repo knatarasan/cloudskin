@@ -16,8 +16,8 @@ class AWSComponent(models.Model):
 
     plan = models.ForeignKey(Plan, related_name="aws_components", on_delete=models.PROTECT)
     region = models.TextField(default="us-east-1")
-    security_group = models.TextField(default="sg-0f2b88c10abf752e3", null=True)
-    subnet = models.TextField(default="subnet-0a6da46fb837b5a32", null=True)
+    security_group = models.TextField(null=True)
+    subnet = models.TextField(null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
     objects = InheritanceManager()
 
