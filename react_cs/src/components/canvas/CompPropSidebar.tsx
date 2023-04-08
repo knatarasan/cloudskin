@@ -39,11 +39,17 @@ const CompPropSidebar = ({ node_idx }: any) => {
             });
 
     }, [])
+
     const createInstance = (e: any) => {
         api.put(`/ec2/${api_object.id}/create_instance`, {})
             .then((response) => {
                 console.log("AWS instance created", response)
                 updateNode(api_object.id, response.data) // update nodes in zustand store 
+                // create VPC, Subnet, Security Group in backend
+                // api.put(`/aws/vpc/`, {'vpc_id': response.data.vpc_id})
+                // api.put(`/aws/subnet/`, {'subnet_id': response.data.vpc_id})
+                // api.put(`/aws/securitygroup/`, {'security_group_id': response.data.vpc_id})
+
             }).catch(
                 (error) => {
                     console.log("AWS instance not created", error)
@@ -55,6 +61,8 @@ const CompPropSidebar = ({ node_idx }: any) => {
 
     const refreshInstance = (e: any) => {
         console.log("Node data will be refreshed", api_object.id);
+
+        // This should update vpc , subnet and security group
 
         api.get(`/ec2/${api_object.id}/update_instance_details`)
             .then((response) => {
