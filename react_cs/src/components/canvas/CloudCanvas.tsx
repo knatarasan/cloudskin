@@ -4,28 +4,22 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import Sidebar from "./Sidebar";
 import CompPropSidebar from "./CompPropSidebar";
-import AWSCompNode from "./AWSCompNode";
+import AWSCompNode from "../aws/AWSCompNode";
 import PlanService from "../../services/plan.service";
 import api from "../../services/api";
-import { useStore } from "./Store";
+import { useStore } from "../../store/Store";
 import CanvasNavbar from "../navbar/CanvasNavbar";
 
 import ReactFlow, {
   Node,
   Edge,
   ReactFlowProvider,
-  addEdge,
-  useNodesState,
-  useEdgesState,
   Controls,
-  Connection,
-  OnConnect,
   Position,
 } from "reactflow";
 
 import "./CloudCanvas.css";
 import "reactflow/dist/style.css";
-import { Button } from "react-bootstrap";
 
 import { shallow } from "zustand/shallow";
 
@@ -55,17 +49,13 @@ const DnDFlow = () => {
   const [planId, setPlanId, planIdRef] = useState<number>(-1);   // https://stackoverflow.com/questions/57847594/react-hooks-accessing-up-to-date-state-from-within-a-callback
   // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
-  // const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<ReactFlowInstance>()
-
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
   const [clickedNode, setClickedNode, clickedNodeRef] = useState<Number>(-1)
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
-
   const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, removeNode } = useStore(selector, shallow);
-
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
 
@@ -73,8 +63,6 @@ const DnDFlow = () => {
 
     console.log("in onSave", reactFlowInstance, reactFlowInstanceRef, planIdRef.current)
     if (reactFlowInstanceRef.current) {
-
-
       // update plan
       const flow = reactFlowInstanceRef.current.toObject();
 
@@ -84,8 +72,6 @@ const DnDFlow = () => {
         }
       })
 
-      // console.log('reactFLowinstance', reactFlowInstanceRef.current)
-      // console.log('flow', flow)
       const plan_wrapper = {
         plan: flow,
         deploy_status: 1,
@@ -111,10 +97,7 @@ const DnDFlow = () => {
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
-        // planCreatedRef.current = true;
-        if (Number(plan_id_edit)) {
-          // setSaveUpdate(false)
-        }
+
         const flow = response.data.plan
         if (flow) {
           const { x = 0, y = 0, zoom = 1 } = flow.viewport;
@@ -140,17 +123,6 @@ const DnDFlow = () => {
   }, [])
 
 
-  // const onConnect = useCallback<OnConnect>(
-  //   (params: Edge | Connection): void => setEdges((eds) => {
-
-  //     console.log('on connect param', params);
-  //     console.log('TODO add connectivity between ', params.source, ' to ', params.target)
-
-  //     return addEdge(params, eds)
-  //   }),
-  //   [setEdges]
-  // );
-
   const onEdgesDelete = useCallback<any>(
     (params: Edge[]): void => {
       console.log('Edges deleted', params)
@@ -171,20 +143,6 @@ const DnDFlow = () => {
         removeNode(node.id)
       }
     })
-    // nodes.map((node: any) => {
-    //   const endpoint = node.data.api_object.aws_component;
-
-    //   api.delete(`/${endpoint}/${node.data.api_object.id}`)
-    //     .then((response) => {
-    //         // console.log("AWS instance terminated", response);
-    //         // updateNode(api_object.id, response.data)         // update nodes in zustand store TODO testing
-
-    //     })
-    //     .catch((error) => {
-    //       console.log("AWS component not deleted", error)
-    //     })
-    // })
-
   }
 
   const deletePlan = () => {
@@ -207,7 +165,6 @@ const DnDFlow = () => {
       .then((response) => {
         console.log("Plan deployment activated", response.data)
         setPlan(response.data)
-        // plan.deploy_status = 2
       })
       .catch((error) => {
         console.log("Plan deployment activation failed", error)
@@ -220,14 +177,12 @@ const DnDFlow = () => {
   }, []);
 
   const createAWSComponent = async (name: string) => {
-    // console.log("AWS Comp create called ", comp, plan_id)
     const aws_component = {
       "plan": planIdRef.current
     }
 
     return await api.post(`/${name}/`, aws_component)
       .then((response) => {
-        // console.log("AWS Comp created", response.data)
         return response.data
       })
       .catch((error) => {
@@ -254,8 +209,6 @@ const DnDFlow = () => {
           targetPosition: Position.Left,
           // style: { border: "100px", width: "5%", background: color },
           style: { height: "50px", width: "50px" },
-
-          // data: { label: name+' '+awsComp.id.toString(), api_object: awsComp },
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
         };
         console.log('new_node ', new_node)
@@ -267,7 +220,6 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-    // scan for index of this node and set index id into setClickNode
 
     nodes.map((node_i, idx) => {
       if (node_i.id === node.id) {
@@ -287,65 +239,65 @@ const DnDFlow = () => {
 
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
+      // Attachables are temporriely disabled
+      
       // dropped node is attachable type 
-      if (data.nodeType === 'attachable') {
-        const reactFlowBounds: any = reactFlowWrapper.current?.getBoundingClientRect();
-        let centerX = 0
-        let centerY = 0
-        const pos: any = reactFlowInstance?.project({
-          x: event.clientX - reactFlowBounds.left,
-          y: event.clientY - reactFlowBounds.top,
-        });
+      // if (data.nodeType === 'attachable') {
+      //   const reactFlowBounds: any = reactFlowWrapper.current?.getBoundingClientRect();
+      //   let centerX = 0
+      //   let centerY = 0
+      //   const pos: any = reactFlowInstance?.project({
+      //     x: event.clientX - reactFlowBounds.left,
+      //     y: event.clientY - reactFlowBounds.top,
+      //   });
 
-        centerX = pos.x;
-        centerY = pos.y;
+      //   centerX = pos.x;
+      //   centerY = pos.y;
 
-        const targetNode: any = reactFlowInstanceRef.current?.getNodes().find(
-          (n: any) =>
-            centerX > n.position.x &&
-            centerX < n.position.x + n.width &&
-            centerY > n.position.y &&
-            centerY < n.position.y + n.height
-          // n.id !== node.id // this is needed, otherwise we would always find the dragged node
-        );
+      //   const targetNode: any = reactFlowInstanceRef.current?.getNodes().find(
+      //     (n: any) =>
+      //       centerX > n.position.x &&
+      //       centerX < n.position.x + n.width &&
+      //       centerY > n.position.y &&
+      //       centerY < n.position.y + n.height
+      //     // n.id !== node.id // this is needed, otherwise we would always find the dragged node
+      //   );
 
-        // setTarget(targetNode);
-        console.log('node found ', targetNode)
+      //   // setTarget(targetNode);
+      //   console.log('node found ', targetNode)
 
-        setNodes((nds) =>
-          nds.map((node) => {
-            if (node.id === targetNode.id) {
-              // it's important that you create a new object here
-              // in order to notify react flow about the change
+      //   setNodes((nds) =>
+      //     nds.map((node) => {
+      //       if (node.id === targetNode.id) {
+      //         // it's important that you create a new object here
+      //         // in order to notify react flow about the change
 
-              const attached = {
-                attachable: 'pg',
-                attachables: [{ id: 1, name: 'pg' }]
-              }
-              node.data = {
-                ...node.data,
-                ...attached
-              };
-            }
-            return node;
-          })
-        );
+      //         const attached = {
+      //           attachable: 'pg',
+      //           attachables: [{ id: 1, name: 'pg' }]
+      //         }
+      //         node.data = {
+      //           ...node.data,
+      //           ...attached
+      //         };
+      //       }
+      //       return node;
+      //     })
+      //   );
 
-        /*
-          1. Trigger Holder to accept attachable
-          2. Make a backend call to deploy attachable
-        */
-        console.log('attachable dropped ', targetNode)
-        return
-      }
+      //   /*
+      //     1. Trigger Holder to accept attachable
+      //     2. Make a backend call to deploy attachable
+      //   */
+      //   console.log('attachable dropped ', targetNode)
+      //   return
+      // }
       // dropped node is attachable type 
 
       if (planIdRef.current != -1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
-        // planCreatedRef.current = true;        // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
-
         //create plan
         const plan_obj = {
           plan: {},
@@ -367,7 +319,6 @@ const DnDFlow = () => {
             console.log("Plan not saved", error.response.status)
           })
         //create plan 
-
       }
     },
     [reactFlowInstance]);

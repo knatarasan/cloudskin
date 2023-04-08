@@ -25,9 +25,9 @@ const EC2NodeFrag = ({ data }: any) => {
     }else if (status === status_enum.stopping){
         color = "orange"
     }else if (status === status_enum.stopped) {
-        color = "red"
-    }else if (status === status_enum.terminated){
         color = "yellow"
+    }else if (status === status_enum.terminated){
+        color = "red"
     }
 
     const EC2Clicked = () => {

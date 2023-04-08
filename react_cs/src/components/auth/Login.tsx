@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, Container, Row, Col, Alert} from "react-bootstrap";
 import logo from "../../static/images/logo_stratoclo.png";
 import AuthService from "../../services/auth.service";
-import { useStore } from "../canvas/Store";
+import { useStore } from "../../store/Store";
 
 
 const Login = () => {

@@ -4,7 +4,7 @@ import Dashboard from "../dashboard/Dashboard";
 import { Button, Alert, Form, Container, Row, Col } from "react-bootstrap";
 import logo from "../../static/images/logo_stratoclo.png";
 import AuthService from "../../services/auth.service";
-import { useStore } from "../canvas/Store";
+import { useStore } from "../../store/Store";
 
 const Register = () => {
   const userName: any = useRef();

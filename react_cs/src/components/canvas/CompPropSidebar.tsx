@@ -1,12 +1,12 @@
-import { useState, useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import api from "../../services/api";
-import EC2InstanceList from "./EC2InstanceList";
-import { useStore } from './Store';
+import EC2InstanceList from "../aws/EC2InstanceList";
+import { useStore } from '../../store/Store';
 
 const selector = (state) => ({
     nodes: state.nodes,
@@ -19,11 +19,8 @@ const selector = (state) => ({
 
 const CompPropSidebar = ({ node_idx }: any) => {
 
-    const { nodes, updateNodeColor, updateNode, ec2_instance_types, setEc2_instance_types, updateEc2_instance_types } = useStore(selector);
+    const { nodes, updateNode, updateEc2_instance_types } = useStore(selector);
     const node = nodes[node_idx]        // Refer bottom of this file for node data structure
-
-    // const [api_object, setApiObject] = useState(nodes[node_idx].data.api_object); 
-    // When you are using useState, you need to use onChange event to update the state
     const api_object = nodes[node_idx].data.api_object
 
 
@@ -38,7 +35,6 @@ const CompPropSidebar = ({ node_idx }: any) => {
         // make api call to get instance types
         api.get(`/ec2_meta_basics/`)
             .then((response) => {
-                // setEc2_instance_types(response.data);
                 updateEc2_instance_types('us-east-1', response.data)
             });
 
@@ -144,33 +140,6 @@ const CompPropSidebar = ({ node_idx }: any) => {
                     <Button variant="outline-secondary" type="submit" onClick={terminateInstance}>Terminate</Button>
                 </Card.Body>
             </Card>
-
-
-            {/* {node.data.attachables.length > 0 ? <Card id="node_attachable" style={{ width: '18rem' }}>
-                <Card.Body>
-                    <Card.Subtitle className="mb-2 text-muted"><strong>Properties of <i>{node.attachables[0].name}</i></strong></Card.Subtitle><br />
-                    {node.attachables.map((attachable) =>
-                        <>
-                            <Card.Text>
-                                <Container>
-                                    <Row>
-                                        <Col sm={5}>
-                                            <label htmlFor={attachable.id}>{attachable.id}:</label>
-                                        </Col>
-                                        <Col sm={7}>
-                                            <input type="text" name={attachable.name} placeholder={attachable.name} onChange={handleChange}></input><br />
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </Card.Text>
-                        </>
-                    )}
-
-                    <Button variant="outline-success" type="submit" onClick={installAttachable}>Install</Button>
-                    <Button variant="outline-success" type="submit" onClick={unInstallAttachable}>Uninstall</Button>
-                </Card.Body>
-            </Card>
-                : null} */}
 
         </>
     )
