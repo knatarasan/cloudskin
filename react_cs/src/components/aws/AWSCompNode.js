@@ -19,13 +19,6 @@ export default memo(({ data, isConnectable }) => {
     console.log("Dependent Node Clicked, so update content on side bar");
   };
 
-  const styleObj = {
-    fontSize: 8,
-    color: "#0000ff",
-    textAlign: "center",
-    paddingTop: "100px",
-  };
-
   return (
     <>
       <Handle

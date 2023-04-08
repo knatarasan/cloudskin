@@ -3,7 +3,7 @@ import { Navigate, Link } from "react-router-dom";
 import { Container, Table, Col, Row, Button } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import PlanService from '../../services/plan.service'
-import { useStore } from "../canvas/Store";
+import { useStore } from "../../store/Store";
 import DBNavbar from "../navbar/DashboardNavbar";
 import '../../App.css'
 

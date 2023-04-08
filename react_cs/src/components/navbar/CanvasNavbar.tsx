@@ -2,7 +2,7 @@ import React from "react"
 import { useNavigate, Link } from "react-router-dom";
 import logo from "../../static/images/logo_only.png";
 import { Navbar, Nav, Button } from "react-bootstrap"
-import { useStore } from "../canvas/Store";
+import { useStore } from "../../store/Store";
 import AuthService from "../../services/auth.service";
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
