@@ -12,6 +12,9 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.SecurityGroup import SecurityGroup
+from .models.Subnet import Subnet
+from .models.VPC import VPC
 from .serializers import (
     AwsCredsSerializer,
     EC2MetaBasicsSerializer,
@@ -20,6 +23,9 @@ from .serializers import (
     InstallableServiceSerializer,
     InstalledServiceSerializer,
     LBSerializer,
+    SecurityGroupSerializer,
+    SubnetSerializer,
+    VPCSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -142,6 +148,21 @@ class EC2ViewSet(viewsets.ModelViewSet):
 class EC2MetaBasicViewSet(viewsets.ModelViewSet):
     queryset = EC2MetaBasics.objects.all().order_by("instance_type")
     serializer_class = EC2MetaBasicsSerializer
+
+
+class VPCViewSet(viewsets.ModelViewSet):
+    queryset = VPC.objects.all()
+    serializer_class = VPCSerializer
+
+
+class SubnetViewSet(viewsets.ModelViewSet):
+    queryset = Subnet.objects.all()
+    serializer_class = SubnetSerializer
+
+
+class SecurityGroupViewSet(viewsets.ModelViewSet):
+    queryset = SecurityGroup.objects.all()
+    serializer_class = SecurityGroupSerializer
 
 
 class AwsCredsList(APIView):

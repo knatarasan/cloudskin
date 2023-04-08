@@ -6,6 +6,9 @@ from . import views
 router = routers.DefaultRouter()
 router.register(r"installable_service", views.InstallableServiceViewSet, basename="installable-service"),
 router.register(r"ec2_metadata", views.EC2MetaDataViewSet, basename="ec2-metadata"),
+router.register(r"aws/vpc", views.VPCViewSet, basename="vpc"),
+router.register(r"aws/subnet", views.SubnetViewSet, basename="subnet"),
+router.register(r"aws/security_group", views.SecurityGroupViewSet, basename="security-group"),
 
 urlpatterns = [
     path("", include(router.urls)),

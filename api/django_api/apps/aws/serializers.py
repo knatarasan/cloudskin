@@ -9,6 +9,9 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.SecurityGroup import SecurityGroup
+from .models.Subnet import Subnet
+from .models.VPC import VPC
 
 logger = logging.getLogger(__name__)
 
@@ -221,3 +224,21 @@ class AwsCredsSerializer(serializers.Serializer):
         )
         instance.save()
         return instance
+
+
+class VPCSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VPC
+        fields = "__all__"
+
+
+class SubnetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subnet
+        fields = "__all__"
+
+
+class SecurityGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityGroup
+        fields = "__all__"
