@@ -4,8 +4,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from .AwsCreds import RSA, AwsCreds
-from .SecurityGroup import SecurityGroup
-from .Subnet import Subnet
 
 # create a model for the VPC (Virutal Private Cloud)
 
@@ -66,3 +64,22 @@ class VPC(models.Model):
                 ).save()
 
         self.save()
+
+
+class Subnet(models.Model):
+    subnet_id = models.CharField(max_length=24)
+    arn = models.CharField(max_length=66, null=True)
+    route_table_ids = ArrayField(models.CharField(max_length=21), null=True)
+    cidr = models.CharField(max_length=21, null=True)
+    state = models.CharField(max_length=21, null=True)
+    availability_zone = models.CharField(max_length=21, null=True)
+    vpc = models.ForeignKey(VPC, related_name="subnet", on_delete=models.CASCADE)
+
+
+class SecurityGroup(models.Model):
+    group_id = models.CharField(max_length=20)
+    group_name = models.CharField(max_length=100)
+    vpc = models.ForeignKey(VPC, related_name="security_group", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"group_id: {self.group_id}, group_name:{self.group_name}"

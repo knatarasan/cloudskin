@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models.aws_network import VPC, SecurityGroup, Subnet
 from .models.AWSComponent import LB
 from .models.AwsCreds import AwsCreds
 from .models.EC2 import EC2
@@ -12,9 +13,6 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
-from .models.SecurityGroup import SecurityGroup
-from .models.Subnet import Subnet
-from .models.VPC import VPC
 from .serializers import (
     AwsCredsSerializer,
     EC2MetaBasicsSerializer,

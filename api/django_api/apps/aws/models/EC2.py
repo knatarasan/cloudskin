@@ -4,11 +4,11 @@ import boto3
 from django.conf import settings
 from django.db import models
 
+from .aws_network import VPC
 from .AWSComponent import AWSComponent
 from .AwsCreds import RSA, AwsCreds
 from .InstallableService import InstallableService
 from .InstalledService import InstalledService
-from .VPC import VPC
 
 logger = logging.getLogger(__name__)
 

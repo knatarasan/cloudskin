@@ -2,6 +2,7 @@ import logging
 
 from rest_framework import serializers
 
+from .models.aws_network import VPC, SecurityGroup, Subnet
 from .models.AWSComponent import LB, AWSComponent
 from .models.AwsCreds import RSA, AwsCreds
 from .models.EC2 import EC2
@@ -9,9 +10,6 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
-from .models.SecurityGroup import SecurityGroup
-from .models.Subnet import Subnet
-from .models.VPC import VPC
 
 logger = logging.getLogger(__name__)
 
@@ -226,12 +224,6 @@ class AwsCredsSerializer(serializers.Serializer):
         return instance
 
 
-class VPCSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VPC
-        fields = "__all__"
-
-
 class SubnetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subnet
@@ -241,4 +233,13 @@ class SubnetSerializer(serializers.ModelSerializer):
 class SecurityGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = SecurityGroup
+        fields = "__all__"
+
+
+class VPCSerializer(serializers.ModelSerializer):
+    subnet = SubnetSerializer(many=True, read_only=True)
+    security_group = SecurityGroupSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = VPC
         fields = "__all__"
