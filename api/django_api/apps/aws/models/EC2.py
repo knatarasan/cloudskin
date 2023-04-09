@@ -114,9 +114,14 @@ class EC2(AWSComponent):
                 _subnet_id = instance.subnet_id
                 _security_group_id = instance.security_groups[0]["GroupId"] if instance.security_groups else None
 
-                vpc = VPC()
+                # Get or create VPC object
+                try:
+                    vpc = VPC.objects.get(vpc_id=_vpc_id)
+                except VPC.DoesNotExist:
+                    vpc = VPC.objects.create(vpc_id=_vpc_id, plan=self.plan)
+
                 vpc_boto3 = ec2_boto3.Vpc(_vpc_id)
-                vpc.update_vpc_details(vpc_boto3)
+                vpc.update_vpc_details(vpc_boto3, ec2_boto3.subnets.all())
 
                 self.save()
                 self.health()
