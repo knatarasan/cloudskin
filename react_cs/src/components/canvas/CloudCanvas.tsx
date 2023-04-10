@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import useState from 'react-usestateref';
+import { Button } from "react-bootstrap";
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Sidebar from "./Sidebar";
@@ -106,6 +107,8 @@ const DnDFlow = () => {
           setEdges(flow.edges || []);
         }
 
+        // Create Parent node
+
         console.log("Plan successfully retrieved", response.data.plan_id)
       })
       .catch((error) => {
@@ -116,7 +119,7 @@ const DnDFlow = () => {
     // componentWillUnMount
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
-      onSave()
+      // onSave()
       emptyNodes()
       emptyEdges()
     }
@@ -139,11 +142,11 @@ const DnDFlow = () => {
         - dont delte , but alert
     */
 
-    nodes.map((node) => {
-      if (node.data.api_object.ec2_status === -1) {
-        removeNode(node.id)
-      }
-    })
+    // nodes.map((node) => {
+    //   if (node.data.api_object.ec2_status === -1) {
+    //     removeNode(node.id)
+    //   }
+    // })
   }
 
   const deletePlan = () => {
@@ -191,6 +194,38 @@ const DnDFlow = () => {
       })
   }
 
+  const createParentNode = (): void => {
+    const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
+
+    const position = nodes[0].position
+
+    // TO USE SVG check this https://create-react-app.dev/docs/adding-images-fonts-and-files/#adding-svgs
+
+    const vpc = "VPC" + plan.vpc_id
+    const new_node: Node<any> = {
+      id: plan.vpc[0].vpc_id,
+      data: { label: "VPC" },
+      position: { x: nodes[0].position.x - 75, y: nodes[0].position.y - 75 },
+      className: 'light',
+      style: { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 200, height: 200 },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+      // style: { border: "100px", width: "5%", background: color },
+    };
+
+    console.log('new_node ', new_node)
+
+
+    nodes.map((node) => {
+      node.data.parent = plan.vpc[0].vpc_id
+    })
+
+    setNodes(new_node);
+
+    console.log('nodes ', nodes['arg1'])
+  };
+
+
   const createNewNode = (name: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
     const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
     const position = reactFlowInstance?.project({
@@ -221,12 +256,14 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-
-    nodes.map((node_i, idx) => {
-      if (node_i.id === node.id) {
-        setClickedNode(idx);
-      }
-    })
+//  Node click should only be applied for regular nodes
+    if (node.id.substring(0, 3) !== 'vpc') {
+      nodes.map((node_i, idx) => {
+        if (node_i.id === node.id) {
+          setClickedNode(idx);
+        }
+      })
+    }
 
   }
 
@@ -241,7 +278,7 @@ const DnDFlow = () => {
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
       // Attachables are temporriely disabled
-      
+
       // dropped node is attachable type 
       // if (data.nodeType === 'attachable') {
       //   const reactFlowBounds: any = reactFlowWrapper.current?.getBoundingClientRect();
@@ -333,6 +370,7 @@ const DnDFlow = () => {
           <Sidebar />
           <div className="reactflow-wrapper" ref={reactFlowWrapper} data-testid="work-canvas">
             <p>Plan id : {planId} </p>
+            <Button onClick={createParentNode}>parent</Button>
 
             <ReactFlow
               nodes={nodes}

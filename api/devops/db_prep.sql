@@ -33,11 +33,11 @@ CREATE OR REPLACE PROCEDURE delete_plan(_plan_id INT)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    _awscomponent_ptr_id INT;
+    _awscomponent_ptr_id INT[];
 	_vpc_primary_key_id INT;
 BEGIN
     -- Select the component ids that match the plan id
-    SELECT id
+    SELECT ARRAY_AGG(id)
     INTO _awscomponent_ptr_id
     FROM aws_awscomponent
     WHERE plan_id = delete_plan._plan_id;
@@ -47,7 +47,8 @@ BEGIN
 	WHERE plan_id = delete_plan._plan_id;
 
     -- Delete the matching rows from each table
-    DELETE FROM aws_ec2 WHERE awscomponent_ptr_id = _awscomponent_ptr_id;
+
+	DELETE FROM aws_ec2 WHERE awscomponent_ptr_id = ANY(_awscomponent_ptr_id);
     DELETE FROM aws_awscomponent WHERE plan_id = delete_plan._plan_id;
     DELETE FROM aws_securitygroup WHERE vpc_id = _vpc_primary_key_id;
     DELETE FROM aws_subnet WHERE vpc_id = _vpc_primary_key_id;
@@ -55,6 +56,7 @@ BEGIN
 
 END;
 $$;
+
 
 
 -- CALL delete_plan(75);
