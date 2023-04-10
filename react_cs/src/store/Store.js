@@ -32,21 +32,22 @@ let store = (set, get) => ({
     }));
   },
 
+  // Node operation
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
     });
   },
 
-  onEdgesChange: (changes) => {
+  updateNode: (nodeId, api_object) => {
+    // TODO instead of scanning entire array, can it be done by index?
     set({
-      edges: applyEdgeChanges(changes, get().edges),
-    });
-  },
-
-  onConnect: (connection) => {
-    set({
-      edges: addEdge(connection, get().edges),
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node.data = { ...node.data, api_object };
+        }
+        return node;
+      }),
     });
   },
 
@@ -59,6 +60,30 @@ let store = (set, get) => ({
         }
         return node;
       }),
+    });
+  },
+  setNodes: (node) => {
+    console.log("setNodes");
+    set((state) => ({
+      nodes: state.nodes.concat(node),
+    }));
+  },
+  emptyNodes: () => {
+    set((state) => ({
+      nodes: [],
+    }));
+  },
+// End of Node operation
+
+  onEdgesChange: (changes) => {
+    set({
+      edges: applyEdgeChanges(changes, get().edges),
+    });
+  },
+
+  onConnect: (connection) => {
+    set({
+      edges: addEdge(connection, get().edges),
     });
   },
 
@@ -76,36 +101,12 @@ let store = (set, get) => ({
     }));
   },
 
-  updateNode: (nodeId, api_object) => {
-    // TODO instead of scanning entire array, can it be done by index?
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, api_object };
-        }
-        return node;
-      }),
-    });
-  },
-
-  setNodes: (node) => {
-    console.log("setNodes");
-    set((state) => ({
-      nodes: state.nodes.concat(node),
-    }));
-  },
-
   setEdges: (edge) => {
     set((state) => ({
       edges: state.edges.concat(edge),
     }));
   },
 
-  emptyNodes: () => {
-    set((state) => ({
-      nodes: [],
-    }));
-  },
 
   removeNode: (nodeId) => {
     set((state) => ({

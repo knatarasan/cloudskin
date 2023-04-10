@@ -97,6 +97,7 @@ const DnDFlow = () => {
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
+        addPlan(response.data)
 
         const flow = response.data.plan
         if (flow) {
