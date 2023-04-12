@@ -51,12 +51,14 @@ let store = (set, get) => ({
     });
   },
 
-  updateNodeColor: (nodeId, color, idx) => {
+  updateNodeColor: (nodeId, color) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, label: color };
+          // node.data = { ...node.data, label: color };
+          node.selected = true
+
         }
         return node;
       }),

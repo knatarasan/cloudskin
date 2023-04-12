@@ -56,7 +56,7 @@ const DnDFlow = () => {
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, removeNode } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
 
@@ -160,6 +160,12 @@ const DnDFlow = () => {
       })
   }
 
+  const updateParent = () => {
+    updateNodeColor('112', '#00FF00')
+
+  }
+
+
 
   const deployPlan = () => {
     const plan_clone = structuredClone(planRef.current)
@@ -201,15 +207,14 @@ const DnDFlow = () => {
 
     // TO USE SVG check this https://create-react-app.dev/docs/adding-images-fonts-and-files/#adding-svgs
 
-    const vpc = "VPC" + plan.vpc_id
+    // const vpc = "VPC" + plan.vpc_id
     const new_node: Node<any> = {
       id: plan.vpc[0].vpc_id,
       data: { label: "VPC" },
       position: { x: nodes[0].position.x - 75, y: nodes[0].position.y - 75 },
       className: 'light',
-      style: { backgroundColor: 'rgba(255, 0, 0, 0.2)', width: 200, height: 200 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
+      style: { backgroundColor: 'rgba(255,255,255, 0)', borderColor: '#00FF00', width: 200, height: 200 },
+      type: "group"
       // style: { border: "100px", width: "5%", background: color },
     };
 
@@ -217,7 +222,11 @@ const DnDFlow = () => {
 
 
     nodes.map((node) => {
-      node.data.parent = plan.vpc[0].vpc_id
+      node.parentNode = plan.vpc[0].vpc_id
+      node.extent = 'parent'
+      node.position = { x: 75, y: 75 }
+      node.selected = true
+      node.dragging = true
     })
 
     setNodes(new_node);
@@ -256,7 +265,7 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-//  Node click should only be applied for regular nodes
+    //  Node click should only be applied for regular nodes
     if (node.id.substring(0, 3) !== 'vpc') {
       nodes.map((node_i, idx) => {
         if (node_i.id === node.id) {
@@ -371,6 +380,8 @@ const DnDFlow = () => {
           <div className="reactflow-wrapper" ref={reactFlowWrapper} data-testid="work-canvas">
             <p>Plan id : {planId} </p>
             <Button onClick={createParentNode}>parent</Button>
+            <Button onClick={updateParent}>update color</Button>
+
 
             <ReactFlow
               nodes={nodes}
