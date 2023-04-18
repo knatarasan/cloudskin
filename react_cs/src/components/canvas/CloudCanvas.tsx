@@ -40,7 +40,9 @@ const selector = (state) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
-  removeNode: state.removeNode
+  removeNode: state.removeNode,
+  updateNodeLabel: state.updateNodeLabel,
+  emptyContext: state.emptyContext
 });
 
 const DnDFlow = () => {
@@ -51,12 +53,12 @@ const DnDFlow = () => {
   // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
-  const [clickedNode, setClickedNode, clickedNodeRef] = useState<Number>(-1)
+  const [clickedNode, setClickedNode, clickedNodeRef] = useState<number>(-1)
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeColor } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeLabel, emptyContext } = useStore(selector, shallow);
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
 
@@ -90,6 +92,18 @@ const DnDFlow = () => {
     }
   }
 
+  const refreshPlan = () => {
+
+    api.get(`/plan/${plan_id_edit}/`)
+      .then((response) => {
+        addPlan(response.data)
+
+        console.log("Plan successfully retrieved", response.data.plan_id)
+      })
+      .catch((error) => {
+        console.log(plan_id_edit, ' is not right plan id to edit', error);
+      })
+  }
 
   useEffect(() => {
 
@@ -120,8 +134,7 @@ const DnDFlow = () => {
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
       // onSave()
-      emptyNodes()
-      emptyEdges()
+      emptyContext()
     }
     // componentWillUnMount
   }, [])
@@ -196,7 +209,7 @@ const DnDFlow = () => {
   const createNetwork = (): void => {
     const region_node = {
       id: 'reg',
-      data: { label: 'Region' },
+      data: { label: 'region' },
       position: { x: 100, y: 100 },
       className: 'light',
       style: { width: 400, height: 400, borderColor: 'blue' },
@@ -206,7 +219,7 @@ const DnDFlow = () => {
 
     const vpc_node = {
       id: 'vpc',
-      data: { label: 'VPC' },
+      data: { label: 'vpc' },
       position: { x: 25, y: 35 },
       className: 'light',
       style: { width: 350, height: 350, borderColor: 'green' },
@@ -218,7 +231,7 @@ const DnDFlow = () => {
 
     const subnet_node = {
       id: 'snt',
-      data: { label: 'Subnet' },
+      data: { label: 'public subnet' },
       position: { x: 25, y: 35 },
       className: 'light',
       style: { width: 300, height: 300, backgroundColor: '#e6ffe6', borderColor: 'white' },
@@ -230,10 +243,10 @@ const DnDFlow = () => {
 
     const sg_node = {
       id: 'sgr',
-      data: { label: 'Security Group' },
+      data: { label: 'security group' },
       position: { x: 25, y: 35 },
       className: 'light',
-      style: { width: 250, height: 250, borderColor: 'green' },
+      style: { width: 250, height: 250, borderColor: '#cc5200' },
       extent: 'parent',
       parentNode: 'snt',
     }
@@ -357,7 +370,7 @@ const DnDFlow = () => {
               <Controls />
               <div className="save__controls">
 
-                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
+                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} refreshPlan={refreshPlan} /> : null}
               </div>
               <div>
               </div>

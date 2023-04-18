@@ -18,9 +18,9 @@ class VPC(models.Model):
     internet_gateway_ids = ArrayField(models.CharField(max_length=21), null=True)  # May need to be extended to separate model
     owner_id = models.CharField(max_length=21)
 
-    # VPC can exist without a plan, but a plan must have a VPC
+    # create a foreign key to the plan model, on delete cascade
     plan = models.ForeignKey(
-        Plan, related_name="vpc", on_delete=models.PROTECT, null=True
+        Plan, related_name="vpc", on_delete=models.CASCADE, null=True
     )  # May need to be extended to separate model
 
     def update_vpc_details(self, vpc_boto3, subnets):

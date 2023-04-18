@@ -10,16 +10,18 @@ import { useStore } from '../../store/Store';
 
 const selector = (state) => ({
     nodes: state.nodes,
+    plan: state.plan,
     updateNodeColor: state.updateNodeColor,
     updateNode: state.updateNode,
     setEc2_instance_types: state.setEc2_instance_types,
     ec2_instance_types: state.ec2_instance_types,
     updateEc2_instance_types: state.updateEc2_instance_types,
+    updateNodeLabel: state.updateNodeLabel,
 });
 
-const CompPropSidebar = ({ node_idx }: any) => {
+const CompPropSidebar = ({ node_idx }: any, { refreshPlan }) => {
 
-    const { nodes, updateNode, updateEc2_instance_types } = useStore(selector);
+    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel } = useStore(selector);
     const node = nodes[node_idx]        // Refer bottom of this file for node data structure
     const api_object = nodes[node_idx].data.api_object
 
@@ -74,9 +76,15 @@ const CompPropSidebar = ({ node_idx }: any) => {
             })
             .catch((error) => {
                 console.log('Node data refresh failed ', error);
-            })
+            });
 
+        refreshPlan();
+        updateNodeLabel('reg', 'region: us-east-1');
+        updateNodeLabel('vpc', 'vpc: ' + plan.vpc[0].vpc_id);
+        updateNodeLabel('snt', 'snt: ' + plan.vpc[0].subnet[0].subnet_id);
+        updateNodeLabel('sgr', 'sgr: ' + plan.vpc[0].security_group[0].group_id);
     }
+
     const installAttachable = (e: any) => {
         console.log('install ', node.attachables[0].name)
 

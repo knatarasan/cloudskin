@@ -51,6 +51,18 @@ let store = (set, get) => ({
     });
   },
 
+  updateNodeLabel: (nodeId, label) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node.data = { ...node.data, label: label };
+        }
+        return node;
+      }),
+    });
+  },
+
+
   updateNodeColor: (nodeId, color) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
@@ -73,6 +85,20 @@ let store = (set, get) => ({
   emptyNodes: () => {
     set((state) => ({
       nodes: [],
+    }));
+  },
+
+  emptyPlan: () => {
+    set((state) => ({
+      plan: {},
+    }));
+  },
+
+  emptyContext: () => {
+    set((state) => ({
+      nodes: [],
+      edges: [],
+      plan: {},
     }));
   },
 // End of Node operation
