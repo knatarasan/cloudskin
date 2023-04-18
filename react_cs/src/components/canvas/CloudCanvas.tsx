@@ -160,13 +160,6 @@ const DnDFlow = () => {
       })
   }
 
-  const updateParent = () => {
-    updateNodeColor('112', '#00FF00')
-
-  }
-
-
-
   const deployPlan = () => {
     const plan_clone = structuredClone(planRef.current)
     plan_clone.deploy_status = 2
@@ -200,39 +193,54 @@ const DnDFlow = () => {
       })
   }
 
-  const createParentNode = (): void => {
-    const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
-
-    const position = nodes[0].position
-
-    // TO USE SVG check this https://create-react-app.dev/docs/adding-images-fonts-and-files/#adding-svgs
-
-    // const vpc = "VPC" + plan.vpc_id
-    const new_node: Node<any> = {
-      id: plan.vpc[0].vpc_id,
-      data: { label: "VPC" },
-      position: { x: nodes[0].position.x - 75, y: nodes[0].position.y - 75 },
+  const createNetwork = (): void => {
+    const region_node = {
+      id: 'reg',
+      data: { label: 'Region' },
+      position: { x: 100, y: 100 },
       className: 'light',
-      style: { backgroundColor: 'rgba(255,255,255, 0)', borderColor: '#00FF00', width: 200, height: 200 },
-      type: "group"
-      // style: { border: "100px", width: "5%", background: color },
-    };
+      style: { width: 400, height: 400, borderColor: 'blue' },
+    }
 
-    console.log('new_node ', new_node)
+    setNodes(region_node);
 
+    const vpc_node = {
+      id: 'vpc',
+      data: { label: 'VPC' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 350, height: 350, borderColor: 'green' },
+      extent: 'parent',
+      parentNode: 'reg',
+    }
 
-    nodes.map((node) => {
-      node.parentNode = plan.vpc[0].vpc_id
-      node.extent = 'parent'
-      node.position = { x: 75, y: 75 }
-      node.selected = true
-      node.dragging = true
-    })
+    setNodes(vpc_node);
 
-    setNodes(new_node);
+    const subnet_node = {
+      id: 'snt',
+      data: { label: 'Subnet' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 300, height: 300, backgroundColor: '#e6ffe6', borderColor: 'white' },
+      extent: 'parent',
+      parentNode: 'vpc',
+    }
 
-    console.log('nodes ', nodes['arg1'])
-  };
+    setNodes(subnet_node);
+
+    const sg_node = {
+      id: 'sgr',
+      data: { label: 'Security Group' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 250, height: 250, borderColor: 'green' },
+      extent: 'parent',
+      parentNode: 'snt',
+    }
+
+    setNodes(sg_node);
+  }
+
 
 
   const createNewNode = (name: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
@@ -246,15 +254,19 @@ const DnDFlow = () => {
 
     createAWSComponent(name)
       .then((awsComp) => {
+
+        createNetwork();
         const new_node: Node<any> = {
           id: awsComp.id.toString(),
           type: 'awsCompNode',
-          position,
+          position: { x: 25, y: 35 },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           // style: { border: "100px", width: "5%", background: color },
           style: { height: "50px", width: "50px" },
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
+          parentNode: 'sgr',
+          extent: 'parent'
         };
         console.log('new_node ', new_node)
         setNodes(new_node);
@@ -266,7 +278,7 @@ const DnDFlow = () => {
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
     //  Node click should only be applied for regular nodes
-    if (node.id.substring(0, 3) !== 'vpc') {
+    if (node.id.substring(0, 3) !== 'vpc' && node.id.substring(0, 3) !== 'sgr' && node.id.substring(0, 3) !== 'snt' && node.id.substring(0, 3) !== 'reg') {
       nodes.map((node_i, idx) => {
         if (node_i.id === node.id) {
           setClickedNode(idx);
@@ -286,66 +298,12 @@ const DnDFlow = () => {
 
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
-      // Attachables are temporriely disabled
-
-      // dropped node is attachable type 
-      // if (data.nodeType === 'attachable') {
-      //   const reactFlowBounds: any = reactFlowWrapper.current?.getBoundingClientRect();
-      //   let centerX = 0
-      //   let centerY = 0
-      //   const pos: any = reactFlowInstance?.project({
-      //     x: event.clientX - reactFlowBounds.left,
-      //     y: event.clientY - reactFlowBounds.top,
-      //   });
-
-      //   centerX = pos.x;
-      //   centerY = pos.y;
-
-      //   const targetNode: any = reactFlowInstanceRef.current?.getNodes().find(
-      //     (n: any) =>
-      //       centerX > n.position.x &&
-      //       centerX < n.position.x + n.width &&
-      //       centerY > n.position.y &&
-      //       centerY < n.position.y + n.height
-      //     // n.id !== node.id // this is needed, otherwise we would always find the dragged node
-      //   );
-
-      //   // setTarget(targetNode);
-      //   console.log('node found ', targetNode)
-
-      //   setNodes((nds) =>
-      //     nds.map((node) => {
-      //       if (node.id === targetNode.id) {
-      //         // it's important that you create a new object here
-      //         // in order to notify react flow about the change
-
-      //         const attached = {
-      //           attachable: 'pg',
-      //           attachables: [{ id: 1, name: 'pg' }]
-      //         }
-      //         node.data = {
-      //           ...node.data,
-      //           ...attached
-      //         };
-      //       }
-      //       return node;
-      //     })
-      //   );
-
-      //   /*
-      //     1. Trigger Holder to accept attachable
-      //     2. Make a backend call to deploy attachable
-      //   */
-      //   console.log('attachable dropped ', targetNode)
-      //   return
-      // }
-      // dropped node is attachable type 
-
       if (planIdRef.current != -1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
-        //create plan
+        // create plan
+
         const plan_obj = {
           plan: {},
           deploy_status: 1,
@@ -357,7 +315,6 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
-            // setSaveUpdate(false)
             console.log("plan created", planIdRef.current)
           }).then(() => {
             createNewNode(data.node, 25, "red", event)
@@ -379,9 +336,6 @@ const DnDFlow = () => {
           <Sidebar />
           <div className="reactflow-wrapper" ref={reactFlowWrapper} data-testid="work-canvas">
             <p>Plan id : {planId} </p>
-            <Button onClick={createParentNode}>parent</Button>
-            <Button onClick={updateParent}>update color</Button>
-
 
             <ReactFlow
               nodes={nodes}
