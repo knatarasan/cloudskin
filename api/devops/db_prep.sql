@@ -53,9 +53,11 @@ BEGIN
     DELETE FROM aws_securitygroup WHERE vpc_id = _vpc_primary_key_id;
     DELETE FROM aws_subnet WHERE vpc_id = _vpc_primary_key_id;
     DELETE FROM aws_vpc WHERE plan_id = delete_plan._plan_id;
+	DELETE FROM plan_plan where plan_id=delete_plan._plan_id;
 
 END;
 $$;
+
 
 
 

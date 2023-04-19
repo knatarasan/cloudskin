@@ -17,21 +17,12 @@ const selector = (state) => ({
     ec2_instance_types: state.ec2_instance_types,
     updateEc2_instance_types: state.updateEc2_instance_types,
     updateNodeLabel: state.updateNodeLabel,
+    addPlan: state.addPlan,
 });
 
-const CompPropSidebar = ({ node_idx }: any, { refreshPlan }) => {
+const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
-    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel } = useStore(selector);
-    const node = nodes[node_idx]        // Refer bottom of this file for node data structure
-    const api_object = nodes[node_idx].data.api_object
-
-
-    const handleChange = (e: any) => {
-        api_object[e.target.name] = e.target.value
-        // consider following logic, when you encouter issues in above setting
-        // setApiObject({ ...api_object, [e.target.name]: e.target.value });
-    };
-
+    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel, addPlan } = useStore(selector);
     useEffect(() => {
         console.log('api_object', api_object)
         // make api call to get instance types
@@ -41,6 +32,23 @@ const CompPropSidebar = ({ node_idx }: any, { refreshPlan }) => {
             });
 
     }, [])
+
+    let node, api_object;
+    try {
+        node = nodes[node_idx]        // Refer bottom of this file for node data structure
+        api_object = nodes[node_idx].data.api_object
+    } catch {
+        return null
+    }
+
+
+    const handleChange = (e: any) => {
+        api_object[e.target.name] = e.target.value
+        // consider following logic, when you encouter issues in above setting
+        // setApiObject({ ...api_object, [e.target.name]: e.target.value });
+    };
+
+
 
     const createInstance = (e: any) => {
         api.put(`/ec2/${api_object.id}/create_instance`, {})
@@ -78,11 +86,22 @@ const CompPropSidebar = ({ node_idx }: any, { refreshPlan }) => {
                 console.log('Node data refresh failed ', error);
             });
 
-        refreshPlan();
-        updateNodeLabel('reg', 'region: us-east-1');
-        updateNodeLabel('vpc', 'vpc: ' + plan.vpc[0].vpc_id);
-        updateNodeLabel('snt', 'snt: ' + plan.vpc[0].subnet[0].subnet_id);
-        updateNodeLabel('sgr', 'sgr: ' + plan.vpc[0].security_group[0].group_id);
+        // refreshPlan(plan_id_edit);
+
+        api.get(`/plan/${plan_id_edit}/`)
+            .then((response) => {
+            addPlan(response.data)
+            console.log("Plan successfully retrieved", response.data.plan_id)
+            updateNodeLabel('reg', 'region: us-east-1');
+            updateNodeLabel('vpc', 'vpc: ' + plan.vpc[0].vpc_id);
+            updateNodeLabel('snt', 'snt: ' + plan.vpc[0].subnet[0].subnet_id);
+            updateNodeLabel('sgr', 'sgr: ' + plan.vpc[0].security_group[0].group_id);
+    
+            })
+            .catch((error) => {
+            console.log(plan_id_edit, ' is not right plan id to edit', error);
+            })
+
     }
 
     const installAttachable = (e: any) => {

@@ -82,17 +82,6 @@ let store = (set, get) => ({
       nodes: state.nodes.concat(node),
     }));
   },
-  emptyNodes: () => {
-    set((state) => ({
-      nodes: [],
-    }));
-  },
-
-  emptyPlan: () => {
-    set((state) => ({
-      plan: {},
-    }));
-  },
 
   emptyContext: () => {
     set((state) => ({
@@ -139,12 +128,6 @@ let store = (set, get) => ({
   removeNode: (nodeId) => {
     set((state) => ({
       nodes: state.nodes.filter((node) => node.id !== nodeId),
-    }));
-  },
-
-  emptyEdges: () => {
-    set((state) => ({
-      edges: [],
     }));
   },
 

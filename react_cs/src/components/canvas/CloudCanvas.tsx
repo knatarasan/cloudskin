@@ -35,13 +35,10 @@ const selector = (state) => ({
   edges: state.edges,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
-  emptyNodes: state.emptyNodes,
-  emptyEdges: state.emptyEdges,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
   removeNode: state.removeNode,
-  updateNodeLabel: state.updateNodeLabel,
   emptyContext: state.emptyContext
 });
 
@@ -58,7 +55,7 @@ const DnDFlow = () => {
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, updateNodeLabel, emptyContext } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, addPlan, emptyContext, removeNode } = useStore(selector, shallow);
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
 
@@ -92,17 +89,17 @@ const DnDFlow = () => {
     }
   }
 
-  const refreshPlan = () => {
+  const refreshPlan = (plan_id_edit) => {
 
-    api.get(`/plan/${plan_id_edit}/`)
-      .then((response) => {
-        addPlan(response.data)
+    // api.get(`/plan/${plan_id_edit}/`)
+    //   .then((response) => {
+    //     addPlan(response.data)
 
-        console.log("Plan successfully retrieved", response.data.plan_id)
-      })
-      .catch((error) => {
-        console.log(plan_id_edit, ' is not right plan id to edit', error);
-      })
+    //     console.log("Plan successfully retrieved", response.data.plan_id)
+    //   })
+    //   .catch((error) => {
+    //     console.log(plan_id_edit, ' is not right plan id to edit', error);
+    //   })
   }
 
   useEffect(() => {
@@ -146,22 +143,40 @@ const DnDFlow = () => {
     }, []
   );
 
-  const onNodeDelete = (nodes: any): void => {
-    console.log('This node will be deleted ', nodes);
-    /*
-      - if is there an active instance attached to it
-        - delete
-      - else 
-        - dont delte , but alert
-    */
+  // const onNodeDelete = useCallback((deleted) => {
+  //   // nodes.map((node) => {
+  //   //   if (node.data.api_object.ec2_status === -1) {
+  //   //     removeNode(node.id)
+  //   //   }
+  //   // })
 
-    // nodes.map((node) => {
-    //   if (node.data.api_object.ec2_status === -1) {
-    //     removeNode(node.id)
-    //   }
-    // })
-  }
+  //   setClickedNode(-1);
+  //   const flow = reactFlowInstanceRef.current.toObject();
+  //   // onSave();
 
+  // },
+  //   [nodes, edges]
+  // );
+
+  // const onNodeDelete = (nodes: any): void => {
+  //   console.log('This node will be deleted ', nodes);
+  //   /*
+  //     - if is there an active instance attached to it
+  //       - delete
+  //     - else 
+  //       - dont delte , but alert
+  //   */
+
+  // nodes.map((node) => {
+  //   if (node.data.api_object.ec2_status === -1) {
+  //     removeNode(node.id)
+  //   }
+  // })
+
+  // setClickedNode(-1);
+  // const flow = reactFlowInstanceRef.current.toObject();
+  // onSave();
+  // }
   const deletePlan = () => {
     PlanService.deletePlan(planIdRef.current.toString())
       .then((response) => {
@@ -355,7 +370,7 @@ const DnDFlow = () => {
               edges={edges}
               deleteKeyCode={deleteKeyCodes}
               onNodesChange={onNodesChange}
-              onNodesDelete={onNodeDelete}
+              // onNodesDelete={onNodeDelete}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               onEdgesDelete={onEdgesDelete}
@@ -370,7 +385,7 @@ const DnDFlow = () => {
               <Controls />
               <div className="save__controls">
 
-                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} refreshPlan={refreshPlan} /> : null}
+                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} refreshPlan={refreshPlan} plan_id_edit={plan_id_edit} /> : null}
               </div>
               <div>
               </div>

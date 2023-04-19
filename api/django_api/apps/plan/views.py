@@ -1,5 +1,6 @@
 import logging
 
+from django.db import connection
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
@@ -77,5 +78,14 @@ class PlanDetail(APIView):
 
     def delete(self, request, pk, format=None):
         plan = self.get_object(pk, request)
-        plan.delete()
+        with connection.cursor() as cursor:
+            # cursor.callproc("public.delete_plan", [pk])
+
+            try:
+                cursor.execute(f"CALL public.delete_plan({int(pk)})")
+            except Exception as e:
+                logger.error(f"Error in delete plan {e}")
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        # plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
