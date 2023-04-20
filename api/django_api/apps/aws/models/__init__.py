@@ -1,3 +1,4 @@
+from .aws_network import VPC, SecurityGroup, Subnet
 from .AWSComponent import AWSComponent
 from .AwsCreds import AwsCreds
 from .EC2 import EC2

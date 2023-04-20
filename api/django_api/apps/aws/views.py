@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models.aws_network import VPC, SecurityGroup, Subnet
 from .models.AWSComponent import LB
 from .models.AwsCreds import AwsCreds
 from .models.EC2 import EC2
@@ -20,6 +21,9 @@ from .serializers import (
     InstallableServiceSerializer,
     InstalledServiceSerializer,
     LBSerializer,
+    SecurityGroupSerializer,
+    SubnetSerializer,
+    VPCSerializer,
 )
 
 logger = logging.getLogger(__name__)
@@ -142,6 +146,21 @@ class EC2ViewSet(viewsets.ModelViewSet):
 class EC2MetaBasicViewSet(viewsets.ModelViewSet):
     queryset = EC2MetaBasics.objects.all().order_by("instance_type")
     serializer_class = EC2MetaBasicsSerializer
+
+
+class VPCViewSet(viewsets.ModelViewSet):
+    queryset = VPC.objects.all()
+    serializer_class = VPCSerializer
+
+
+class SubnetViewSet(viewsets.ModelViewSet):
+    queryset = Subnet.objects.all()
+    serializer_class = SubnetSerializer
+
+
+class SecurityGroupViewSet(viewsets.ModelViewSet):
+    queryset = SecurityGroup.objects.all()
+    serializer_class = SecurityGroupSerializer
 
 
 class AwsCredsList(APIView):

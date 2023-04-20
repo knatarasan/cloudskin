@@ -2,6 +2,7 @@ import logging
 
 from rest_framework import serializers
 
+from .models.aws_network import VPC, SecurityGroup, Subnet
 from .models.AWSComponent import LB, AWSComponent
 from .models.AwsCreds import RSA, AwsCreds
 from .models.EC2 import EC2
@@ -221,3 +222,24 @@ class AwsCredsSerializer(serializers.Serializer):
         )
         instance.save()
         return instance
+
+
+class SubnetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subnet
+        fields = "__all__"
+
+
+class SecurityGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityGroup
+        fields = "__all__"
+
+
+class VPCSerializer(serializers.ModelSerializer):
+    subnet = SubnetSerializer(many=True, read_only=True)
+    security_group = SecurityGroupSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = VPC
+        fields = "__all__"

@@ -1,5 +1,6 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import useState from 'react-usestateref';
+import { Button } from "react-bootstrap";
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Sidebar from "./Sidebar";
@@ -34,12 +35,11 @@ const selector = (state) => ({
   edges: state.edges,
   setNodes: state.setNodes,
   setEdges: state.setEdges,
-  emptyNodes: state.emptyNodes,
-  emptyEdges: state.emptyEdges,
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
-  removeNode: state.removeNode
+  removeNode: state.removeNode,
+  emptyContext: state.emptyContext
 });
 
 const DnDFlow = () => {
@@ -50,12 +50,12 @@ const DnDFlow = () => {
   // to Refer Plan object
   const [plan, setPlan, planRef] = useState<any>({});
   const [reactFlowInstance, setReactFlowInstance, reactFlowInstanceRef] = useState<any>()
-  const [clickedNode, setClickedNode, clickedNodeRef] = useState<Number>(-1)
+  const [clickedNode, setClickedNode, clickedNodeRef] = useState<number>(-1)
   // const planCreatedRef = useRef(false);                         // This ref boolean value is used to avoid calling createPlan twice ( in Development useEffect called twice)
   // Ref : https://upmostly.com/tutorials/why-is-my-useeffect-hook-running-twice-in-react#:~:text=This%20is%20because%20outside%20of,your%20hook%20has%20been%20ran.
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const navigate = useNavigate()
-  const { nodes, edges, setNodes, setEdges, emptyNodes, emptyEdges, onNodesChange, onEdgesChange, onConnect, addPlan, removeNode } = useStore(selector, shallow);
+  const { nodes, edges, setNodes, setEdges, onNodesChange, onEdgesChange, onConnect, addPlan, emptyContext, removeNode } = useStore(selector, shallow);
   const deleteKeyCodes = React.useMemo(() => ['Backspace', 'Delete'], []);
 
 
@@ -89,6 +89,18 @@ const DnDFlow = () => {
     }
   }
 
+  const refreshPlan = (plan_id_edit) => {
+
+    // api.get(`/plan/${plan_id_edit}/`)
+    //   .then((response) => {
+    //     addPlan(response.data)
+
+    //     console.log("Plan successfully retrieved", response.data.plan_id)
+    //   })
+    //   .catch((error) => {
+    //     console.log(plan_id_edit, ' is not right plan id to edit', error);
+    //   })
+  }
 
   useEffect(() => {
 
@@ -97,6 +109,7 @@ const DnDFlow = () => {
       .then((response) => {
         setPlanId(Number(plan_id_edit))
         setPlan(response.data)
+        addPlan(response.data)
 
         const flow = response.data.plan
         if (flow) {
@@ -104,6 +117,8 @@ const DnDFlow = () => {
           setNodes(flow.nodes || []);
           setEdges(flow.edges || []);
         }
+
+        // Create Parent node
 
         console.log("Plan successfully retrieved", response.data.plan_id)
       })
@@ -116,8 +131,7 @@ const DnDFlow = () => {
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
       onSave()
-      emptyNodes()
-      emptyEdges()
+      emptyContext()
     }
     // componentWillUnMount
   }, [])
@@ -129,22 +143,40 @@ const DnDFlow = () => {
     }, []
   );
 
-  const onNodeDelete = (nodes: any): void => {
-    console.log('This node will be deleted ', nodes);
-    /*
-      - if is there an active instance attached to it
-        - delete
-      - else 
-        - dont delte , but alert
-    */
+  // const onNodeDelete = useCallback((deleted) => {
+  //   // nodes.map((node) => {
+  //   //   if (node.data.api_object.ec2_status === -1) {
+  //   //     removeNode(node.id)
+  //   //   }
+  //   // })
 
-    nodes.map((node) => {
-      if (node.data.api_object.ec2_status === -1) {
-        removeNode(node.id)
-      }
-    })
-  }
+  //   setClickedNode(-1);
+  //   const flow = reactFlowInstanceRef.current.toObject();
+  //   // onSave();
 
+  // },
+  //   [nodes, edges]
+  // );
+
+  // const onNodeDelete = (nodes: any): void => {
+  //   console.log('This node will be deleted ', nodes);
+  //   /*
+  //     - if is there an active instance attached to it
+  //       - delete
+  //     - else 
+  //       - dont delte , but alert
+  //   */
+
+  // nodes.map((node) => {
+  //   if (node.data.api_object.ec2_status === -1) {
+  //     removeNode(node.id)
+  //   }
+  // })
+
+  // setClickedNode(-1);
+  // const flow = reactFlowInstanceRef.current.toObject();
+  // onSave();
+  // }
   const deletePlan = () => {
     PlanService.deletePlan(planIdRef.current.toString())
       .then((response) => {
@@ -155,7 +187,6 @@ const DnDFlow = () => {
         console.log("Plan not deleted", error)
       })
   }
-
 
   const deployPlan = () => {
     const plan_clone = structuredClone(planRef.current)
@@ -190,6 +221,56 @@ const DnDFlow = () => {
       })
   }
 
+  const createNetwork = (): void => {
+    const region_node = {
+      id: 'reg',
+      data: { label: 'region' },
+      position: { x: 100, y: 100 },
+      className: 'light',
+      style: { width: 400, height: 400, borderColor: 'blue' },
+    }
+
+    setNodes(region_node);
+
+    const vpc_node = {
+      id: 'vpc',
+      data: { label: 'vpc' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 350, height: 350, borderColor: 'green' },
+      extent: 'parent',
+      parentNode: 'reg',
+    }
+
+    setNodes(vpc_node);
+
+    const subnet_node = {
+      id: 'snt',
+      data: { label: 'public subnet' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 300, height: 300, backgroundColor: '#e6ffe6', borderColor: 'white' },
+      extent: 'parent',
+      parentNode: 'vpc',
+    }
+
+    setNodes(subnet_node);
+
+    const sg_node = {
+      id: 'sgr',
+      data: { label: 'security group' },
+      position: { x: 25, y: 35 },
+      className: 'light',
+      style: { width: 250, height: 250, borderColor: '#cc5200' },
+      extent: 'parent',
+      parentNode: 'snt',
+    }
+
+    setNodes(sg_node);
+  }
+
+
+
   const createNewNode = (name: string, size: number, color: string, event: React.DragEvent<HTMLDivElement>): void => {
     const reactFlowBounds = reactFlowWrapper?.current?.getBoundingClientRect() || new DOMRect()
     const position = reactFlowInstance?.project({
@@ -201,15 +282,19 @@ const DnDFlow = () => {
 
     createAWSComponent(name)
       .then((awsComp) => {
+
+        createNetwork();
         const new_node: Node<any> = {
           id: awsComp.id.toString(),
           type: 'awsCompNode',
-          position,
+          position: { x: 25, y: 35 },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
           // style: { border: "100px", width: "5%", background: color },
           style: { height: "50px", width: "50px" },
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
+          parentNode: 'sgr',
+          extent: 'parent'
         };
         console.log('new_node ', new_node)
         setNodes(new_node);
@@ -220,12 +305,14 @@ const DnDFlow = () => {
 
   const onNodeClick = (event: any, node: any) => {
     console.log('onNodeClick ', node)
-
-    nodes.map((node_i, idx) => {
-      if (node_i.id === node.id) {
-        setClickedNode(idx);
-      }
-    })
+    //  Node click should only be applied for regular nodes
+    if (node.id.substring(0, 3) !== 'vpc' && node.id.substring(0, 3) !== 'sgr' && node.id.substring(0, 3) !== 'snt' && node.id.substring(0, 3) !== 'reg') {
+      nodes.map((node_i, idx) => {
+        if (node_i.id === node.id) {
+          setClickedNode(idx);
+        }
+      })
+    }
 
   }
 
@@ -239,66 +326,12 @@ const DnDFlow = () => {
 
       const data = JSON.parse(event.dataTransfer.getData("application/reactflow"))
 
-      // Attachables are temporriely disabled
-      
-      // dropped node is attachable type 
-      // if (data.nodeType === 'attachable') {
-      //   const reactFlowBounds: any = reactFlowWrapper.current?.getBoundingClientRect();
-      //   let centerX = 0
-      //   let centerY = 0
-      //   const pos: any = reactFlowInstance?.project({
-      //     x: event.clientX - reactFlowBounds.left,
-      //     y: event.clientY - reactFlowBounds.top,
-      //   });
-
-      //   centerX = pos.x;
-      //   centerY = pos.y;
-
-      //   const targetNode: any = reactFlowInstanceRef.current?.getNodes().find(
-      //     (n: any) =>
-      //       centerX > n.position.x &&
-      //       centerX < n.position.x + n.width &&
-      //       centerY > n.position.y &&
-      //       centerY < n.position.y + n.height
-      //     // n.id !== node.id // this is needed, otherwise we would always find the dragged node
-      //   );
-
-      //   // setTarget(targetNode);
-      //   console.log('node found ', targetNode)
-
-      //   setNodes((nds) =>
-      //     nds.map((node) => {
-      //       if (node.id === targetNode.id) {
-      //         // it's important that you create a new object here
-      //         // in order to notify react flow about the change
-
-      //         const attached = {
-      //           attachable: 'pg',
-      //           attachables: [{ id: 1, name: 'pg' }]
-      //         }
-      //         node.data = {
-      //           ...node.data,
-      //           ...attached
-      //         };
-      //       }
-      //       return node;
-      //     })
-      //   );
-
-      //   /*
-      //     1. Trigger Holder to accept attachable
-      //     2. Make a backend call to deploy attachable
-      //   */
-      //   console.log('attachable dropped ', targetNode)
-      //   return
-      // }
-      // dropped node is attachable type 
-
       if (planIdRef.current != -1) {    // As initialized , when plan is not available
         console.log('To augment existing plan ', planIdRef)
         createNewNode(data.node, 25, "red", event)
       } else {
-        //create plan
+        // create plan
+
         const plan_obj = {
           plan: {},
           deploy_status: 1,
@@ -310,7 +343,7 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
-            // setSaveUpdate(false)
+            addPlan(response.data)
             console.log("plan created", planIdRef.current)
           }).then(() => {
             createNewNode(data.node, 25, "red", event)
@@ -338,7 +371,7 @@ const DnDFlow = () => {
               edges={edges}
               deleteKeyCode={deleteKeyCodes}
               onNodesChange={onNodesChange}
-              onNodesDelete={onNodeDelete}
+              // onNodesDelete={onNodeDelete}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
               onEdgesDelete={onEdgesDelete}
@@ -353,7 +386,7 @@ const DnDFlow = () => {
               <Controls />
               <div className="save__controls">
 
-                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} /> : null}
+                {clickedNode > -1 ? <CompPropSidebar node_idx={clickedNode} refreshPlan={refreshPlan} plan_id_edit={plan_id_edit} /> : null}
               </div>
               <div>
               </div>

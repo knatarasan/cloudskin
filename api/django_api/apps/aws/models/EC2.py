@@ -4,6 +4,7 @@ import boto3
 from django.conf import settings
 from django.db import models
 
+from .aws_network import VPC
 from .AWSComponent import AWSComponent
 from .AwsCreds import RSA, AwsCreds
 from .InstallableService import InstallableService
@@ -92,7 +93,7 @@ class EC2(AWSComponent):
     def update_instance_details(self):
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
-        ec2 = boto3.resource(
+        ec2_boto3 = boto3.resource(
             "ec2",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
@@ -101,12 +102,27 @@ class EC2(AWSComponent):
 
         if self.ec2_instance_id:
             try:
-                instance = ec2.Instance(f"{self.ec2_instance_id}")
+                instance = ec2_boto3.Instance(f"{self.ec2_instance_id}")
                 self.public_ip = instance.public_ip_address
                 self.private_ip = instance.private_ip_address
                 self.host_name = instance.public_dns_name
                 self.security_group = instance.security_groups[0]["GroupId"] if instance.security_groups else None
                 self.subnet = instance.subnet_id
+
+                # process network details
+                _vpc_id = instance.vpc_id
+                _subnet_id = instance.subnet_id
+                _security_group_id = instance.security_groups[0]["GroupId"] if instance.security_groups else None
+
+                # Get or create VPC object
+                try:
+                    vpc = VPC.objects.get(vpc_id=_vpc_id)
+                except VPC.DoesNotExist:
+                    vpc = VPC.objects.create(vpc_id=_vpc_id, plan=self.plan)
+
+                vpc_boto3 = ec2_boto3.Vpc(_vpc_id)
+                vpc.update_vpc_details(vpc_boto3, ec2_boto3.subnets.all())
+
                 self.save()
                 self.health()
 

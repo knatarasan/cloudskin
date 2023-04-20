@@ -1,8 +1,7 @@
 import logging
 
+from apps.aws.serializers import AWSCompSerializer, VPCSerializer
 from rest_framework import serializers
-
-from apps.aws.serializers import AWSCompSerializer
 
 from .models import Plan
 
@@ -20,6 +19,7 @@ class PlanSerializer(serializers.Serializer):
     deploy_status = serializers.IntegerField()
     running_status = serializers.IntegerField()
     aws_components = AWSCompSerializer(many=True, read_only=True)
+    vpc = VPCSerializer(many=True, read_only=True)  # Here many=True doesn't make sense , but removing it throws error
 
     def create(self, validated_data):
         """

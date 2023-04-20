@@ -10,26 +10,19 @@ import { useStore } from '../../store/Store';
 
 const selector = (state) => ({
     nodes: state.nodes,
+    plan: state.plan,
     updateNodeColor: state.updateNodeColor,
     updateNode: state.updateNode,
     setEc2_instance_types: state.setEc2_instance_types,
     ec2_instance_types: state.ec2_instance_types,
     updateEc2_instance_types: state.updateEc2_instance_types,
+    updateNodeLabel: state.updateNodeLabel,
+    addPlan: state.addPlan,
 });
 
-const CompPropSidebar = ({ node_idx }: any) => {
+const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
-    const { nodes, updateNode, updateEc2_instance_types } = useStore(selector);
-    const node = nodes[node_idx]        // Refer bottom of this file for node data structure
-    const api_object = nodes[node_idx].data.api_object
-
-
-    const handleChange = (e: any) => {
-        api_object[e.target.name] = e.target.value
-        // consider following logic, when you encouter issues in above setting
-        // setApiObject({ ...api_object, [e.target.name]: e.target.value });
-    };
-
+    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel, addPlan } = useStore(selector);
     useEffect(() => {
         console.log('api_object', api_object)
         // make api call to get instance types
@@ -39,11 +32,34 @@ const CompPropSidebar = ({ node_idx }: any) => {
             });
 
     }, [])
+
+    let node, api_object;
+    try {
+        node = nodes[node_idx]        // Refer bottom of this file for node data structure
+        api_object = nodes[node_idx].data.api_object
+    } catch {
+        return null
+    }
+
+
+    const handleChange = (e: any) => {
+        api_object[e.target.name] = e.target.value
+        // consider following logic, when you encouter issues in above setting
+        // setApiObject({ ...api_object, [e.target.name]: e.target.value });
+    };
+
+
+
     const createInstance = (e: any) => {
         api.put(`/ec2/${api_object.id}/create_instance`, {})
             .then((response) => {
                 console.log("AWS instance created", response)
                 updateNode(api_object.id, response.data) // update nodes in zustand store 
+                // create VPC, Subnet, Security Group in backend
+                // api.put(`/aws/vpc/`, {'vpc_id': response.data.vpc_id})
+                // api.put(`/aws/subnet/`, {'subnet_id': response.data.vpc_id})
+                // api.put(`/aws/securitygroup/`, {'security_group_id': response.data.vpc_id})
+
             }).catch(
                 (error) => {
                     console.log("AWS instance not created", error)
@@ -56,19 +72,39 @@ const CompPropSidebar = ({ node_idx }: any) => {
     const refreshInstance = (e: any) => {
         console.log("Node data will be refreshed", api_object.id);
 
+        // This should update vpc , subnet and security group
+
         api.get(`/ec2/${api_object.id}/update_instance_details`)
             .then((response) => {
-                updateNode(api_object.id, response.data)
+                updateNode(api_object.id, response.data);
+
+                api.get(`/plan/${plan.plan_id}/`)
+                    .then((response) => {
+                        addPlan(response.data);
+                        updateNodeLabel('reg', 'region: us-east-1');
+                        updateNodeLabel('vpc', 'vpc: ' + response.data.vpc[0].vpc_id);
+                        updateNodeLabel('snt', 'snt: ' + response.data.vpc[0].subnet[0].subnet_id);
+                        updateNodeLabel('sgr', 'sgr: ' + response.data.vpc[0].security_group[0].group_id);
+                        console.log("Plan successfully retrieved", response.data.plan_id)
+                    })
+                    .catch((error) => {
+                        console.log(plan_id_edit, ' is not right plan id to edit', error);
+                    })
+
             })
-            .then(() => {
-                console.log("Node data refreshed")
-                console.log('nodes', nodes)
-            })
+            // .then(() => {
+            //     console.log("Node data refreshed")
+
+            // })
             .catch((error) => {
                 console.log('Node data refresh failed ', error);
-            })
+            });
+
+        // refreshPlan(plan_id_edit);
+
 
     }
+
     const installAttachable = (e: any) => {
         console.log('install ', node.attachables[0].name)
 

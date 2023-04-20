@@ -85,7 +85,8 @@ const IAMUser = () => {
         '                "ec2:AssociateAddress",\n' +
         '                "ec2:DisassociateAddress",\n' +
         '                "ec2:DescribeRegions",\n' +
-        '               "ec2:DescribeAvailabilityZones"\n' +
+        '                "ec2:DescribeAvailabilityZones,"\n' +
+        '                "ec2:DescribeVpcs"\n' +
         '                ],\n' +
         '            "Resource": "*"\n' +
         '        }\n' +

@@ -32,11 +32,65 @@ let store = (set, get) => ({
     }));
   },
 
+  // Node operation
   onNodesChange: (changes) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
     });
   },
+
+  updateNode: (nodeId, api_object) => {
+    // TODO instead of scanning entire array, can it be done by index?
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node.data = { ...node.data, api_object };
+        }
+        return node;
+      }),
+    });
+  },
+
+  updateNodeLabel: (nodeId, label) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node.data = { ...node.data, label: label };
+        }
+        return node;
+      }),
+    });
+  },
+
+
+  updateNodeColor: (nodeId, color) => {
+    // TODO instead of scanning entire array, can it be done by index?
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          // node.data = { ...node.data, label: color };
+          node.selected = true
+
+        }
+        return node;
+      }),
+    });
+  },
+  setNodes: (node) => {
+    console.log("setNodes");
+    set((state) => ({
+      nodes: state.nodes.concat(node),
+    }));
+  },
+
+  emptyContext: () => {
+    set((state) => ({
+      nodes: [],
+      edges: [],
+      plan: {},
+    }));
+  },
+// End of Node operation
 
   onEdgesChange: (changes) => {
     set({
@@ -47,18 +101,6 @@ let store = (set, get) => ({
   onConnect: (connection) => {
     set({
       edges: addEdge(connection, get().edges),
-    });
-  },
-
-  updateNodeColor: (nodeId, color, idx) => {
-    // TODO instead of scanning entire array, can it be done by index?
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, label: color };
-        }
-        return node;
-      }),
     });
   },
 
@@ -76,46 +118,16 @@ let store = (set, get) => ({
     }));
   },
 
-  updateNode: (nodeId, api_object) => {
-    // TODO instead of scanning entire array, can it be done by index?
-    set({
-      nodes: get().nodes.map((node) => {
-        if (node.id === nodeId.toString()) {
-          node.data = { ...node.data, api_object };
-        }
-        return node;
-      }),
-    });
-  },
-
-  setNodes: (node) => {
-    console.log("setNodes");
-    set((state) => ({
-      nodes: state.nodes.concat(node),
-    }));
-  },
-
   setEdges: (edge) => {
     set((state) => ({
       edges: state.edges.concat(edge),
     }));
   },
 
-  emptyNodes: () => {
-    set((state) => ({
-      nodes: [],
-    }));
-  },
 
   removeNode: (nodeId) => {
     set((state) => ({
       nodes: state.nodes.filter((node) => node.id !== nodeId),
-    }));
-  },
-
-  emptyEdges: () => {
-    set((state) => ({
-      edges: [],
     }));
   },
 
