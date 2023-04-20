@@ -130,7 +130,7 @@ const DnDFlow = () => {
     // componentWillUnMount
     return () => {
       console.log('comp did unmount here', reactFlowInstance, reactFlowInstanceRef);
-      // onSave()
+      onSave()
       emptyContext()
     }
     // componentWillUnMount
@@ -343,6 +343,7 @@ const DnDFlow = () => {
             const new_plan_id = Number(response.data.plan_id)
             setPlanId(new_plan_id)
             setPlan(response.data)
+            addPlan(response.data)
             console.log("plan created", planIdRef.current)
           }).then(() => {
             createNewNode(data.node, 25, "red", event)

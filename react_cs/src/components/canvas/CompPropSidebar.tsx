@@ -76,31 +76,32 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
         api.get(`/ec2/${api_object.id}/update_instance_details`)
             .then((response) => {
-                updateNode(api_object.id, response.data)
+                updateNode(api_object.id, response.data);
+
+                api.get(`/plan/${plan.plan_id}/`)
+                    .then((response) => {
+                        addPlan(response.data);
+                        updateNodeLabel('reg', 'region: us-east-1');
+                        updateNodeLabel('vpc', 'vpc: ' + response.data.vpc[0].vpc_id);
+                        updateNodeLabel('snt', 'snt: ' + response.data.vpc[0].subnet[0].subnet_id);
+                        updateNodeLabel('sgr', 'sgr: ' + response.data.vpc[0].security_group[0].group_id);
+                        console.log("Plan successfully retrieved", response.data.plan_id)
+                    })
+                    .catch((error) => {
+                        console.log(plan_id_edit, ' is not right plan id to edit', error);
+                    })
+
             })
-            .then(() => {
-                console.log("Node data refreshed")
-                console.log('nodes', nodes)
-            })
+            // .then(() => {
+            //     console.log("Node data refreshed")
+
+            // })
             .catch((error) => {
                 console.log('Node data refresh failed ', error);
             });
 
         // refreshPlan(plan_id_edit);
 
-        api.get(`/plan/${plan_id_edit}/`)
-            .then((response) => {
-            addPlan(response.data)
-            console.log("Plan successfully retrieved", response.data.plan_id)
-            updateNodeLabel('reg', 'region: us-east-1');
-            updateNodeLabel('vpc', 'vpc: ' + plan.vpc[0].vpc_id);
-            updateNodeLabel('snt', 'snt: ' + plan.vpc[0].subnet[0].subnet_id);
-            updateNodeLabel('sgr', 'sgr: ' + plan.vpc[0].security_group[0].group_id);
-    
-            })
-            .catch((error) => {
-            console.log(plan_id_edit, ' is not right plan id to edit', error);
-            })
 
     }
 
