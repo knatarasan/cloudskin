@@ -17,12 +17,13 @@ const selector = (state) => ({
     ec2_instance_types: state.ec2_instance_types,
     updateEc2_instance_types: state.updateEc2_instance_types,
     updateNodeLabel: state.updateNodeLabel,
+    updateNodeDeletable: state.updateNodeDeletable,
     addPlan: state.addPlan,
 });
 
 const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
-    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel, addPlan } = useStore(selector);
+    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel,updateNodeDeletable, addPlan } = useStore(selector);
     useEffect(() => {
         console.log('api_object', api_object)
         // make api call to get instance types
@@ -55,11 +56,7 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
             .then((response) => {
                 console.log("AWS instance created", response)
                 updateNode(api_object.id, response.data) // update nodes in zustand store 
-                // create VPC, Subnet, Security Group in backend
-                // api.put(`/aws/vpc/`, {'vpc_id': response.data.vpc_id})
-                // api.put(`/aws/subnet/`, {'subnet_id': response.data.vpc_id})
-                // api.put(`/aws/securitygroup/`, {'security_group_id': response.data.vpc_id})
-
+                updateNodeDeletable(api_object.id, false)
             }).catch(
                 (error) => {
                     console.log("AWS instance not created", error)
@@ -128,7 +125,8 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
         api.put(`/ec2/${api_object.id}/terminate_instance`, {})
             .then((response) => {
                 console.log("AWS instance terminated", response);
-                updateNode(api_object.id, response.data)         // update nodes in zustand store TODO testing
+                updateNode(api_object.id, response.data)         
+                updateNodeDeletable(api_object.id, true)
             })
     }
 

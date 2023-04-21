@@ -39,6 +39,17 @@ let store = (set, get) => ({
     });
   },
 
+  
+  updateNodeDeletable: (nodeId, deletable) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId.toString()) {
+          node = { ...node, deletable: deletable };
+        }
+        return node;
+      }),
+    });
+  },
   updateNode: (nodeId, api_object) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
@@ -62,15 +73,13 @@ let store = (set, get) => ({
     });
   },
 
-
   updateNodeColor: (nodeId, color) => {
     // TODO instead of scanning entire array, can it be done by index?
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId.toString()) {
           // node.data = { ...node.data, label: color };
-          node.selected = true
-
+          node.selected = true;
         }
         return node;
       }),
@@ -90,7 +99,7 @@ let store = (set, get) => ({
       plan: {},
     }));
   },
-// End of Node operation
+  // End of Node operation
 
   onEdgesChange: (changes) => {
     set({
@@ -123,7 +132,6 @@ let store = (set, get) => ({
       edges: state.edges.concat(edge),
     }));
   },
-
 
   removeNode: (nodeId) => {
     set((state) => ({
