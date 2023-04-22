@@ -78,14 +78,25 @@ class PlanDetail(APIView):
 
     def delete(self, request, pk, format=None):
         plan = self.get_object(pk, request)
-        with connection.cursor() as cursor:
-            # cursor.callproc("public.delete_plan", [pk])
 
-            try:
-                cursor.execute(f"CALL public.delete_plan({int(pk)})")
-            except Exception as e:
-                logger.error(f"Error in delete plan {e}")
+        # plan.aws_components related_name in Plan model
+        for aws_component in plan.aws_components.all():
+            ec2 = aws_component.ec2
+            if 1 < ec2.ec2_status < 7:
+                logger.error(f"EC2 is running, cannot delete")
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        # plan.delete()
+            aws_component.delete()
+
+        # plan.vpc is related_name in Plan model
+        for vpc in plan.vpc.all():
+            # vpc.security_group is related_name in VPC model
+            for sg in vpc.security_group.all():
+                sg.delete()
+            # vpc.subnet is related_name in VPC model
+            for subnet in vpc.subnet.all():
+                subnet.delete()
+            vpc.delete()
+
+        plan.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
