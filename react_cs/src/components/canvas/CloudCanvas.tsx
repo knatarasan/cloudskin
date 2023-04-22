@@ -228,6 +228,7 @@ const DnDFlow = () => {
       position: { x: 100, y: 100 },
       className: 'light',
       style: { width: 400, height: 400, borderColor: 'blue' },
+      deletable: false,
     }
 
     setNodes(region_node);
@@ -240,6 +241,7 @@ const DnDFlow = () => {
       style: { width: 350, height: 350, borderColor: 'green' },
       extent: 'parent',
       parentNode: 'reg',
+      deletable: false,
     }
 
     setNodes(vpc_node);
@@ -252,6 +254,7 @@ const DnDFlow = () => {
       style: { width: 300, height: 300, backgroundColor: '#e6ffe6', borderColor: 'white' },
       extent: 'parent',
       parentNode: 'vpc',
+      deletable: false,
     }
 
     setNodes(subnet_node);
@@ -264,6 +267,7 @@ const DnDFlow = () => {
       style: { width: 250, height: 250, borderColor: '#cc5200' },
       extent: 'parent',
       parentNode: 'snt',
+      deletable: false,
     }
 
     setNodes(sg_node);
@@ -290,11 +294,12 @@ const DnDFlow = () => {
           position: { x: 25, y: 35 },
           sourcePosition: Position.Right,
           targetPosition: Position.Left,
-          // style: { border: "100px", width: "5%", background: color },
           style: { height: "50px", width: "50px" },
           data: { label: awsComp.id.toString(), attachable: '', attachables: [], api_object: awsComp, color: 'red' },
           parentNode: 'sgr',
-          extent: 'parent'
+          extent: 'parent',
+          deletable: true
+
         };
         console.log('new_node ', new_node)
         setNodes(new_node);
