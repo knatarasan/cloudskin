@@ -1,0 +1,11 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/stratoclo
+hooks:
+  BeforeInstall:
+    - location: api/devops/beforeInstall.sh
+  AfterInstall:
+    - location: api/devops/afterInstall.sh
+
