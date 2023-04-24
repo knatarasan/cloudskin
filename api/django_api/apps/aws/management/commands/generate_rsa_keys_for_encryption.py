@@ -6,6 +6,14 @@ from django.core.management.base import BaseCommand, CommandError
 
 logger = logging.getLogger(__name__)
 
+"""
+python manage.py generate_rsa_keys_for_encryption
+
+Above will create following files under the cloudskin/api/django_api/config/:
+    private_key.pem
+    public_key.pem
+"""
+
 
 class Command(BaseCommand):
     help = (

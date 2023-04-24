@@ -12,6 +12,7 @@ import { GiHealthIncrease, GiPiggyBank } from 'react-icons/gi';
 import { IoIosPulse } from 'react-icons/io';
 import Interested from "./Interested";
 import HomeNavbar from "../navbar/HomeNavbar";
+import FAQ from "./FAQ";
 import '../../App.css'
 
 const Home = () => {
@@ -21,32 +22,35 @@ const Home = () => {
         {/* Navigation */}
         <HomeNavbar />
 
-        {/* Header */}
+        {/* Landing content */}
 
-        <header className="py-5 app" >
-          <div className="container px-5">
-            <div className="row gx-5 align-items-center justify-content-center">
-              <div className="col-lg-8 col-xl-7 col-xxl-6">
-                <div className="my-5 text-center text-xl-start">
+        <section className="py-5 app" id="headers">
+          <Container>
+            <Row className="text-center">
+              <Col>
 
-
-                  <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
-                  <p className="lead fw-normal mb-4">
-                    No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
-                    No code cloud deployment<br />
-                    One click deployment<br />
-                    Best practices applied, <strong>you can focus on your business</strong><br />
-                  </p>
-                </div>
+                <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
+                <br/>
+                <br/>
+                <p className="lead fw-normal mb-4" style={{ textAlign: "left" }}>
+                  No need of cloud expertise, all default configs taken care ( Right VM size, right PG version selected)
+                  No code cloud deployment<br />
+                  One click deployment<br />
+                  Best practices applied, <strong>you can focus on your business</strong><br />
+                </p>
+              </Col>
+              <Col>
+              <div>
+                <img className="img-fluid rounded-3 my-5" style={{ maxWidth: '400px', maxHeight: '500px' }} src={how_to_use_img} alt="..." />
               </div>
-              <img className="img-fluid rounded-3 my-5" style={{ maxWidth: '400px', maxHeight: '500px' }} src={how_to_use_img} alt="..." />
-            </div>
-            <div className="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-xl-start">
-              <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="#features">Get Started</a>
-              <a className="btn btn-outline-light btn-lg px-4 get-started" href="#!">Learn More</a>
-            </div>
-          </div>
-        </header>
+              </Col>
+            </Row>
+            <Row>
+              <a className="btn btn-light btn-lg px-4 me-sm-3 get-started" href="/register">Get Started</a>
+              <a className="btn btn-outline-light btn-lg px-4 get-started" href="/faq">Learn More</a>
+            </Row>
+          </Container>
+        </section>
 
         {/* <!-- Motivation section--> */}
         <section className="py-5 app" id="features">

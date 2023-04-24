@@ -1,5 +1,6 @@
 import DnDFlow from "./components/canvas/CloudCanvas";
 import Home from "./components/landing/Home";
+import FAQ from "./components/landing/FAQ";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -19,6 +20,7 @@ const App = () => {
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="iconTester" element={<IconTester schema={{}} data={{}} />} />
       <Route path="iamuser" element={<IAMUser />} />
+      <Route path="faq" element={<FAQ />} />
 
     </Routes>
   );
