@@ -37,7 +37,7 @@ const DBNavbar = () => {
 
                 <Link to="/">
                     <Navbar.Brand>
-                        <img src={logo} width={50} height={"auto"}></img>
+                        <img src={logo} width={40} height={"auto"}></img>
                     </Navbar.Brand>
                 </Link>
                 <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>

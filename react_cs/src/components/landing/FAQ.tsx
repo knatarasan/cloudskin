@@ -39,7 +39,7 @@ const FAQ = () => {
                             <Col>
                                 <h4 className="fw-bolder mb-0">What is StratoClo?</h4>
                                 <p className="lead fw-normal mb-4" style={{ textAlign: "left" }}>
-                                    StratoClo is a cloud management platform that helps make navigating and managing cloud infrastructure easier. It takes care of tasks like resource provisioning, configuration management, and deployment automation, so you can focus on your business.
+                                Stratoclo is a web  app to make cloud easier : design, deploy, monitor and manage cloud assets easier. It takes care of tasks like resource provisioning, configuration management, and deployment automation, so you can focus on your business.
                                 </p>
                             </Col>
                             <Col>
@@ -59,7 +59,7 @@ const FAQ = () => {
                             <Col>
                                 <h4 className="fw-bolder mb-0">How does StratoClo ensure that my applications are secure?</h4>
                                 <p className="lead fw-normal mb-4" style={{ textAlign: "left" }}>
-                                    StratoClo applies best practices for security, including access controls, encryption, and network security. It also monitors and manages your infrastructure and applications to detect and solve any security problems.
+                                    StratoClo applies best practices for security, including  encryption, and network security. It also monitors and manages your infrastructure and applications to detect and solve any security problems.
                                 </p>
                             </Col>
                         </Row>
@@ -67,7 +67,7 @@ const FAQ = () => {
                             <Col>
                                 <h4 className="fw-bolder mb-0">Can I customize the configurations used by StratoClo?</h4>
                                 <p className="lead fw-normal mb-4" style={{ textAlign: "left" }}>
-                                    Yes, StratoClo allows you to override the default configurations if necessary, but it applies best practices by default to ensure that your infrastructure and applications are secure and scalable.
+                                    Yes, StratoClo allows you to override the default configurations if necessary, but StratoClo applies best practices by default to ensure that your infrastructure and applications are secure and scalable.
                                 </p>
                             </Col>
                             <Col>

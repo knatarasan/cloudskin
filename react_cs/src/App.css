@@ -12,7 +12,7 @@
     background-color: #FCE2D7;
 }
 
-.home-navbar{
+.home-navbar {
     background-color: #FFFFFF;
     color: #491619;
     height: 50px;
@@ -41,6 +41,18 @@
     border: 2px solid #491619;
     padding: 10px;
     border-radius: 5px;
+}
+
+.col1-background {
+    background-color: #0000FF;
+}
+.col2-background {
+    background-color: #FFFF00;
+}
+
+
+.section-background {
+    background-color: #FF0000;
 }
 
 .card-bg-gradient {

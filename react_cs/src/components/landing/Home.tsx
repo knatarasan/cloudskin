@@ -28,7 +28,6 @@ const Home = () => {
           <Container>
             <Row className="text-center">
               <Col>
-
                 <h1 className="display-5 fw-bolder mb-2">Navigate Cloud Easier</h1>
                 <br/>
                 <br/>
@@ -247,23 +246,6 @@ const Home = () => {
                   className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
                 >
                   <Card.Body>
-                    <h1><GrDeploy /></h1>
-                    <Card.Title className="card-title-features-gradient"><strong>Deployment automation:</strong></Card.Title>
-                    <Card.Text>
-                      StratoClo takes care of releasing updates and new versions of your applications.
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                  border="dark"
-                  key="light"
-                  text='dark'
-                  style={{ width: '18rem', border: '3px solid' }}
-                  className="col mb-5 mb-md-0 h-100 card-feature-bg-gradient shadow-lg p-3 mb-5 bg-white rounded"
-                >
-                  <Card.Body>
                     <h1><IoIosPulse /></h1>
                     <Card.Title className="card-title-features-gradient"><strong>Monitoring and alerting:</strong></Card.Title>
                     <Card.Text>
@@ -272,12 +254,8 @@ const Home = () => {
                   </Card.Body>
                 </Card>
               </Col>
-            </Row>
-            <br />
-            <br />
-            <Row xs={1} md={3} className="g-4">
               <Col>
-                <Card
+              <Card
                   border="dark"
                   key="light"
                   text='dark'
@@ -292,7 +270,7 @@ const Home = () => {
                     </Card.Text>
                   </Card.Body>
                 </Card>
-              </Col>
+</Col>
             </Row>
             <br />
             <br />
