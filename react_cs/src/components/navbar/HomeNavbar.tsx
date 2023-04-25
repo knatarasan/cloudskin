@@ -29,7 +29,7 @@ const SCNavbar = () => {
     };
 
     return (
-            <Navbar className="navbar sticky-top navbar-light" expand="lg">
+            <Navbar className="navbar sticky-top transparent navbar-light" expand="lg">
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
 
@@ -40,22 +40,8 @@ const SCNavbar = () => {
                     </Link>
                     <Button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></Button>
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0  navbar">
-                        <li className="nav-item"><a className="nav-link app-color" href="pricing.html">Pricing</a></li>
-                        <li className="nav-item"><a className="nav-link app-color" href="faq.html">FAQ</a></li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle app-color" id="navbarDropdownBlog" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Blog</a>
-                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownBlog">
-                                <li><a className="dropdown-item" href="blog-home.html">Blog Home</a></li>
-                                <li><a className="dropdown-item" href="blog-post.html">Blog Post</a></li>
-                            </ul>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle app-color" id="navbarDropdownPortfolio" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Portfolio</a>
-                            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownPortfolio">
-                                <li><a className="dropdown-item" href="portfolio-overview.html">Portfolio Overview</a></li>
-                                <li><a className="dropdown-item" href="portfolio-item.html">Portfolio Item</a></li>
-                            </ul>
-                        </li>
+                        <li className="nav-item"><a className="nav-link app-color" href="/pricing">Pricing</a></li>
+                        <li className="nav-item"><a className="nav-link app-color" href="/faq">FAQ</a></li>
                         {(() => {
                             if (user.loggedIn) {
                                 return (

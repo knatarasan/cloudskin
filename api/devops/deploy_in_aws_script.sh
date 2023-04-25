@@ -41,3 +41,12 @@ python manage.py migrate
 
 nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
 tail -f /home/ec2-user/cloudskin/api/log/app.log
+
+
+# To generate RSA keys for encryption
+
+# python manage.py generate_rsa_keys_for_encryption
+
+# Above will create following files under the /home/ec2-user/cloudskin/api/django_api/config/:
+#     private_key.pem
+#     public_key.pem
