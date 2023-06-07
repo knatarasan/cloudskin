@@ -50,3 +50,10 @@ tail -f /home/ec2-user/cloudskin/api/log/app.log
 # Above will create following files under the /home/ec2-user/cloudskin/api/django_api/config/:
 #     private_key.pem
 #     public_key.pem
+
+
+
+# To deploy backup script
+# crontab -e
+# 0 21 * * * /bin/bash /tmp/pg_backup/pg_backup.sh >> /tmp/pg_backup/pg_backup.log 2>&1
+# Also supply password

@@ -27,6 +27,21 @@
     <script>
       var Alert = ReactBootstrap.Alert;
     </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-C38YZLFF6N"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-C38YZLFF6N");
+    </script>
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -41,21 +56,15 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    
+
     <link rel="icon" type="image/png" href="%PUBLIC_URL%/assets/favicon.ico" />
 
     <title>StratoClo</title>
   </head>
   <body>
-
     <!-- <main class="flex-shrink-0"> -->
 
-      <div id="root"></div>
-
-
-
-
-
+    <div id="root"></div>
 
     <!--
       This HTML file is a template.

@@ -30,3 +30,30 @@ This will create following files under the
 `cloudskin/api/django_api/config/`
     `private_key.pem public_key.pem`
 
+
+## Product Road map
+  - Site reliability : 
+    - Backup postgresql
+    - EC2 (Should able to create an workable AMI from set up script) worst case  AMI backup 
+  - Backward compatability: 
+    - customer A saved a plan on v0.1 and edits the sampe plan using v0.2
+      - Compatability has to be thought through UI (frontend) + API(backend) + DB(persistance)
+      - Else when you promote updated code, you need migrate existing plans saved using older software
+  - Finding Beta customer
+    - Product hunt : Look for options to promote
+      - Get more upvote, reviews and comments
+  - Markeing
+    - Possible ideas
+      - An utility to make create IAM policy easier
+      - Visual AWS blogs : Convert your pencil drawings into Info graphic
+
+  - Features:
+    - Intiutiveness :
+      - AWS is intiutive : for those who started AWS first
+      - Azure is  intiutive : for those who started Azure first
+    - Following is common deployment pattern : 1) EC2 - App   2) EC2 - DB
+  
+  - Landing page
+    - [O] Update contact info in landing page
+    - [X] Add Google Analytics
+
