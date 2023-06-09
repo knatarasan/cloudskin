@@ -104,6 +104,13 @@ class RDSViewSet(viewsets.ModelViewSet):
             serializer = RDSSerializer(rds)
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
+    @action(detail=True, methods=["put"])
+    def terminate_instance(self, request, pk=None):
+        rds = RDS.objects.get(pk=pk)
+        rds.terminate_instance()
+        serializer = RDSSerializer(rds)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
 
 class EC2ViewSet(viewsets.ModelViewSet):
     """

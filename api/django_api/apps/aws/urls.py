@@ -15,7 +15,7 @@ urlpatterns = [
     path("rds/", views.RDSViewSet.as_view({"get": "list", "post": "create"}), name="rds-list"),
     path(
         "rds/<str:pk>",
-        views.EC2ViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
+        views.RDSViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
         name="rds-detail",
     ),
     path("rds/<str:pk>/create_instance", views.RDSViewSet.as_view({"put": "create_instance"}), name="rds-create-instance"),
@@ -23,6 +23,9 @@ urlpatterns = [
         "rds/<str:pk>/update_instance_details",
         views.RDSViewSet.as_view({"get": "update_instance_details"}),
         name="rds-update-instance-details",
+    ),
+    path(
+        "rds/<str:pk>/terminate_instance", views.RDSViewSet.as_view({"put": "terminate_instance"}), name="rds-terminate-instance"
     ),
     path("ec2/", views.EC2ViewSet.as_view({"get": "list", "post": "create"}), name="ec2-list"),
     path(

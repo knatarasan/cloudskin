@@ -25,14 +25,14 @@ class RDS(AWSComponent):
     rds_endpoint = models.TextField(null=True)
     rds_port = models.IntegerField(null=True)
     rds_status = models.IntegerField(choices=AWSComponent.AWSCompStatus.choices, default=AWSComponent.AWSCompStatus.PREPARED)
-    rds_engine = models.TextField(default="PostgreSQL")
-    rds_engine_version = models.TextField(default="14.7")
-    rds_instance_class = models.TextField(default="db.t3.micro")
-    rds_allocated_storage = models.IntegerField(default=5)
-    rds_db_name = models.TextField(default="rdsdatabase")
-    rds_master_username = models.TextField(default="postgres")
-    rds_master_user_password = models.TextField(default="postgres")
-    rds_availability_zone = models.TextField(default="us-east-1b")
+    rds_engine = models.TextField(default="postgres", null=True)
+    rds_engine_version = models.TextField(default="14.7", null=True)
+    rds_instance_class = models.TextField(default="db.t3.micro", null=True)
+    rds_allocated_storage = models.IntegerField(default=5, null=True)
+    rds_db_name = models.TextField(default="rdsdatabase", null=True)
+    rds_master_username = models.TextField(default="postgres", null=True)
+    rds_master_user_password = models.TextField(default="postgres", null=True)
+    rds_availability_zone = models.TextField(default="us-east-1b", null=True)
     rds_arn = models.TextField(null=True)
 
     def get_aws_creds(self):
@@ -152,3 +152,53 @@ class RDS(AWSComponent):
         else:
             logger.error(f"Instance id not found for {self} ")
             return None
+
+    def terminate_instance(self):
+        AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
+
+        logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
+        if settings.AWS_TEST_MODE:
+            logger.info(f" AWS_TEST_MODE is {settings.AWS_TEST_MODE} no real instance would be removed")
+
+        else:
+            logger.info(f"AWS_TEST_MODE is {settings.AWS_TEST_MODE}: INSTNACE WILL BE TERMINATED")
+
+            try:
+                session = boto3.Session(
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                    region_name="us-east-1",
+                )
+
+                # Create an RDS client
+                rds_client = session.client("rds")
+
+                # Retrieve the RDS instance details using the client
+                instance = rds_client.delete_db_instance(DBInstanceIdentifier=self.rds_db_identifier, SkipFinalSnapshot=True)
+                logger.debug(f"Instance will be terminated ")
+                logger.debug(f"Terminating instance {instance} ")
+
+                self.rds_master_user_password = None
+                self.rds_master_username = None
+                self.rds_db_name = None
+                self.rds_allocated_storage = None
+                self.rds_engine = None
+                self.rds_engine_version = None
+                self.rds_instance_class = None
+                self.rds_availability_zone = None
+                self.subnet = None
+                self.subnet2 = None
+                self.rds_arn = None
+                self.rds_resource_id = None
+                self.rds_endpoint = None
+                self.rds_port = None
+                self.security_group = None
+                self.rds_db_identifier = None
+
+                self.rds_status = AWSComponent.AWSCompStatus.terminated
+                self.save()
+                return "Terminated"
+
+            except Exception as e:
+                logger.error(f"Instance not created, check ERROR {e}")
+                return None
