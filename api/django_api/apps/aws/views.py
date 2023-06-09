@@ -74,6 +74,36 @@ class RDSViewSet(viewsets.ModelViewSet):
     queryset = RDS.objects.all()
     serializer_class = RDSSerializer
 
+    @action(detail=True, methods=["put"])
+    def create_instance(self, request, pk=None):
+        logger.debug(" at start of create_instance  ")
+        rds = RDS.objects.get(pk=pk)
+        logger.debug(f"rds is {rds}")
+        if rds.create():
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.debug("Instance creation failed")
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["get"])
+    def update_instance_details(self, request, pk=None):
+        rds = RDS.objects.get(pk=pk)
+        if rds.rds_arn:
+            if rds.update_instance_details():
+                serializer = RDSSerializer(rds)
+
+                # 201 since , if there is any update in instance , ec2 object will be updated
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                serializer = RDSSerializer(rds)
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            logger.debug("No instance for this ec2 object ")
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
 
 class EC2ViewSet(viewsets.ModelViewSet):
     """
