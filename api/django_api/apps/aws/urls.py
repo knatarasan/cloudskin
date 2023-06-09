@@ -18,6 +18,12 @@ urlpatterns = [
         views.EC2ViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
         name="ec2-detail",
     ),
+    path("rds/", views.RDSViewSet.as_view({"get": "list", "post": "create"}), name="rds-list"),
+    path(
+        "rds/<str:pk>",
+        views.EC2ViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
+        name="rds-detail",
+    ),
     path("ec2/<str:pk>/create_instance", views.EC2ViewSet.as_view({"put": "create_instance"}), name="ec2-create-instance"),
     path(
         "ec2/<str:pk>/update_instance_details",

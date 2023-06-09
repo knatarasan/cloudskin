@@ -18,6 +18,7 @@ class AWSComponent(models.Model):
     region = models.TextField(default="us-east-1")
     security_group = models.TextField(null=True)
     subnet = models.TextField(null=True)
+    arn = models.TextField(null=True)
     date_created_or_modified = models.DateTimeField(default=datetime.now)
     objects = InheritanceManager()
 

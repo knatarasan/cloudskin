@@ -10,6 +10,7 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.RDS import RDS
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,32 @@ class EC2Serializer(serializers.ModelSerializer):
             "private_ip",
             "host_name",
             "installed_service",
+        ]
+
+
+class RDSSerializer(serializers.ModelSerializer):
+    # make sure to add related_name in model as installed_service
+    class Meta:
+        model = RDS
+        fields = [
+            "id",
+            "plan",
+            "aws_component",
+            "rds_resource_id",
+            "rds_endpoint",
+            "rds_port",
+            "rds_status",
+            "rds_engine",
+            "rds_engine_version",
+            "rds_instance_class",
+            "rds_allocated_storage",
+            "rds_db_name",
+            "rds_master_username",
+            "rds_master_user_password",
+            "rds_security_group",
+            "rds_subnet1",
+            "rds_subnet2",
+            "rds_arn",
         ]
 
 

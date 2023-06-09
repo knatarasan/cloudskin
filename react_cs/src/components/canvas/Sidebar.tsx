@@ -29,6 +29,16 @@ const ComponentsBar = () => {
         >
           <EC2Icon />
         </div>
+        <div id='rds'
+          className="dndnode input"
+          onDragStart={(event) => {
+            return onDragStart(event, "rds", "base");
+          }}
+          draggable
+          data-testid="rds"
+        >
+          RDS
+        </div>
         <div id='LB'
           className="dndnode"
           onDragStart={(event) => onDragStart(event, "lb", "base")}

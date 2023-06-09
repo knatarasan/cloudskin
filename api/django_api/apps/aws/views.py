@@ -13,6 +13,7 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.RDS import RDS
 from .serializers import (
     AwsCredsSerializer,
     EC2MetaBasicsSerializer,
@@ -21,6 +22,7 @@ from .serializers import (
     InstallableServiceSerializer,
     InstalledServiceSerializer,
     LBSerializer,
+    RDSSerializer,
     SecurityGroupSerializer,
     SubnetSerializer,
     VPCSerializer,
@@ -66,6 +68,11 @@ class InstalledServiceViewSet(viewsets.ModelViewSet):
         installed_service.uninstall_service()
         serializer = InstalledServiceSerializer(installed_service)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class RDSViewSet(viewsets.ModelViewSet):
+    queryset = RDS.objects.all()
+    serializer_class = RDSSerializer
 
 
 class EC2ViewSet(viewsets.ModelViewSet):
