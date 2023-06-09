@@ -88,10 +88,10 @@ class RDSViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=["get"])
-    def update_instance_details(self, request, pk=None):
+    def update_instance(self, request, pk=None):
         rds = RDS.objects.get(pk=pk)
         if rds.rds_arn:
-            if rds.update_instance_details():
+            if rds.update():
                 serializer = RDSSerializer(rds)
 
                 # 201 since , if there is any update in instance , ec2 object will be updated
@@ -107,7 +107,7 @@ class RDSViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["put"])
     def terminate_instance(self, request, pk=None):
         rds = RDS.objects.get(pk=pk)
-        rds.terminate_instance()
+        rds.terminate()
         serializer = RDSSerializer(rds)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
@@ -136,7 +136,7 @@ class EC2ViewSet(viewsets.ModelViewSet):
         logger.debug(" at start of create_instance  ")
         ec2 = EC2.objects.get(pk=pk)
         logger.debug(f"ec2 is {ec2}")
-        if ec2.create_aws_instance():
+        if ec2.create():
             serializer = EC2Serializer(ec2)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -147,15 +147,15 @@ class EC2ViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["put"])
     def terminate_instance(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
-        ec2.terminate_aws_instance()
+        ec2.terminate()
         serializer = EC2Serializer(ec2)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["get"])
-    def update_instance_details(self, request, pk=None):
+    def update_instance(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
         if ec2.ec2_instance_id:
-            if ec2.update_instance_details():
+            if ec2.update():
                 serializer = EC2Serializer(ec2)
 
                 # 201 since , if there is any update in instance , ec2 object will be updated

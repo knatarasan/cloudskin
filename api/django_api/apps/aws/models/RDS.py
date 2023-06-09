@@ -102,7 +102,7 @@ class RDS(AWSComponent):
                 logger.error(f"Instance not created, check ERROR {e}")
                 return None
 
-    def update_instance_details(self):
+    def update(self):
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         if self.rds_arn:
@@ -153,7 +153,7 @@ class RDS(AWSComponent):
             logger.error(f"Instance id not found for {self} ")
             return None
 
-    def terminate_instance(self):
+    def terminate(self):
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")
