@@ -40,7 +40,7 @@ python manage.py makemigrations
 python manage.py migrate
 
 nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
-tail -f /home/ec2-user/cloudskin/api/log/app.log
+tail -f /home/ec2-user/cloudskin/api/logs/app.log
 
 
 # To generate RSA keys for encryption
@@ -57,3 +57,37 @@ tail -f /home/ec2-user/cloudskin/api/log/app.log
 # crontab -e
 # 0 21 * * * /bin/bash /tmp/pg_backup/pg_backup.sh >> /tmp/pg_backup/pg_backup.log 2>&1
 # Also supply password
+
+
+
+
+# To renew after 3 months ssl encrption renew 
+[ec2-user@ip-172-31-15-28 ~]$ sudo certbot --nginx -d www.stratoclo.com
+# Saving debug log to /var/log/letsencrypt/letsencrypt.log
+# Plugins selected: Authenticator nginx, Installer nginx
+# Cert not yet due for renewal
+
+# You have an existing certificate that has exactly the same domains or certificate name you requested and isn't close to expiry.
+# (ref: /etc/letsencrypt/renewal/www.stratoclo.com.conf)
+
+# What would you like to do?
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 1: Attempt to reinstall this existing certificate
+# 2: Renew & replace the certificate (may be subject to CA rate limits)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+# Renewing an existing certificate for www.stratoclo.com
+# Could not automatically find a matching server block for www.stratoclo.com. Set the `server_name` directive to use the Nginx installer.
+
+# IMPORTANT NOTES:
+#  - Unable to install the certificate
+#  - Congratulations! Your certificate and chain have been saved at:
+#    /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem
+#    Your key file has been saved at:
+#    /etc/letsencrypt/live/www.stratoclo.com/privkey.pem
+#    Your certificate will expire on 2023-09-07. To obtain a new or
+#    tweaked version of this certificate in the future, simply run
+#    certbot again with the "certonly" option. To non-interactively
+#    renew *all* of your certificates, run "certbot renew"
+sudo systemctl restart nginx
+------------------------------------
