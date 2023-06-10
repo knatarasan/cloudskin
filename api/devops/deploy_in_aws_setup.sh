@@ -81,6 +81,9 @@ cd /home/ec2-user/cloudskin/api/django_api
 gunicorn --bind localhost:8000 django_api.wsgi:application
 sudo systemctl enable --now gunicorn.service
 
+# Delpyment
+  REACT works on nginx
+  RestAPI works on python manage.py 
 
 # Deploy react
     # https://blog.devgenius.io/using-nginx-to-serve-react-application-static-vs-proxy-69b85f368e6c
@@ -142,27 +145,6 @@ sudo systemctl restart nginx
 sudo amazon-linux-extras install epel -y
 sudo yum install -y certbot
 sudo yum install -y certbot-nginx
-
-sudo certbot --nginx -d www.stratoai.app
-
-'
-[ec2-user@ip-172-31-15-28 ~]$ sudo certbot --nginx -d www.stratoai.app
-Saving debug log to /var/log/letsencrypt/letsencrypt.log
-Plugins selected: Authenticator nginx, Installer nginx
-Requesting a certificate for www.stratoai.app
-Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
-
-IMPORTANT NOTES:
- - Unable to install the certificate
- - Congratulations! Your certificate and chain have been saved at:
-   /etc/letsencrypt/live/www.stratoai.app/fullchain.pem
-   Your key file has been saved at:
-   /etc/letsencrypt/live/www.stratoai.app/privkey.pem
-   Your certificate will expire on 2023-05-22. To obtain a new or
-   tweaked version of this certificate in the future, simply run
-   certbot again with the "certonly" option. To non-interactively
-   renew *all* of your certificates, run "certbot renew"
-'
 
 
 #Error : Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
@@ -248,10 +230,40 @@ IMPORTANT NOTES:
    certbot again with the "certonly" option. To non-interactively
    renew *all* of your certificates, run "certbot renew"
 
+----------------------------------------------
+# To renew after 3 months
+
+[ec2-user@ip-172-31-15-28 ~]$ sudo certbot --nginx -d www.stratoclo.com
+# Saving debug log to /var/log/letsencrypt/letsencrypt.log
+# Plugins selected: Authenticator nginx, Installer nginx
+# Cert not yet due for renewal
+
+# You have an existing certificate that has exactly the same domains or certificate name you requested and isn't close to expiry.
+# (ref: /etc/letsencrypt/renewal/www.stratoclo.com.conf)
+
+# What would you like to do?
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# 1: Attempt to reinstall this existing certificate
+# 2: Renew & replace the certificate (may be subject to CA rate limits)
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 2
+# Renewing an existing certificate for www.stratoclo.com
+# Could not automatically find a matching server block for www.stratoclo.com. Set the `server_name` directive to use the Nginx installer.
+
+# IMPORTANT NOTES:
+#  - Unable to install the certificate
+#  - Congratulations! Your certificate and chain have been saved at:
+#    /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem
+#    Your key file has been saved at:
+#    /etc/letsencrypt/live/www.stratoclo.com/privkey.pem
+#    Your certificate will expire on 2023-09-07. To obtain a new or
+#    tweaked version of this certificate in the future, simply run
+#    certbot again with the "certonly" option. To non-interactively
+#    renew *all* of your certificates, run "certbot renew"
+sudo systemctl restart nginx
+------------------------------------
 
 #sudo systemctl restart nginx
-
-
 
 
 # Following not needed
@@ -265,3 +277,16 @@ IMPORTANT NOTES:
 
 Backup SSL certificate:
 scp -i ~/.ssh/cloudskin_key.pem -r ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/*.pem ~/workspace/cloudskin/api/devops/SSL_config/
+
+
+sudo certbot --nginx -d www.stratoclo.com
+sudo vim /etc/nginx/nginx.conf
+sudo cat /etc/nginx/nginx.conf
+sudo vim /etc/nginx/nginx.conf
+  545  ls -lrt /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem
+  546  sudo ls -lrt /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem
+  547  sudo ls -lrt /etc/letsencrypt/live/
+  548  sudo systemctl status nginx
+  549  sudo systemctl restart nginx
+  550  sudo systemctl status nginx
+  551  python manage.py runserver 0:8000
