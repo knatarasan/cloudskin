@@ -11,15 +11,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  
+        
+      - name: Move into react_cs
+        run: cd react_cs/
         
       - name: Check file structure
         run: pwd
       - name: Check file structure #2
         run: ls -lrt
-        
-      - name: Move into react_cs
-        run: cd cloudskin/cloudskin/react_cs/
         
       - name: Install dependencies
         run: npm install
