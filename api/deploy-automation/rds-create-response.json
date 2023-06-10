@@ -1,0 +1,86 @@
+{
+  "DBInstance": {
+    "DBInstanceIdentifier": "my-rds-instance2",
+    "DBInstanceClass": "db.t3.micro",
+    "Engine": "postgres",
+    "DBInstanceStatus": "creating",
+    "MasterUsername": "postgres",
+    "DBName": "rdsdatabase2",
+    "AllocatedStorage": 5,
+    "PreferredBackupWindow": "04:12-04:42",
+    "BackupRetentionPeriod": 1,
+    "DBSecurityGroups": [],
+    "VpcSecurityGroups": [
+      { "VpcSecurityGroupId": "sg-09e15ea1f1fc88809", "Status": "active" }
+    ],
+    "DBParameterGroups": [
+      {
+        "DBParameterGroupName": "default.postgres14",
+        "ParameterApplyStatus": "in-sync"
+      }
+    ],
+    "AvailabilityZone": "us-east-1b",
+    "DBSubnetGroup": {
+      "DBSubnetGroupName": "default",
+      "DBSubnetGroupDescription": "default",
+      "VpcId": "vpc-0d710012c9bf6366b",
+      "SubnetGroupStatus": "Complete",
+      "Subnets": [
+        {
+          "SubnetIdentifier": "subnet-0eec426f8c81cdf1b",
+          "SubnetAvailabilityZone": { "Name": "us-east-1e" },
+          "SubnetOutpost": {},
+          "SubnetStatus": "Active"
+        },
+        {
+          "SubnetIdentifier": "subnet-02f1a9d45e881afce",
+          "SubnetAvailabilityZone": { "Name": "us-east-1b" },
+          "SubnetOutpost": {},
+          "SubnetStatus": "Active"
+        }
+      ]
+    },
+    "PreferredMaintenanceWindow": "thu:09:00-thu:09:30",
+    "PendingModifiedValues": { "MasterUserPassword": "****" },
+    "MultiAZ": false,
+    "EngineVersion": "14.7",
+    "AutoMinorVersionUpgrade": true,
+    "ReadReplicaDBInstanceIdentifiers": [],
+    "LicenseModel": "postgresql-license",
+    "OptionGroupMemberships": [
+      { "OptionGroupName": "default:postgres-14", "Status": "in-sync" }
+    ],
+    "PubliclyAccessible": true,
+    "StorageType": "gp2",
+    "DbInstancePort": 0,
+    "StorageEncrypted": false,
+    "DbiResourceId": "db-WXRE6YHHHZDSIO5WRUJBIRPDEA",
+    "CACertificateIdentifier": "rds-ca-2019",
+    "DomainMemberships": [],
+    "CopyTagsToSnapshot": false,
+    "MonitoringInterval": 0,
+    "DBInstanceArn": "arn:aws:rds:us-east-1:725371902349:db:my-rds-instance2",
+    "IAMDatabaseAuthenticationEnabled": false,
+    "PerformanceInsightsEnabled": false,
+    "DeletionProtection": false,
+    "AssociatedRoles": [],
+    "TagList": [],
+    "CustomerOwnedIpEnabled": false,
+    "BackupTarget": "region",
+    "NetworkType": "IPV4",
+    "StorageThroughput": 0,
+    "CertificateDetails": { "CAIdentifier": "rds-ca-2019" }
+  },
+  "ResponseMetadata": {
+    "RequestId": "ee024056-53b0-4d32-b792-e4dbaf97e85d",
+    "HTTPStatusCode": 200,
+    "HTTPHeaders": {
+      "x-amzn-requestid": "ee024056-53b0-4d32-b792-e4dbaf97e85d",
+      "strict-transport-security": "max-age=31536000",
+      "content-type": "text/xml",
+      "content-length": "4065",
+      "date": "Fri, 09 Jun 2023 01:59:45 GMT"
+    },
+    "RetryAttempts": 0
+  }
+}

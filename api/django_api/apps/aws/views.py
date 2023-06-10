@@ -13,6 +13,7 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.RDS import RDS
 from .serializers import (
     AwsCredsSerializer,
     EC2MetaBasicsSerializer,
@@ -21,6 +22,7 @@ from .serializers import (
     InstallableServiceSerializer,
     InstalledServiceSerializer,
     LBSerializer,
+    RDSSerializer,
     SecurityGroupSerializer,
     SubnetSerializer,
     VPCSerializer,
@@ -68,6 +70,48 @@ class InstalledServiceViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
+class RDSViewSet(viewsets.ModelViewSet):
+    queryset = RDS.objects.all()
+    serializer_class = RDSSerializer
+
+    @action(detail=True, methods=["put"])
+    def create_instance(self, request, pk=None):
+        logger.debug(" at start of create_instance  ")
+        rds = RDS.objects.get(pk=pk)
+        logger.debug(f"rds is {rds}")
+        if rds.create():
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            logger.debug("Instance creation failed")
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["get"])
+    def update_instance(self, request, pk=None):
+        rds = RDS.objects.get(pk=pk)
+        if rds.rds_arn:
+            if rds.update():
+                serializer = RDSSerializer(rds)
+
+                # 201 since , if there is any update in instance , ec2 object will be updated
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                serializer = RDSSerializer(rds)
+                return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            logger.debug("No instance for this ec2 object ")
+            serializer = RDSSerializer(rds)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    @action(detail=True, methods=["put"])
+    def terminate_instance(self, request, pk=None):
+        rds = RDS.objects.get(pk=pk)
+        rds.terminate()
+        serializer = RDSSerializer(rds)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
 class EC2ViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows ec2 instances to be viewed or edited.
@@ -92,7 +136,7 @@ class EC2ViewSet(viewsets.ModelViewSet):
         logger.debug(" at start of create_instance  ")
         ec2 = EC2.objects.get(pk=pk)
         logger.debug(f"ec2 is {ec2}")
-        if ec2.create_aws_instance():
+        if ec2.create():
             serializer = EC2Serializer(ec2)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
@@ -103,15 +147,15 @@ class EC2ViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["put"])
     def terminate_instance(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
-        ec2.terminate_aws_instance()
+        ec2.terminate()
         serializer = EC2Serializer(ec2)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     @action(detail=True, methods=["get"])
-    def update_instance_details(self, request, pk=None):
+    def update_instance(self, request, pk=None):
         ec2 = EC2.objects.get(pk=pk)
         if ec2.ec2_instance_id:
-            if ec2.update_instance_details():
+            if ec2.update():
                 serializer = EC2Serializer(ec2)
 
                 # 201 since , if there is any update in instance , ec2 object will be updated

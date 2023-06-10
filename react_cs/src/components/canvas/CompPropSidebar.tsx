@@ -23,7 +23,7 @@ const selector = (state) => ({
 
 const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
-    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel,updateNodeDeletable, addPlan } = useStore(selector);
+    const { nodes, plan, updateNode, updateEc2_instance_types, updateNodeLabel, updateNodeDeletable, addPlan } = useStore(selector);
     useEffect(() => {
         console.log('api_object', api_object)
         // make api call to get instance types
@@ -52,7 +52,8 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
 
 
     const createInstance = (e: any) => {
-        api.put(`/ec2/${api_object.id}/create_instance`, {})
+        const end_point = api_object.aws_component;
+        api.put(`/${end_point}/${api_object.id}/create_instance`, {})
             .then((response) => {
                 console.log("AWS instance created", response)
                 updateNode(api_object.id, response.data) // update nodes in zustand store 
@@ -67,11 +68,13 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
     }
 
     const refreshInstance = (e: any) => {
+        const end_point = api_object.aws_component;
+
         console.log("Node data will be refreshed", api_object.id);
 
         // This should update vpc , subnet and security group
 
-        api.get(`/ec2/${api_object.id}/update_instance_details`)
+        api.get(`/${end_point}/${api_object.id}/update_instance_details`)
             .then((response) => {
                 updateNode(api_object.id, response.data);
 
@@ -121,17 +124,19 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
     }
 
     const terminateInstance = (e: any) => {
+        const end_point = api_object.aws_component;
+
         console.log("AWS instance will be terminated", api_object.id);
-        api.put(`/ec2/${api_object.id}/terminate_instance`, {})
+        api.put(`/${end_point}/${api_object.id}/terminate_instance`, {})
             .then((response) => {
                 console.log("AWS instance terminated", response);
-                updateNode(api_object.id, response.data)         
+                updateNode(api_object.id, response.data)
                 updateNodeDeletable(api_object.id, true)
             })
     }
 
 
-    const handleSubmit = (e: any) => {
+    const onSave = (e: any) => {
         const end_point = api_object.aws_component;
         console.log('update call', `/${end_point}/${api_object.id}`, api_object);
         api.put(`/${end_point}/${api_object.id}`, api_object)
@@ -168,7 +173,7 @@ const CompPropSidebar = ({ node_idx, refreshPlan, plan_id_edit }) => {
                             </Card.Text>
                         </>
                     )}
-                    <Button variant="outline-secondary" type="submit" onClick={handleSubmit}>Save</Button>
+                    <Button variant="outline-secondary" type="submit" onClick={onSave}>Save</Button>
                     <Button variant="outline-secondary" type="submit" onClick={createInstance}>Deploy</Button>
                     <Button variant="outline-secondary" type="submit" onClick={refreshInstance}>Refresh</Button>
                     <Button variant="outline-secondary" type="submit" onClick={terminateInstance}>Terminate</Button>

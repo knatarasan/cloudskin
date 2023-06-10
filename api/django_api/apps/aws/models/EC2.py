@@ -36,7 +36,7 @@ class EC2(AWSComponent):
 
         return AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
-    def create_aws_instance(self) -> str:
+    def create(self) -> str:
         # Retrive plan since plan has owner
         logger.debug(f"Plan {self.plan} owner {self.plan.owner} ")
 
@@ -90,7 +90,7 @@ class EC2(AWSComponent):
                 logger.error(f"Instance not created, check ERROR {e}")
                 return None
 
-    def update_instance_details(self):
+    def update(self):
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         ec2_boto3 = boto3.resource(
@@ -192,7 +192,7 @@ class EC2(AWSComponent):
     def __str__(self):
         return f"id:{str(self.id)}  plan: {str(self.plan)}  id: {self.ec2_instance_id} type:{self.instance_type}  status:{self.ec2_status}"
 
-    def terminate_aws_instance(self):
+    def terminate(self):
         AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = self.get_aws_creds()
 
         logger.info(f"AWS_TEST_MODE=={settings.AWS_TEST_MODE}")

@@ -10,6 +10,7 @@ from .models.EC2MetaBasics import EC2MetaBasics
 from .models.EC2MetaData import EC2MetaData
 from .models.InstallableService import InstallableService
 from .models.InstalledService import InstalledService
+from .models.RDS import RDS
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +76,13 @@ class EC2Serializer(serializers.ModelSerializer):
             "host_name",
             "installed_service",
         ]
+
+
+class RDSSerializer(serializers.ModelSerializer):
+    # make sure to add related_name in model as installed_service
+    class Meta:
+        model = RDS
+        fields = "__all__"
 
 
 class EC2MetaBasicsSerializer(serializers.ModelSerializer):

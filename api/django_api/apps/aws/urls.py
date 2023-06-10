@@ -12,6 +12,21 @@ router.register(r"aws/security_group", views.SecurityGroupViewSet, basename="sec
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("rds/", views.RDSViewSet.as_view({"get": "list", "post": "create"}), name="rds-list"),
+    path(
+        "rds/<str:pk>",
+        views.RDSViewSet.as_view({"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}),
+        name="rds-detail",
+    ),
+    path("rds/<str:pk>/create_instance", views.RDSViewSet.as_view({"put": "create_instance"}), name="rds-create-instance"),
+    path(
+        "rds/<str:pk>/update_instance_details",
+        views.RDSViewSet.as_view({"get": "update_instance"}),
+        name="rds-update-instance-details",
+    ),
+    path(
+        "rds/<str:pk>/terminate_instance", views.RDSViewSet.as_view({"put": "terminate_instance"}), name="rds-terminate-instance"
+    ),
     path("ec2/", views.EC2ViewSet.as_view({"get": "list", "post": "create"}), name="ec2-list"),
     path(
         "ec2/<str:pk>",
@@ -21,7 +36,7 @@ urlpatterns = [
     path("ec2/<str:pk>/create_instance", views.EC2ViewSet.as_view({"put": "create_instance"}), name="ec2-create-instance"),
     path(
         "ec2/<str:pk>/update_instance_details",
-        views.EC2ViewSet.as_view({"get": "update_instance_details"}),
+        views.EC2ViewSet.as_view({"get": "update_instance"}),
         name="ec2-update-instance-details",
     ),
     path("ec2/<str:pk>/health", views.EC2ViewSet.as_view({"get": "health"}), name="ec2-health"),
