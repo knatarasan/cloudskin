@@ -12,7 +12,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
+        
+      - name: Move into react_cs
+        run: cd react_cs
+        
       - name: Install dependencies
         run: npm ci
 
