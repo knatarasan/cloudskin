@@ -13,24 +13,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2  
         
-      - name: Move into react_cs
-        run: cd react_cs/
-        
-      - name: Check file structure
-        run: pwd
-      - name: Check file structure #2
-        run: ls -lrt
-        
       - name: Install dependencies
+        working-directory: ./react_cs      
         run: npm install
 
       - name: Build application
+        working-directory: ./react_cs            
         run: npm run build
 
       - name: Copy files to EC2 instance
+        working-directory: ./react_cs            
         run: scp -r -i ${{ secrets.EC2_PRIVATE_KEY }} build/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/var/www/build/
 
       - name: SSH into EC2 instance and restart Nginx
+        working-directory: ./react_cs            
         run: |
           chmod 400 ${{ secrets.EC2_PRIVATE_KEY }}
           ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} 'sudo systemctl restart nginx'
