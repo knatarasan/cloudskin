@@ -13,6 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
+      - name: Check file structure
+        run: pwd
+      - name: Check file structure #2
+        run: ls -lrt
+        
       - name: Move into react_cs
         run: cd cloudskin/cloudskin/react_cs/
         
