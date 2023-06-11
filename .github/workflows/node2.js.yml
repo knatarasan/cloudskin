@@ -11,10 +11,6 @@ jobs:
   build:
 
     runs-on: self-hosted
-    defaults:
-      run:
-        shell: bash
-        working-directory: react_cs
 
     strategy:
       matrix:
@@ -30,8 +26,8 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies from package-lock.json
-      run: npm ci
+      run: cd react_cs && npm ci
       
     - name: Run build
-      run: npm run build --if-present
+      run: cd react_cs && npm run build --if-present
       
