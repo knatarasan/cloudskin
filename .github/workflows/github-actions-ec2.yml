@@ -23,10 +23,19 @@ jobs:
       - name: Build application
         working-directory: ./react_cs            
         run: npm run build
-
+        
+#       - name: Copy files to EC2 instance
+#         working-directory: ./react_cs            
+#         run: ls -lrt && scp -r -i ${{ secrets.EC2_PRIVATE_KEY }} build/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/var/www/build/
+        
       - name: Copy files to EC2 instance
-        working-directory: ./react_cs            
-        run: ls -lrt && scp -r -i ${{ secrets.EC2_PRIVATE_KEY }} build/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/var/www/build/
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "react_cs/build"
+          target: "/var/www/build"
 
       - name: SSH into EC2 instance and restart Nginx
         working-directory: ./react_cs            
