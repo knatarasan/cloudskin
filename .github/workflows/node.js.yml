@@ -11,9 +11,6 @@ jobs:
   build:
 
     runs-on: self-hosted
-    
-    env:
-      working-directory: ./react_cs
 
     strategy:
       matrix:
@@ -25,9 +22,9 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        entryPoint: "./react_cs"
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: react_cs/package-lock.json
 
     - run: npm ci
     - run: npm run build --if-present
