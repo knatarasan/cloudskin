@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - prod
+      
+env:
+  CI: false
 
 jobs:
   deploy:
