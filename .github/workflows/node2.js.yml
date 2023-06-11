@@ -11,6 +11,10 @@ jobs:
   build:
 
     runs-on: self-hosted
+    defaults:
+      run:
+        shell: bash
+        working-directory: react_cs
 
     strategy:
       matrix:
@@ -24,13 +28,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: react_cs/package-lock.json
 
     - name: Install dependencies from package-lock.json
-      working-directory: ./react_cs
       run: npm ci
       
     - name: Run build
-      working-directory: ./react_cs
       run: npm run build --if-present
       
