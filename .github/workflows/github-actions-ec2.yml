@@ -26,7 +26,7 @@ jobs:
 
       - name: Copy files to EC2 instance
         working-directory: ./react_cs            
-        run: scp -r -i ${{ secrets.EC2_PRIVATE_KEY }} build/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/var/www/build/
+        run: ls -lrt && scp -r -i ${{ secrets.EC2_PRIVATE_KEY }} build/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/var/www/build/
 
       - name: SSH into EC2 instance and restart Nginx
         working-directory: ./react_cs            
