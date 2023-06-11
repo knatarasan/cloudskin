@@ -26,5 +26,11 @@ jobs:
         cache: 'npm'
         cache-dependency-path: react_cs/package-lock.json
 
-    - run: npm ci
-    - run: npm run build --if-present
+    - name: Install dependencies
+      working-directory: ./react_cs
+      run: npm ci
+      
+    - name: Run build
+      working-directory: ./react_cs
+      run: npm run build --if-present
+      
