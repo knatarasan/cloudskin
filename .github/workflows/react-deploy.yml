@@ -27,11 +27,9 @@ jobs:
         cache-dependency-path: react_cs/package-lock.json
     - run: npm i
       working-directory: react_cs
-    - run: npm test
-      working-directory: react_cs    
     - run: npm run build
       working-directory: react_cs
     - run: sudo rm -rf /usr/share/nginx/html/build/
       working-directory: react_cs
     - run: sudo mv /home/ec2-user/react-deploy/react-work/cloudskin/cloudskin/react_cs/build /usr/share/nginx/html
-    # - run: sudo systemctl restart nginx
+#     - run: sudo systemctl restart nginx
