@@ -33,5 +33,5 @@ jobs:
       working-directory: react_cs
     - run: sudo rm -rf /usr/share/nginx/html/build/
       working-directory: react_cs
-    - run: sudo mv /home/ec2-user/test-react/_work/hello-react/hello-react/front-end/build /usr/share/nginx/html
+    - run: sudo mv /home/ec2-user/react-deploy/react-work/cloudskin/cloudskin/react_cs/build /usr/share/nginx/html
     # - run: sudo systemctl restart nginx
