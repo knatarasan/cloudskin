@@ -22,7 +22,7 @@ sudo rm -rf /tmp/build/*
 cd cloudskin/react_cs
 npm run build
 scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/build
-
+scp -r -i ~/.ssh/cloudskin_key.pem build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/var/www/build/
 
 # @prod machine
 #
