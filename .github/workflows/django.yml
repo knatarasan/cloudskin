@@ -21,6 +21,7 @@ jobs:
 #         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
       run: |
+        sudo yum -y install python-pip
         python3 -m pip install --upgrade pip
         pip install -r config/requirements/production.txt
       working-directory: api/django_api
