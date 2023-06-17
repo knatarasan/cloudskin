@@ -71,7 +71,7 @@ jobs:
 # https://www.youtube.com/watch?v=encpjND99xU&ab_channel=AnsontheDeveloper
 
 # To set up Front End
-1. [EC2]Make an EC2 instance on cloudsur and ssh into it
+1. [EC2] Make an EC2 instance on cloudsur and ssh into it
 2. [Github Actions] Make a runner on github actions 
 3. [EC2] setup on the ssh machine
 4. [EC2] Install and configure nginx with above steps on the ssh machine
