@@ -28,5 +28,6 @@ jobs:
     - name: Migrate App
       run: |
         python3 manage.py makemigrations > /tmp/migration.txt
+        python3 manage.py migrate
       working-directory: api/django_api
 
