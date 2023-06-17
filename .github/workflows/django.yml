@@ -23,6 +23,7 @@ jobs:
       run: |
         sudo yum -y install python-pip
         python3 -m pip install --upgrade pip
+        pip install -r config/requirements/base.txt
         pip install -r config/requirements/production.txt
         echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
         echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
