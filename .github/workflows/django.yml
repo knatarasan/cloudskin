@@ -2,7 +2,7 @@ name: Django CI
 
 on:
   push:
-    branches: [ git-action-eslint ]
+    branches: [ main ]
 
 jobs:
   build:
