@@ -33,4 +33,8 @@ jobs:
         python3 manage.py makemigrations > /tmp/migration.txt
         python3 manage.py migrate
       working-directory: api/django_api
+    - name: Run backend service
+      run: |
+        nohup python3 /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/manage.py runserver 0:8000 & 
+      working-directory: api/django_api
 

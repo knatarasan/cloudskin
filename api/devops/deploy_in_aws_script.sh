@@ -92,3 +92,8 @@ tail -f /home/ec2-user/cloudskin/api/logs/app.log
 #    renew *all* of your certificates, run "certbot renew"
 sudo systemctl restart nginx
 ------------------------------------
+
+hint: Updates were rejected because the tip of your current branch is behind
+https://stackoverflow.com/questions/39399804/updates-were-rejected-because-the-tip-of-your-current-branch-is-behind-its-remot
+git pull --rebase origin <your_branch_name>
+git push --rebase origin <your_branch_name>
