@@ -30,6 +30,7 @@ jobs:
       run: |
         python3 manage.py makemigrations > /tmp/migration.txt
         python3 manage.py migrate
+        mkdir ~/build
       working-directory: api/django_api
     - name: Run backend service
       run: |
