@@ -35,6 +35,6 @@ jobs:
       run: |
         echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
         echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
-        nohup python3 /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/manage.py runserver 0:8000 & 
+        nohup python3 manage.py runserver 0:8000 & 
       working-directory: api/django_api
 
