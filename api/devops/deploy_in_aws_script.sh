@@ -1,6 +1,7 @@
 
 # connect to prod machine
-ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com
+# ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com
+ssh -i ~/Downloads/react-deploy.pem ec2-user@ec2-54-193-41-186.us-west-1.compute.amazonaws.com
 
 # @prod machine
 #
