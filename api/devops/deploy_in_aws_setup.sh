@@ -5,12 +5,13 @@ ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.ama
 
 #2 install postgresql
 
-# Used this link: https://blog.milliondollarserver.com/2018/09/install-postgresql-96-on-amazon-linux-2.html
-sudo amazon-linux-extras install postgresql9.6
-sudo yum install postgresql-server.x86_64
-sudo systemctl enable postgresql.service
-sudo /usr/bin/postgresql-setup initdb
+# Used this link: https://linux.how2shout.com/how-to-install-postgresql-15-amazon-linux-2023/
+sudo dnf update
+sudo dnf install postgresql15.x86_64 postgresql15-server
+sudo postgresql-setup --initdb
 sudo systemctl start postgresql
+sudo systemctl enable postgresql
+sudo systemctl status postgresql
 
 # manual
 sudo su - postgres
@@ -52,7 +53,8 @@ https://knatarasan:<token>@github.com/knatarasan/cloudskin.git
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
 
-echo 'AWS_TEST_MODE=False' > django_api/.env
+echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
+echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
 
 #make sure 
 # cat .env

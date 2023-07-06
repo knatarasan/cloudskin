@@ -1,2 +1,3 @@
 # local.txt
 -r base.txt # includes all dependencies in `base.txt`
+psycopg2==2.9.5

@@ -1,0 +1,36 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ git-action-eslint ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.9.16]
+
+    steps:
+    - uses: actions/checkout@v3
+#     - name: Set up Python ${{ matrix.python-version }}
+#       uses: actions/setup-python@v3
+#       with:
+#         python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        sudo yum -y install python-pip
+        python3 -m pip install --upgrade pip
+        pip install -r config/requirements/base.txt
+        pip install -r config/requirements/production.txt
+        echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
+        echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
+      working-directory: api/django_api
+    - name: Migrate App
+      run: |
+        python3 manage.py makemigrations > /tmp/migration.txt
+        python3 manage.py migrate
+      working-directory: api/django_api
+
