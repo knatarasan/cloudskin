@@ -29,10 +29,12 @@ jobs:
         run: |
           python3 manage.py makemigrations > /tmp/migration.txt
           python3 manage.py migrate
+          sudo mkdir -p /var/www/build
+        working-directory: api/django_api
+      - name: Prep env
+        run: |
           echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
           echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
-          sudo mkdir /var/www/build
-        working-directory: api/django_api
       - name: Run backend service
         run: |
           nohup python3 manage.py runserver 0:8000 &
