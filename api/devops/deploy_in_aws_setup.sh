@@ -206,11 +206,11 @@ server {
     }
     server {
       listen 443 ssl;
-      server_name  ec2-54-183-97-140.us-west-1.compute.amazonaws.com;
+      server_name  ec2-54-193-41-186.us-west-1.compute.amazonaws.com;
       listen [::]:443 ssl;
       root 	/var/www/build;
-      ssl_certificate /etc/letsencrypt/live/www.stratoai.app/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/www.stratoai.app/privkey.pem;
+      ssl_certificate /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/www.stratoclo.com/privkey.pem;
 
       location  /   {
         try_files $uri /index.html;
