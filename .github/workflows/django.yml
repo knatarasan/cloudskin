@@ -37,5 +37,6 @@ jobs:
           echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
       - name: Run backend service
         run: |
+          pwd
           nohup python3 manage.py runserver 0:8000 &
         working-directory: api/django_api
