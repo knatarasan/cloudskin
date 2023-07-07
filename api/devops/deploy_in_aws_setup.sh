@@ -168,8 +168,6 @@ sudo systemctl restart nginx
 
 
 sudo amazon-linux-extras install epel -y
-sudo yum install -y certbot
-sudo yum install -y certbot-nginx
 
 
 #Error : Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
@@ -232,6 +230,7 @@ server {
 
 
 # SSLify www.stratoclo.com
+pip install certbot certbot-nginx
 
 (.venv) [ec2-user@ip-172-31-15-28 django_api]$ sudo certbot --nginx -d www.stratoclo.com
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
@@ -315,3 +314,9 @@ sudo vim /etc/nginx/nginx.conf
   549  sudo systemctl restart nginx
   550  sudo systemctl status nginx
   551  python manage.py runserver 0:8000
+
+To configure gunicorn with Django Nginx:
+https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
+
+To run the gunicorn server:
+nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
