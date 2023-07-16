@@ -40,6 +40,7 @@ cd ~/cloudskin/api/django_api
 python manage.py makemigrations
 python manage.py migrate
 
+# Following wont work with github action configured and gunicorn configured
 nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
 tail -f /home/ec2-user/cloudskin/api/logs/app.log
 
