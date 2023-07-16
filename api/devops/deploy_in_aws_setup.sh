@@ -319,4 +319,21 @@ To configure gunicorn with Django Nginx:
 https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
 
 To run the gunicorn server:
+cd /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api
 nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
+
+
+
+# New User on boarding 
+
+# When a aws user enters his aws key and aws secret key, the following steps are performed:
+# 1. The aws key and aws secret key are encrypted using private key from following location
+  #/home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/config/private_key.pem
+
+# If above key is missing then create a new key using following command:
+
+python manage.py generate_rsa_keys_for_encryption
+
+# Above will create following files under the cloudskin/api/django_api/config/:
+    private_key.pem
+    public_key.pem
