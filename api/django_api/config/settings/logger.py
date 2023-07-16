@@ -19,7 +19,7 @@ LOGGING = {
         "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"},
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": "logs/app.log",
+            "filename": "/home/ec2-user/logs/app.log",
             "maxBytes": 5 * 1024 * 1024,  # 5 MB
             "backupCount": 10,
             "formatter": "standard",

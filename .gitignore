@@ -3,3 +3,6 @@
 .idea/*.xml
 .vscode/*
 release-videos/*
+
+stratocl.pem
+stratocl-access-key.txt

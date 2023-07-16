@@ -3,15 +3,17 @@ ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.ama
 
 #1 SecurityGroup Inbound rules Any IP through HTTP
 
-#2 install postgresql
+#2 install postgresql15 on amazon linux 2023
 
 # Used this link: https://linux.how2shout.com/how-to-install-postgresql-15-amazon-linux-2023/
 sudo dnf update
-sudo dnf install postgresql15.x86_64 postgresql15-server
+sudo dnf install -y postgresql15.x86_64 postgresql15-server
 sudo postgresql-setup --initdb
 sudo systemctl start postgresql
-sudo systemctl enable postgresql
-sudo systemctl status postgresql
+
+#To remove postgresql
+#sudo dnf remove -y postgresql15.x86_64 postgresql15-server
+#sudo rm -rf /var/lib/pgsql
 
 # manual
 sudo su - postgres
@@ -21,6 +23,7 @@ psql postgres
 CREATE DATABASE cs_db;
 CREATE ROLE cs WITH LOGIN PASSWORD '<password>';
 GRANT ALL PRIVILEGES ON DATABASE cs_db TO cs;
+alter database cs_db owner to cs;
 
 #manual
 sudo vim /var/lib/pgsql/data/pg_hba.conf
@@ -28,6 +31,27 @@ sudo vim /var/lib/pgsql/data/pg_hba.conf
   local   all             all                                     md5
   # IPv4 local connections:
   host    all             all             127.0.0.1/32            md5
+
+sudo systemctl restart postgresql
+psql postgresql://cs:cs@127.0.0.1:5432/cs_db
+postgres=# \c cs_db cs;
+cs_db=> GRANT USAGE,CREATE ON SCHEMA public to cs;
+
+# cs_db=> \dn+ public
+#                                        List of schemas
+#   Name  |       Owner       |           Access privileges            |      Description       
+# --------+-------------------+----------------------------------------+------------------------
+#  public | pg_database_owner | pg_database_owner=UC/pg_database_owner+| standard public schema
+#         |                   | =U/pg_database_owner                  +| 
+#         |                   | cs=UC/pg_database_owner                | 
+
+
+# cs_db=> create table abc(sno integer);
+# CREATE TABLE
+
+# GRANT ALL PRIVILEGES ON SCHEMA public TO cs;
+# GRANT CREATE ON SCHEMA public TO PUBLIC;
+
 
 
 # To connect with psql from laptop
@@ -53,8 +77,7 @@ https://knatarasan:<token>@github.com/knatarasan/cloudskin.git
 python3 -m venv ~/.venv
 source ~/.venv/bin/activate
 
-echo 'AWS_TEST_MODE=False' > /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
-echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
+echo 'AWS_TEST_MODE=False' > django_api/.env
 
 #make sure 
 # cat .env
@@ -145,8 +168,6 @@ sudo systemctl restart nginx
 
 
 sudo amazon-linux-extras install epel -y
-sudo yum install -y certbot
-sudo yum install -y certbot-nginx
 
 
 #Error : Could not automatically find a matching server block for www.stratoai.app. Set the `server_name` directive to use the Nginx installer.
@@ -183,11 +204,11 @@ server {
     }
     server {
       listen 443 ssl;
-      server_name  ec2-54-183-97-140.us-west-1.compute.amazonaws.com;
+      server_name  ec2-54-193-41-186.us-west-1.compute.amazonaws.com;
       listen [::]:443 ssl;
       root 	/var/www/build;
-      ssl_certificate /etc/letsencrypt/live/www.stratoai.app/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/www.stratoai.app/privkey.pem;
+      ssl_certificate /etc/letsencrypt/live/www.stratoclo.com/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/www.stratoclo.com/privkey.pem;
 
       location  /   {
         try_files $uri /index.html;
@@ -209,6 +230,7 @@ server {
 
 
 # SSLify www.stratoclo.com
+pip install certbot certbot-nginx
 
 (.venv) [ec2-user@ip-172-31-15-28 django_api]$ sudo certbot --nginx -d www.stratoclo.com
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
@@ -292,3 +314,26 @@ sudo vim /etc/nginx/nginx.conf
   549  sudo systemctl restart nginx
   550  sudo systemctl status nginx
   551  python manage.py runserver 0:8000
+
+To configure gunicorn with Django Nginx:
+https://apirobot.me/posts/what-is-wsgi-and-why-do-you-need-gunicorn-and-nginx-in-django
+
+To run the gunicorn server:
+cd /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api
+nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
+
+
+
+# New User on boarding 
+
+# When a aws user enters his aws key and aws secret key, the following steps are performed:
+# 1. The aws key and aws secret key are encrypted using private key from following location
+  #/home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/config/private_key.pem
+
+# If above key is missing then create a new key using following command:
+
+python3 manage.py generate_rsa_keys_for_encryption
+
+# Above will create following files under the cloudskin/api/django_api/config/:
+    private_key.pem
+    public_key.pem

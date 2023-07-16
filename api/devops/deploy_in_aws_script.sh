@@ -1,6 +1,7 @@
 
 # connect to prod machine
-ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com
+# ssh -i ~/.ssh/cloudskin_key.pem ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com
+ssh -i ~/Downloads/react-deploy.pem ec2-user@ec2-54-193-41-186.us-west-1.compute.amazonaws.com
 
 # @prod machine
 #
@@ -21,8 +22,8 @@ sudo rm -rf /tmp/build/*
 
 cd cloudskin/react_cs
 npm run build
-scp -i ~/.ssh/cloudskin_key.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/tmp/build
-scp -r -i ~/.ssh/cloudskin_key.pem build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/var/www/build/
+scp -i ~/Downloads/react-deploy.pem -r ~/workspace/cloudskin/react_cs/build/* ec2-user@ec2-54-193-41-186.us-west-1.compute.amazonaws.com:/tmp/build/
+# scp -r -i ~/.ssh/cloudskin_key.pem build/* ec2-user@ec2-54-183-97-140.us-west-1.compute.amazonaws.com:/var/www/build/
 
 # @prod machine
 #
@@ -39,6 +40,7 @@ cd ~/cloudskin/api/django_api
 python manage.py makemigrations
 python manage.py migrate
 
+# Following wont work with github action configured and gunicorn configured
 nohup ~/.venv/bin/python ~/cloudskin/api/django_api/manage.py runserver 0:8000 &
 tail -f /home/ec2-user/cloudskin/api/logs/app.log
 
@@ -91,3 +93,8 @@ tail -f /home/ec2-user/cloudskin/api/logs/app.log
 #    renew *all* of your certificates, run "certbot renew"
 sudo systemctl restart nginx
 ------------------------------------
+
+hint: Updates were rejected because the tip of your current branch is behind
+https://stackoverflow.com/questions/39399804/updates-were-rejected-because-the-tip-of-your-current-branch-is-behind-its-remot
+git pull --rebase origin <your_branch_name>
+git push --rebase origin <your_branch_name>
