@@ -30,6 +30,8 @@ jobs:
           python3 manage.py makemigrations > /tmp/migration.txt
           python3 manage.py migrate
           sudo mkdir -p /var/www/build
+          mkdir -p /home/ec2-user/encrypt_keys
+          mkdir -p /home/ec2-user/logs
         working-directory: api/django_api
       - name: Prep env
         run: |

@@ -9,6 +9,7 @@ from .simple_jwt import *
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 env = environ.Env()
 
 if not os.path.isfile(".env"):
@@ -206,5 +207,8 @@ GRAPH_MODELS = {
 AWS_TEST_MODE = env.bool("AWS_TEST_MODE", False)
 
 
-PUBLIC_KEY_FILE = os.path.join(BASE_DIR, "private_key.pem")
-PRIVATE_KEY_FILE = os.path.join(BASE_DIR, "public_key.pem")
+# this wont work in local
+NON_REPLACED_DIR = "/home/ec2-user"
+
+PUBLIC_KEY_FILE = os.path.join(NON_REPLACED_DIR, "encrypt_keys/private_key.pem")
+PRIVATE_KEY_FILE = os.path.join(NON_REPLACED_DIR, "encrypt_keys/public_key.pem")

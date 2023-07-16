@@ -332,7 +332,7 @@ nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
 
 # If above key is missing then create a new key using following command:
 
-python manage.py generate_rsa_keys_for_encryption
+python3 manage.py generate_rsa_keys_for_encryption
 
 # Above will create following files under the cloudskin/api/django_api/config/:
     private_key.pem

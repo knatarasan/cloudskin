@@ -63,11 +63,11 @@ class RSA:
 
     def retrieve_keys(self, public_key_file, private_key_file):
         # Read public key from file
-        with open(public_key_file, "r", encoding="utf-8") as f:
+        with open(settings.PUBLIC_KEY_FILE, "r", encoding="utf-8") as f:
             public_key_str = f.read()
 
         # Read private key from file
-        with open(private_key_file, "r", encoding="utf-8") as f:
+        with open(settings.PRIVATE_KEY_FILE, "r", encoding="utf-8") as f:
             private_key_str = f.read()
 
         # Load public key from string
