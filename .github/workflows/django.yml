@@ -41,5 +41,5 @@ jobs:
           echo 'CS_SECRET_KEY="django-insecure-^i93n1dzwm_$fkupi+ck#!ngk^=))ih#$+a4f$46^15m&#c*ks"' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
       - name: Run backend service
         run: |
-          nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
+          gunicorn wsgi:application --bind 0.0.0.0:8000 &
         working-directory: api/django_api
