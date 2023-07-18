@@ -337,3 +337,6 @@ python3 manage.py generate_rsa_keys_for_encryption
 # Above will create following files under the cloudskin/api/django_api/config/:
     private_key.pem
     public_key.pem
+
+# Run this if the error says that 8000 is in use:
+sudo fuser -k 8000/tcp
