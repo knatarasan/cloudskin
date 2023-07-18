@@ -39,7 +39,7 @@ jobs:
           echo 'CS_DATABASE_URL=postgres://cs:cs@localhost:5432/cs_db' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
           echo 'CS_JWT_SIGNING_KEY=None' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
           echo 'CS_SECRET_KEY="django-insecure-^i93n1dzwm_$fkupi+ck#!ngk^=))ih#$+a4f$46^15m&#c*ks"' >> /home/ec2-user/django-deploy/django-work/cloudskin/cloudskin/api/django_api/.env
-      - name: Kill process running on 8000 and run the backend service
+      - name: Run the backend service
         run: |
           nohup gunicorn wsgi:application --bind 0.0.0.0:8000 &
         working-directory: api/django_api
