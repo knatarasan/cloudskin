@@ -3,6 +3,7 @@ from datetime import datetime
 
 from apps.plan.models import Plan
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 
@@ -20,7 +21,7 @@ class AWSComponent(models.Model):
     subnet = models.TextField(null=True)
     subnet2 = models.TextField(null=True)  # Subnet needs to converted into list
     arn = models.TextField(null=True)
-    date_created_or_modified = models.DateTimeField(default=datetime.now)
+    date_created_or_modified = models.DateTimeField(default=datetime.now(tz=timezone.utc))
     objects = InheritanceManager()
 
     class AWSCompStatus(models.IntegerChoices):
