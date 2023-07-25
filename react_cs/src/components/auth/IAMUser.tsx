@@ -77,6 +77,11 @@ const IAMUser = () => {
         '        },\n' +
         '        {\n' +
         '            "Effect": "Allow",\n' +
+        '            "Action": "rds:CreateDBInstance",\n' +
+        '            "Resource": "*"\n' +
+        '        },\n' +
+        '        {\n' +
+        '            "Effect": "Allow",\n' +
         '            "Action": [\n' +
         '                "ec2:CreateTags",\n' +
         '                "ec2:DescribeInstances",\n' +
