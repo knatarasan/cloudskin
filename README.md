@@ -3,9 +3,8 @@
   - One click deployment
   - Best practices applied [you can focus on your business]
 
-To provide a very usable UI to cloud
+Automating Cloud(AWS) operations, design, configure and spin cloud infrastructure from UI.
 
-A highly customizable React component for building interactive graphs and node-based editors.
 
 [🚀 Getting Started]() | [📖 Documentation]() | [📺 Examples]() | [☎️ Discord]() | [💎 Cloud SkinPro]()
 
@@ -19,12 +18,6 @@ A highly customizable React component for building interactive graphs and node-b
 - **One click deployment:** One click deployment
 - **Best practices applied:** [you can focus on your business]
 
-
-## Installation
-
-```bash
-to be updated
-```
 
 ## Quickstart
 
